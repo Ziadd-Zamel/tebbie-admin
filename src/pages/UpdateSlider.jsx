@@ -11,6 +11,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
+import ErrorMessage from "./ErrorMessage";
 
 const realtableType = [
   { id: 1, name: "Hospital" },
@@ -27,7 +29,8 @@ const UpdateSlider = () => {
 
   const { sliderId } = useParams();
 
-  const { data: sliderData } = useQuery({
+  const { data: sliderData , isLoading,
+    error,} = useQuery({
     queryKey: ["slider-Data", sliderId],
     queryFn: () => getSliderById({ id: sliderId, token }),
   });
@@ -105,6 +108,13 @@ const UpdateSlider = () => {
 
     handleUpdateSlider(formData);
   };
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <ErrorMessage />;
+  }
 
   return (
     <section className="h-full py-8 ">

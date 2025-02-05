@@ -49,11 +49,11 @@ import AddLabType from "./pages/AddLabType";
 import UpdateLabType from "./pages/UpdateLabType";
 import UpdateEmployee from "./pages/UpdateEmployee";
 import RequestForm from "./pages/RequestForm";
-import GoogleMapsProvider from "./utlis/GoogleMapsProvider";
 import Services from "./pages/Services";
 import AddService from "./pages/AddService";
 import UpdateService from "./pages/UpdateService";
 import { UserProvider } from "./chatcontext/UserContext";
+import HospitalLayout from "./pages/HospitalLayout";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +81,8 @@ const router = createBrowserRouter([
 
           {
             path: "hospitals",
+            element: <HospitalLayout />,
+
             children: [
               { index: true, element: <Hospitals /> },
               {
@@ -199,11 +201,9 @@ function App() {
   return (
     <main>
       <QueryClientProvider client={queryClient}>
-        <GoogleMapsProvider>
           <UserProvider>
             <RouterProvider router={router} />
           </UserProvider>
-        </GoogleMapsProvider>
       </QueryClientProvider>
     </main>
   );
