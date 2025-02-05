@@ -268,7 +268,7 @@ const UpdateSlider = () => {
           disabled={isPending}
           className="w-full bg-primary   from-[#33A9C7] to-[#3AAB95] text-lg font-medium text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2  my-4"
         >
-          {isPending ? "updating Slider..." : "updating Slider"}
+          {isPending ? "updating Slider..." : "update Slider"}
         </button>
       </form>
     </section>
