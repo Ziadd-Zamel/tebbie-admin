@@ -1112,6 +1112,7 @@ export const deleteSliders = async ({
 };
 export const updateSliders = async ({
   realtable_type,
+  realtable_id,
   token,
   media,
   id,
@@ -1122,9 +1123,8 @@ export const updateSliders = async ({
   const formdata = new FormData();
 
   formdata.append("realtable_type", realtable_type);
-  formdata.append("realtable_id","1");
   formdata.append("_method",  _method);
-
+  formdata.append("realtable_id",  realtable_id);
 
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);

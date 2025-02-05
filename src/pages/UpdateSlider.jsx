@@ -5,6 +5,7 @@ import {
   getHospitals,
   getLabs,
   getSliderById,
+  getSpecializations,
   getXrays,
   updateSliders,
 } from "../utlis/https";
@@ -15,12 +16,12 @@ import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
 
 const realtableType = [
-  { id: 1, name: "Hospital" },
-  { id: 2, name: "Doctor" },
-  { id: 3, name: "XRays" },
+  { id: 1, name: "hospital" },
+  { id: 2, name: "doctor" },
+  { id: 3, name: "xray" },
   { id: 4, name: "lab" },
+  { id: 5, name: "specialization" },
 ];
-
 const UpdateSlider = () => {
   const token = localStorage.getItem("authToken");
   const queryClient = useQueryClient();
@@ -29,8 +30,11 @@ const UpdateSlider = () => {
 
   const { sliderId } = useParams();
 
-  const { data: sliderData , isLoading,
-    error,} = useQuery({
+  const {
+    data: sliderData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["slider-Data", sliderId],
     queryFn: () => getSliderById({ id: sliderId, token }),
   });
@@ -70,15 +74,18 @@ const UpdateSlider = () => {
     queryKey: ["XRayData", token],
     queryFn: () => getXrays({ token }),
   });
+  const { data: specializationData } = useQuery({
+    queryKey: ["specialization", token],
+    queryFn: () => getSpecializations({ token }),
+  });
   useEffect(() => {
     if (sliderData) {
       const extractedType = sliderData.realtable_type
-      ? sliderData.realtable_type.split("\\").pop()
-      : "";
+        ? sliderData.realtable_type.split("\\").pop()
+        : "";
       setFormData({
         media: sliderData.media_url || null,
         realtable_type: sliderData.realtable_type || "",
-        realtable_type: extractedType, 
         hospital: sliderData.hospital || "",
         doctor: sliderData.doctor || "",
         xray: sliderData.xray || "",
@@ -105,6 +112,7 @@ const UpdateSlider = () => {
       alert("Please provide an image.");
       return;
     }
+    console.log("Form Data before submission:", formData);
 
     handleUpdateSlider(formData);
   };
@@ -175,7 +183,7 @@ const UpdateSlider = () => {
             ))}
           </select>
         </div>
-        {formData.realtable_type === "Doctor" && (
+        {formData.realtable_type === "doctor" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="doctor"
@@ -197,7 +205,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-        {formData.realtable_type === "Hospital" && (
+        {formData.realtable_type === "hospital" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="hospital"
@@ -219,7 +227,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-        {formData.realtable_type === "XRays" && (
+        {formData.realtable_type === "xray" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="xray"
@@ -256,6 +264,28 @@ const UpdateSlider = () => {
             >
               <option value="">Select Lab</option>
               {labsData?.map((data) => (
+                <option key={data.id} value={data.id}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {formData.realtable_type === "specialization" && (
+          <div className="px-3 my-6 md:mb-0">
+            <select
+              name="specialization"
+              value={formData.realtable_id}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  realtable_id: e.target.value,
+                }))
+              }
+              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+            >
+              <option value="">Select specialization</option>
+              {specializationData?.map((data) => (
                 <option key={data.id} value={data.id}>
                   {data.name}
                 </option>
