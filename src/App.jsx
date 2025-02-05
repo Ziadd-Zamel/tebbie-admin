@@ -1,0 +1,212 @@
+import React from "react";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import "./global.css";
+import Login from "./_auth/Login";
+import RootLayout from "./pages/RootLayout";
+import Financial from "./pages/Financial";
+import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Hospitals from "./pages/Hospitals";
+import HospitalDetails from "./pages/HospitalDetails";
+import AddHospital from "./pages/AddHospital";
+import Doctors from "./pages/Doctors";
+import UpdateHospital from "./pages/UpdateHospital";
+import DoctorDetails from "./pages/DoctorDetails";
+import UpdateDoctor from "./pages/UpdateDoctor";
+import AddDoctor from "./pages/AddDoctor";
+import Sliders from "./pages/Sliders";
+import UpdateSlider from "./pages/UpdateSlider";
+import AddSlider from "./pages/AddSlider";
+import CommonQuestions from "./pages/CommonQuestions";
+import UpdateCommonQuestions from "./pages/UpdateCommonQuestions";
+import AddQuestion from "./pages/AddQuestion";
+import Cities from "./pages/Cities";
+import UpdateCity from "./pages/UpdateCity";
+import AddCity from "./pages/AddCity";
+import States from "./pages/States";
+import TrashedHospital from "./pages/TrashedHospital";
+import TrashedDoctor from "./pages/TrashedDoctor";
+import TrashedState from "./pages/TrashedState";
+import TrashedCity from "./pages/TrashedCity";
+import RechargeCards from "./pages/RechargeCards";
+import AddCard from "./pages/AddCard";
+import Settings from "./pages/Settings";
+import EditSetting from "./pages/EditSetting";
+import AddSetting from "./pages/AddSetting";
+import { AuthMiddleware, GuestMiddleware } from "./middlewares/authMiddleware";
+import ChatPage from "./pages/ChatPage";
+import Specializations from "./pages/Specializations";
+import UpdateSpecial from "./pages/UpdateSpecial";
+import AddSpecial from "./pages/AddSpecial";
+import Coupons from "./pages/Coupons";
+import Labs from "./pages/Labs";
+import AddLab from "./pages/AddLab";
+import UpdateLab from "./pages/UpdateLab";
+import LabTypes from "./pages/LabTypes";
+import Employees from "./pages/Employees";
+import AddLabType from "./pages/AddLabType";
+import UpdateLabType from "./pages/UpdateLabType";
+import UpdateEmployee from "./pages/UpdateEmployee";
+import RequestForm from "./pages/RequestForm";
+import GoogleMapsProvider from "./utlis/GoogleMapsProvider";
+import Services from "./pages/Services";
+import AddService from "./pages/AddService";
+import UpdateService from "./pages/UpdateService";
+import { UserProvider } from "./chatcontext/UserContext";
+
+const queryClient = new QueryClient();
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AuthMiddleware />,
+    children: [
+      {
+        path: "",
+        element: <RootLayout />,
+        children: [
+          { index: true, element: <Dashboard /> },
+          {
+            path: "doctors",
+            children: [
+              { index: true, element: <Doctors /> },
+              { path: ":doctorId", element: <DoctorDetails /> },
+              { path: "update-doctor/:doctorId", element: <UpdateDoctor /> },
+              { path: "add-doctor", element: <AddDoctor /> },
+              { path: "trashed-doctors", element: <TrashedDoctor /> },
+            ],
+          },
+          { path: "chat", element: <ChatPage /> },
+
+          {
+            path: "hospitals",
+            children: [
+              { index: true, element: <Hospitals /> },
+              {
+                path: "update-hospital/:HospitalId",
+                element: <UpdateHospital />,
+              },
+              { path: ":HospitalId", element: <HospitalDetails /> },
+              { path: "trashed-hospitals", element: <TrashedHospital /> },
+              { path: "add-hospital", element: <AddHospital /> },
+            ],
+          },
+
+          {
+            path: "services",
+            children: [
+              { index: true, element: <Services /> },
+              { path: ":servId", element: <UpdateService /> },
+              { path: "add-service", element: <AddService /> },
+            ],
+          },
+
+          {
+            path: "employees",
+            children: [
+              { index: true, element: <Employees /> },
+              { path: ":empId", element: <UpdateEmployee /> },
+            ],
+          },
+          {
+            path: "specializations",
+            children: [
+              { index: true, element: <Specializations /> },
+              { path: ":spId", element: <UpdateSpecial /> },
+              { path: "add", element: <AddSpecial /> },
+            ],
+          },
+          {
+            path: "labs",
+            children: [
+              { index: true, element: <Labs /> },
+              { path: "add-lab", element: <AddLab /> },
+              { path: ":labId", element: <UpdateLab /> },
+            ],
+          },
+          {
+            path: "labs-type",
+            children: [
+              { index: true, element: <LabTypes /> },
+              { path: "add-lab-type", element: <AddLabType /> },
+              { path: ":labTypeId", element: <UpdateLabType /> },
+            ],
+          },
+          { path: "coupons", element: <Coupons /> },
+          { path: "financial", element: <Financial /> },
+          {
+            path: "recharge-card",
+            children: [
+              { index: true, element: <RechargeCards /> },
+              { path: "add-card", element: <AddCard /> },
+            ],
+          },
+          {
+            path: "common-questions",
+            children: [
+              { index: true, element: <CommonQuestions /> },
+              { path: ":questionId", element: <UpdateCommonQuestions /> },
+              { path: "add-question", element: <AddQuestion /> },
+            ],
+          },
+          {
+            path: "cities",
+            children: [
+              { index: true, element: <Cities /> },
+              { path: ":cityId", element: <UpdateCity /> },
+              { path: "add-city", element: <AddCity /> },
+              { path: "trashed-cities", element: <TrashedCity /> },
+            ],
+          },
+          { path: "profile", element: <Profile /> },
+          {
+            path: "sliders",
+            children: [
+              { index: true, element: <Sliders /> },
+              { path: ":sliderId", element: <UpdateSlider /> },
+              { path: "add-slider", element: <AddSlider /> },
+            ],
+          },
+          {
+            path: "states",
+            children: [
+              { index: true, element: <States /> },
+              { path: "trashed-state", element: <TrashedState /> },
+            ],
+          },
+          {
+            path: "settings",
+            children: [
+              { index: true, element: <Settings /> },
+              { path: ":settingId", element: <EditSetting /> },
+              { path: "add", element: <AddSetting /> },
+            ],
+          },
+          { path: "request-Form", element: <RequestForm /> },
+        ],
+      },
+    ],
+  },
+  {
+    path: "auth/login",
+    element: <GuestMiddleware />,
+    children: [{ index: true, element: <Login /> }],
+  },
+]);
+
+function App() {
+  return (
+    <main>
+      <QueryClientProvider client={queryClient}>
+        <GoogleMapsProvider>
+          <UserProvider>
+            <RouterProvider router={router} />
+          </UserProvider>
+        </GoogleMapsProvider>
+      </QueryClientProvider>
+    </main>
+  );
+}
+
+export default App;
