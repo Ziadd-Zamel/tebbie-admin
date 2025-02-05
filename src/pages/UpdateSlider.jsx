@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {  getDoctors, getHospitals, getLabs, getSliderById, getXrays, updateSliders } from "../utlis/https";
+import {
+  getDoctors,
+  getHospitals,
+  getLabs,
+  getSliderById,
+  getXrays,
+  updateSliders,
+} from "../utlis/https";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const realtableType = [
-  { id: 1, name: "hospital" },
-  { id: 2, name: "doctor" },
-  { id: 3, name: "xray" },
+  { id: 1, name: "Hospital" },
+  { id: 2, name: "Doctor" },
+  { id: 3, name: "XRays" },
   { id: 4, name: "lab" },
 ];
 
@@ -20,22 +27,20 @@ const UpdateSlider = () => {
 
   const { sliderId } = useParams();
 
-  const {
-    data: sliderData,
- 
-  } = useQuery({
+  const { data: sliderData } = useQuery({
     queryKey: ["slider-Data", sliderId],
-    queryFn: () => getSliderById({id:sliderId, token }),
+    queryFn: () => getSliderById({ id: sliderId, token }),
   });
   const [formData, setFormData] = useState({
-    media:null,
+    media: null,
     realtable_type: "",
     realtable_id: "",
-    id:sliderId
+    id: sliderId,
   });
 
-  const { mutate: handleUpdateSlider, isLoading } = useMutation({
-    mutationFn: (newSlider) => updateSliders({ ...newSlider, token ,id:sliderId}),
+  const { mutate: handleUpdateSlider, isPending } = useMutation({
+    mutationFn: (newSlider) =>
+      updateSliders({ ...newSlider, token, id: sliderId }),
     onSuccess: () => {
       queryClient.invalidateQueries(["sliderData", token]);
       toast.success("Slider added successfully!");
@@ -45,7 +50,6 @@ const UpdateSlider = () => {
       toast.error("Failed to add slider. Please try again.");
     },
   });
-
 
   const { data: doctorsData } = useQuery({
     queryKey: ["doctorsData"],
@@ -65,19 +69,21 @@ const UpdateSlider = () => {
   });
   useEffect(() => {
     if (sliderData) {
+      const extractedType = sliderData.realtable_type
+      ? sliderData.realtable_type.split("\\").pop()
+      : "";
       setFormData({
-        media: sliderData.media_url || null, 
+        media: sliderData.media_url || null,
         realtable_type: sliderData.realtable_type || "",
-        realtable_id: sliderData.realtable_id || "",
+        realtable_type: extractedType, 
         hospital: sliderData.hospital || "",
         doctor: sliderData.doctor || "",
         xray: sliderData.xray || "",
         lab: sliderData.lab || "",
       });
-      setImagePreview(sliderData.media_url); 
+      setImagePreview(sliderData.media_url);
     }
   }, [sliderData]);
-  console.log(formData)
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -102,28 +108,39 @@ const UpdateSlider = () => {
 
   return (
     <section className="h-full py-8 ">
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto ">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto "
+      >
         <div className="mb-4">
-        <div className="flex justify-center items-center my-6">
-  <div className="relative">
-    {imagePreview ? (
-      <img
-        src={imagePreview} 
-        alt="Slider Preview"
-        className="w-32 h-32 rounded-full object-cover"
-      />
-    ) : (
-      <div className="w-32 h-32 rounded-full bg-gray-200 flex justify-center items-center">
-        <FaCamera size={24} className="text-gray-500" />
-      </div>
-    )}
-    <label htmlFor="imageUpload" className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer">
-      <FaCamera />
-    </label>
-    <input type="file" id="imageUpload" accept="image/*" className="hidden" onChange={handleFileChange} />
-  </div>
-</div>
-
+          <div className="flex justify-center items-center my-6">
+            <div className="relative">
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Slider Preview"
+                  className="w-32 h-32 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-32 h-32 rounded-full bg-gray-200 flex justify-center items-center">
+                  <FaCamera size={24} className="text-gray-500" />
+                </div>
+              )}
+              <label
+                htmlFor="imageUpload"
+                className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer"
+              >
+                <FaCamera />
+              </label>
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="px-3 my-6 md:mb-0">
@@ -135,7 +152,7 @@ const UpdateSlider = () => {
               setFormData((prev) => ({
                 ...prev,
                 realtable_type: e.target.value,
-                realtable_id: "", 
+                realtable_id: "",
               }))
             }
             className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
@@ -148,8 +165,7 @@ const UpdateSlider = () => {
             ))}
           </select>
         </div>
-
-        {formData.realtable_type === "doctor" && (
+        {formData.realtable_type === "Doctor" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="doctor"
@@ -171,8 +187,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-
-        {formData.realtable_type === "hospital" && (
+        {formData.realtable_type === "Hospital" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="hospital"
@@ -194,8 +209,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-
-        {formData.realtable_type === "xray" && (
+        {formData.realtable_type === "XRays" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="xray"
@@ -217,7 +231,6 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-
         {formData.realtable_type === "lab" && (
           <div className="px-3 my-6 md:mb-0">
             <select
@@ -240,13 +253,12 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isPending}
           className="w-full bg-primary   from-[#33A9C7] to-[#3AAB95] text-lg font-medium text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2  my-4"
         >
-          {isLoading ? "Adding Slider..." : "Add Slider"}
+          {isPending ? "updating Slider..." : "updating Slider"}
         </button>
       </form>
     </section>
