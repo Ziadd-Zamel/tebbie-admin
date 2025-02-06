@@ -152,7 +152,6 @@ const ChatPage = () => {
             <ul className="user-list space-y-8 text-xl text-black ">
               {usersData
                 ?.slice()
-                .reverse()
                 .map((user) => (
                   <li
                     key={user.id}
