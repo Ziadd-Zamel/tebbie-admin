@@ -72,7 +72,7 @@ const Sliders = () => {
           <IoMdAdd size={30} />
         </Link>
       </div>
-      <div className="flex md:gap-4 gap-2  mx-4 flex-wrap">
+      <div className="flex items-center flex-wrap sm:justify-start justify-center  gap-6 w-full">
         {sliderData.length > 0 ? (
           <>
             {sliderData.map((slider) => (

@@ -66,7 +66,7 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
         onSubmit={handleSubmit}
         className="w-full rounded-md bg-white h-[70vh] p-6 shadow-lg flex flex-col justify-center items-center"
       >
-        <div className=" ">
+        <div className=" w-full">
           <div className="px-3 my-6 md:mb-0">
             <label
               className="block text-md almarai-semibold mb-4"

@@ -17,10 +17,13 @@ const Navbar = () => {
 const translatePageName = (pathname) => {
   if (pathname.startsWith("/orders/")) {
     return pageTranslations[language]["/orders/:OrderId"];
+  }  if (pathname.startsWith("/common-questions/")) {
+    return pageTranslations[language]["/common-questions/:questionId"];
   }
   if (pathname.startsWith("/hospitals/")) {
     return pageTranslations[language]["/hospitals/:HospitalId"];
   }
+
   if (pathname.startsWith("/recharge-card/add-card")) {
     return pageTranslations[language]["/recharge-card/add-card"];
   }
@@ -42,7 +45,7 @@ const translatePageName = (pathname) => {
   if (pathname.startsWith("/settings/")) {
     return pageTranslations[language]["/settings/:settingId"];
   }
-  
+ 
   return (
     pageTranslations[language][pathname] || pageTranslations[language].default
   );

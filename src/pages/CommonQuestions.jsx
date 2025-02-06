@@ -69,7 +69,7 @@ const CommonQuestions = () => {
   }
 
   return (
-    <section dir={direction} className="container mx-auto py-8">
+    <section dir={direction} className="container mx-auto py-8 w-full">
       <div className="mx-10 flex justify-start items-center">
       <Link
         to={"/common-questions/add-question"}
