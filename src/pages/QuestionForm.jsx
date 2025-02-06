@@ -61,7 +61,7 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
   if (isLoading) return <Loader />;
 
   return (
-    <section className="flex justify-center items-center h-[50vh] p-4 w-full">
+    <section className="flex justify-center items-center min-h-[60vh] p-4 w-full">
     <form
       onSubmit={handleSubmit}
       className="w-full max-w-lg rounded-md bg-white p-6 shadow-lg flex flex-col justify-center items-center"
