@@ -172,7 +172,6 @@ const ChatPage = () => {
                   </li>
                 ))}
             </ul>
-            ;
           </div>
           <div className="w-3/4 relative p-8">
             <div
