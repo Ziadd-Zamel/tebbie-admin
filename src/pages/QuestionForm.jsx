@@ -61,13 +61,13 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
   if (isLoading) return <Loader />;
 
   return (
-    <section className="container mx-auto p-4 w-full">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full rounded-md bg-white h-[70vh] p-6 shadow-lg flex flex-col justify-center items-center"
-      >
-        <div className=" w-full">
-          <div className="px-3 my-6 md:mb-0">
+    <section className="flex justify-center items-center h-[50vh] p-4 w-full">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-w-lg rounded-md bg-white p-6 shadow-lg flex flex-col justify-center items-center"
+    >
+  
+          <div className="px-3 my-6 md:mb-0 w-full">
             <label
               className="block text-md almarai-semibold mb-4"
               htmlFor="question"
@@ -81,11 +81,11 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
               onChange={handleChange}
               id="question"
               placeholder={t("question")}
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full lg:w-[494px]"
+              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
             />
           </div>
 
-          <div className="px-3 my-6 md:mb-0">
+          <div className="px-3 my-6 md:mb-0 w-full">
             <label
               className="block text-md almarai-semibold mb-4"
               htmlFor="answer"
@@ -99,10 +99,9 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
               onChange={handleChange}
               name="answer"
               placeholder={t("answer")}
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full lg:w-[494px] min-h-56"
+              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full  min-h-56"
             />
           </div>
-        </div>
         <div className="text-center py-10 flex justify-center w-full">
           <button
             type="submit"
