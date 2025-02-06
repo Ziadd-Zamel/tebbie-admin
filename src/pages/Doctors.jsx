@@ -52,8 +52,8 @@ const Doctors = () => {
         </div>
       </div>
 
-      <div className="flex  items-center flex-wrap md:gap-8 gap-4 md:p-0 p-4">
-        {doctors.map((doctor) => (
+      <div className="flex items-center flex-wrap sm:justify-start justify-center  gap-6 w-full">
+      {doctors.map((doctor) => (
           <div
             key={doctor.id}
             className="bg-white h-56 md:w-[320px] w-[300px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"

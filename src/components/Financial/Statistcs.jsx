@@ -73,7 +73,7 @@ const Statistcs = () => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         />
-      <div className='md:w-full w-screen h-[250px]' >
+      <div className=' h-[250px]' >
       <ResponsiveContainer width="100%" height={250}>
       <LineChart
             data={data}

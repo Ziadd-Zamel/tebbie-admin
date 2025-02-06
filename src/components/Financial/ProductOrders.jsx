@@ -50,9 +50,9 @@ const ProductOrders = () => {
   );
 
   return (
-    <div>
+    <div className=" w-full">
       <p className="font-bold text-md md:text-xl p-4">{t("ProductOrders")}</p>
-      <div className="flex  flex-col justify-center items-center ">
+      <div className="flex  flex-col justify-center items-center w-full ">
       <ResponsiveContainer width="100%" height={300}>
           <RadialBarChart
             cx="50%" cy="50%"
@@ -62,7 +62,7 @@ const ProductOrders = () => {
           >
             <RadialBar
               minAngle={18}
-              label={false} // Remove the numbers inside the bars
+              label={false} 
               background
               clockWise
               dataKey="value"
@@ -71,7 +71,6 @@ const ProductOrders = () => {
           </RadialBarChart>
         </ResponsiveContainer>
    </div>
-        {/* Custom Legend under the chart */}
         {renderCustomLegend()}
     </div>
   );

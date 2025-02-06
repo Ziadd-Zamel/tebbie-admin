@@ -1189,7 +1189,6 @@ export const addSlider = async ({
   }
 };
 
-
 //xrays 
 export const getXrays = async ({ token }) => {
   try {

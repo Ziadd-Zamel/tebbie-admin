@@ -101,19 +101,19 @@ const Financial = () => {
         </div>
 
         <div className="grid md:grid-cols-12 gap-4 mt-6 ">
-          <div className="col-span-4 bg-white md:p-4 p-2  rounded-[20px] shadow-md">
+          <div className="md:col-span-4 col-span-12 bg-white md:p-4 p-2  rounded-[20px] shadow-md w-full">
             <Profits/>
           </div>
-          <div className="col-span-8 bg-white md:p-4 p-2  rounded-[20px] shadow-md">
+          <div className="md:col-span-8 col-span-12 bg-white md:p-4 p-2  rounded-[20px] shadow-md w-full">
             <Statistcs/>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-12 gap-4 mt-6 ">
-          <div className="col-span-8 bg-white md:p-4 p-2 rounded-[20px] shadow-md">
+        <div className="grid md:grid-cols-12  gap-4 mt-6 ">
+          <div className="md:col-span-8 col-span-12 bg-white md:p-4 p-2 rounded-[20px] shadow-md w-full">
             <ProfileVeiw/>
           </div>
-          <div className="col-span-4 bg-white md:p-4 p-2 rounded-[20px] shadow-md">
+          <div className="md:col-span-4 col-span-12 bg-white md:p-4 p-2 rounded-[20px] shadow-md w-full">
             <ProductOrders/>
           </div>
         </div>
