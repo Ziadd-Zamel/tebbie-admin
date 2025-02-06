@@ -46,7 +46,7 @@ const Doctors = () => {
             to={"/doctors/trashed-doctors"}
             className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2  bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
           >
-            recycle bin
+            {t("recyclebin")}
             <IoTrashSharp  />
           </Link>
         </div>

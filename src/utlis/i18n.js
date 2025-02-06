@@ -85,7 +85,8 @@ const resources = {
         "add-doctor":"add doctor",
         "update-doctor":"update doctor",
         "new":"new",
-        "AvilableDoctors":"available doctors"
+        "AvilableDoctors":"available doctors",
+        "recyclebin":"recycle bin"
         
 
       }
@@ -173,7 +174,9 @@ const resources = {
         "Actions":"الإجراءات",
         "new":"جديد",
         "update-doctor":"تعديل بيانات الدكتور",
-        "AvilableDoctors":"الدكاتره المتاحين"
+        "AvilableDoctors":"الدكاتره المتاحين",
+        "recyclebin":"سلة المحذوفات"
+
 
 
 

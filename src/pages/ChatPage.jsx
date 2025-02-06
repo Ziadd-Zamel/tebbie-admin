@@ -148,7 +148,7 @@ const ChatPage = () => {
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
         <div className="flex">
-          <div className="w-1/4 h-[70vh] overflow-auto">
+          <div className="w-1/4 h-[70vh]  overflow-auto">
             <ul className="user-list space-y-8 text-xl text-black ">
               {usersData
                 ?.slice()
@@ -176,9 +176,9 @@ const ChatPage = () => {
           <div className="w-3/4 relative p-8">
             <div
               ref={chatContainerRef}
-              className="flex-grow  h-[70vh] overflow-auto"
+              className="flex-grow  h-[70vh] w-full overflow-auto"
             >
-              <div className="grid pb-11">
+              <div className="grid pb-11 w-full">
                 {messages.length > 0 ? (
                   messages.map((message) => (
                     <div

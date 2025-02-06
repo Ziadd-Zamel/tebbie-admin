@@ -126,7 +126,7 @@ export const updateDoctor = async ({
   job_title,
   specialization_id,
   hospital_ids= [],
-  is_visitor
+  is_visitor,  // ✅ هنا يجب أن يكون بنفس الاسم
   
 }) => {
   const formdata = new FormData();
@@ -137,7 +137,7 @@ export const updateDoctor = async ({
   formdata.append("address", address);
   formdata.append("email", email);
   formdata.append("phone", phone);
-  formdata.append("is_visitor", is_visitor);
+  formdata.append("is_visitor", is_visitor); // ✅ سيتم إرساله الآن بشكل صحيح
 
   hospital_ids.forEach((id) => {
     formdata.append("hospital_ids[]", id);
@@ -184,7 +184,7 @@ export const addDoctor = async ({
   job_title,
   specialization_id,
   hospital_ids= [],
-  isvisitor
+  is_visitor
   
 }) => {
   const formdata = new FormData();
@@ -194,7 +194,7 @@ export const addDoctor = async ({
   formdata.append("address", address);
   formdata.append("email", email);
   formdata.append("phone", phone);
-  formdata.append("is_visitor", isvisitor);
+  formdata.append("is_visitor",  is_visitor);
 
   hospital_ids.forEach((id) => {
     formdata.append("hospital_ids[]", id);

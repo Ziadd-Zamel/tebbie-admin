@@ -39,7 +39,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
     city: "",
     job_title: "",
     specialization_id: "",
-    is_visitor: false,
+    is_visitor: "",
     hospital_ids: [],
     media: null,
   });
@@ -117,7 +117,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
       is_visitor: doctorData.is_visitor ? "yes" : "no",
       ...(mode === "update" && { id: doctorId }),
     };
-
+console.log(dataToSubmit)
     mutation.mutate(dataToSubmit);
   };
   if (isLoading) return <Loader />;
@@ -328,7 +328,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
             onChange={(e) =>
               setDoctorData((prevData) => ({
                 ...prevData,
-                is_visitor: e.target.checked ? "yes" : "no",
+                is_visitor : e.target.checked ? "yes" : "no",
               }))
             }
           />
