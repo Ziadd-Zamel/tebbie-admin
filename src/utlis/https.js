@@ -2253,6 +2253,34 @@ export const getRequestForm = async ({ token  }) => {
     throw error;
   }
 };
+export const markAsRead = async ({
+  token,
+  name,
+}) => {
+  const formdata = new FormData();
+  formdata.append("name",name);
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/mark-as-read`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result; 
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 
 //services
 export const getServices = async ({ token}) => {

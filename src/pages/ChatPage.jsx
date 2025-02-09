@@ -5,10 +5,10 @@ import Loader from "./Loader";
 import { ErrorMessage } from "formik";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import Pusher from "pusher-js";
-import { getMessages, getUsers, postMessage } from "../utlis/https";
-import { IoPersonCircle } from "react-icons/io5";
+import { getMessages, getUsers, markAsRead, postMessage } from "../utlis/https";
 import { useTranslation } from "react-i18next";
 import { useUser } from "../chatcontext/UserContext";
+import UserList from "../chatcontext/UserList";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -20,9 +20,21 @@ const ChatPage = () => {
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { selectedUser, setSelectedUser } = useUser();
 
+  const { mutate: markMessageAsRead } = useMutation({
+    mutationFn: markAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["users-data"]);
+    },
+    onError: (error) => {
+      console.error("Error marking messages as read:", error);
+    },
+  });
+
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
     queryClient.invalidateQueries(["messages"]);
+
+    markMessageAsRead({ user_id: userId, token });
   };
 
   const { data: usersData, isLoading: usersIsLoading } = useQuery({
@@ -32,7 +44,7 @@ const ChatPage = () => {
   });
   useEffect(() => {
     if (usersData?.length && !selectedUser) {
-      const reversedUsers = usersData.slice().reverse();
+      const reversedUsers = usersData.slice()
       setSelectedUser(reversedUsers[0].id);
     }
   }, [usersData, selectedUser]);
@@ -148,37 +160,13 @@ const ChatPage = () => {
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
         <div className="flex">
-          <div className="w-1/4 h-[70vh]  overflow-auto">
-            <ul className="user-list space-y-8 text-xl text-black ">
-              {usersData
-                ?.slice()
-                .map((user) => (
-                  <li
-                    key={user.id}
-                    className={`md:text-sm text-xs flex gap-2 cursor-pointer truncate w-auto rounded-2xl shadow-sm bg-secondary md:h-12 h-10 md:p-4 p-2 max-w-64 items-center ${
-                      selectedUser === user.id ? "bg-primary text-white" : ""
-                    }`}
-                    onClick={() => handleUserSelect(user.id)}
-                  >
-                    <IoPersonCircle
-                      size={30}
-                      className={`shrink-0 ${
-                        selectedUser === user.id
-                          ? "bg-primary text-white"
-                          : "text-primary"
-                      }`}
-                    />
-                    {user.name}
-                  </li>
-                ))}
-            </ul>
-          </div>
+        <UserList users={usersData} selectedUser={selectedUser} onSelectUser={handleUserSelect} />
           <div className="w-3/4 relative p-8">
             <div
               ref={chatContainerRef}
-              className="flex-grow  h-[70vh] w-full overflow-auto"
+              className="flex-grow  h-[80vh] overflow-auto"
             >
-              <div className="grid pb-11 w-full">
+              <div className="grid pb-11">
                 {messages.length > 0 ? (
                   messages.map((message) => (
                     <div
@@ -271,7 +259,7 @@ const ChatPage = () => {
                 >
                   <IoIosSend size={30} color="white" />
                   <h3 className="text-white text-sm font-semibold leading-4 px-2">
-                    Send
+                  {t("Send")}
                   </h3>
                 </button>
               </div>
