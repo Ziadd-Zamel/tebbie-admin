@@ -8,7 +8,7 @@ import Pusher from "pusher-js";
 import { getMessages, getUsers, markAsRead, postMessage } from "../utlis/https";
 import { useTranslation } from "react-i18next";
 import { useUser } from "../chatcontext/UserContext";
-import UserList from "../chatcontext/UserList";
+import UserList from "../components/UserList";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -29,14 +29,12 @@ const ChatPage = () => {
       console.error("Error marking messages as read:", error);
     },
   });
-
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
     queryClient.invalidateQueries(["messages"]);
 
     markMessageAsRead({ user_id: userId, token });
   };
-
   const { data: usersData, isLoading: usersIsLoading } = useQuery({
     queryKey: ["users-data"],
     queryFn: () => getUsers({ token }),
@@ -48,7 +46,6 @@ const ChatPage = () => {
       setSelectedUser(reversedUsers[0].id);
     }
   }, [usersData, selectedUser]);
-
   const {
     data: initialMessages,
     isLoading,
@@ -68,7 +65,6 @@ const ChatPage = () => {
       console.error("Message sending failed:", error);
     },
   });
-
   useEffect(() => {
     if (initialMessages) {
       const messagesArray = Object.values(initialMessages)
@@ -77,21 +73,17 @@ const ChatPage = () => {
       setMessages(messagesArray);
     }
   }, [initialMessages, selectedUser]);
-
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
-
   useEffect(() => {
     if (!selectedUser) return;
-
     const pusher = new Pusher("ffe2f6ba2a1c4cca0a31", {
       cluster: "eu",
     });
-
     const channel = pusher.subscribe(`chat.${selectedUser}`);
 
     channel.bind("new-message", (event) => {
