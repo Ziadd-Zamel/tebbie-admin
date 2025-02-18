@@ -10,8 +10,6 @@ const resources = {
         "employees": "Employees",
         "profile": "Profile",
         "logout": "Logout",
-        "search-placeholder": "Search here...",
-        'firstName': "First Name",
         'lastName': "Last Name",
         'permission': "Permission",
         'phone': "Phone Number",
@@ -22,7 +20,6 @@ const resources = {
         'profileImageAlt': "Profile Image",
         'edit': "Edit",
         "firstName": "First Name",
-        "email": "Email",
         "address": "Address",
         "numberOfEmployee":"number of employes",
         "status": "Status",
@@ -86,7 +83,15 @@ const resources = {
         "update-doctor":"update doctor",
         "new":"new",
         "AvilableDoctors":"available doctors",
-        "recyclebin":"recycle bin"
+        "recyclebin":"recycle bin",
+        "special":"special",
+        "not-special":"not special",
+        "doctorName":"search about doctor",
+        "Page":"page",
+        "confirmDelete":"confirm Delete "
+
+
+
         
 
       }
@@ -99,7 +104,6 @@ const resources = {
         "employees": "الموظفين",
         "profile": "الملف الشخصى",
         "logout": "تسجيل الخروج",
-        "search-placeholder": "ابحث هنا...",
         'lastName': "الاسم الثاني",
         'save': "حفظ",
         'search': "بحث ...",
@@ -175,8 +179,12 @@ const resources = {
         "new":"جديد",
         "update-doctor":"تعديل بيانات الدكتور",
         "AvilableDoctors":"الدكاتره المتاحين",
-        "recyclebin":"سلة المحذوفات"
-
+        "recyclebin":"سلة المحذوفات",
+        "special":"مميز",
+        "not-special":"غير مميز",
+        "doctorName":"ابحث عن الدكتور",
+        "Page":"صفحة",
+        "confirmDelete":"تأكيد الحزف"
 
 
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./global.css";
 import Login from "./_auth/Login";
@@ -54,6 +53,7 @@ import AddService from "./pages/AddService";
 import UpdateService from "./pages/UpdateService";
 import { UserProvider } from "./chatcontext/UserContext";
 import HospitalLayout from "./pages/HospitalLayout";
+import Refunds from "./pages/Refunds";
 
 const queryClient = new QueryClient();
 
@@ -94,7 +94,6 @@ const router = createBrowserRouter([
               { path: "add-hospital", element: <AddHospital /> },
             ],
           },
-
           {
             path: "services",
             children: [
@@ -103,7 +102,6 @@ const router = createBrowserRouter([
               { path: "add-service", element: <AddService /> },
             ],
           },
-
           {
             path: "employees",
             children: [
@@ -186,6 +184,8 @@ const router = createBrowserRouter([
             ],
           },
           { path: "request-Form", element: <RequestForm /> },
+          { path: "refunds", element: <Refunds /> },
+
         ],
       },
     ],

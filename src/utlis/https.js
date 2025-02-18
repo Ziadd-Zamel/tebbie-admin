@@ -126,7 +126,8 @@ export const updateDoctor = async ({
   job_title,
   specialization_id,
   hospital_ids= [],
-  is_visitor,  // ✅ هنا يجب أن يكون بنفس الاسم
+  is_visitor,
+  isAbleToCancel,
   
 }) => {
   const formdata = new FormData();
@@ -137,7 +138,9 @@ export const updateDoctor = async ({
   formdata.append("address", address);
   formdata.append("email", email);
   formdata.append("phone", phone);
-  formdata.append("is_visitor", is_visitor); // ✅ سيتم إرساله الآن بشكل صحيح
+  formdata.append("is_visitor", is_visitor);
+  formdata.append("is_special", isAbleToCancel);
+
 
   hospital_ids.forEach((id) => {
     formdata.append("hospital_ids[]", id);
@@ -184,7 +187,8 @@ export const addDoctor = async ({
   job_title,
   specialization_id,
   hospital_ids= [],
-  is_visitor
+  is_visitor,
+  isAbleToCancel
   
 }) => {
   const formdata = new FormData();
@@ -195,6 +199,7 @@ export const addDoctor = async ({
   formdata.append("email", email);
   formdata.append("phone", phone);
   formdata.append("is_visitor",  is_visitor);
+  formdata.append("is_special", isAbleToCancel);
 
   hospital_ids.forEach((id) => {
     formdata.append("hospital_ids[]", id);
@@ -1843,7 +1848,6 @@ export const getLabTypes = async ({ token }) => {
     throw error;
   }
 };
-
 export const getSpecificLabType = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}`, {
@@ -1862,7 +1866,6 @@ export const getSpecificLabType = async ({ token, id }) => {
     throw error;
   }
 };
-
 export const newLabType = async ({
   token,
   name,
@@ -1900,7 +1903,6 @@ export const newLabType = async ({
     throw error;
   }
 };
-
 export const updateLabType = async ({
   id,
   token,
@@ -1938,7 +1940,6 @@ export const updateLabType = async ({
     throw error;
   }
 };
-
 export const deleteLabType = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}`, {
@@ -1960,7 +1961,6 @@ export const deleteLabType = async ({ id, token }) => {
     throw error;
   }
 };
-
 export const restoreLabType = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}/restore`, {
@@ -2001,7 +2001,6 @@ export const getEmployees = async ({ token }) => {
     throw error;
   }
 };
-
 export const getSpecificEmployee = async ({ token,id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/employee/${id}`, {
@@ -2020,7 +2019,6 @@ export const getSpecificEmployee = async ({ token,id }) => {
     throw error;
   }
 };
-
 export const newEmployee = async ({
   token,
   name,
@@ -2166,7 +2164,6 @@ export const restoreEmployee = async ({ id, token }) => {
     throw error;
   }
 };
-
 //chat
 export const getMessages = async ({ token , id }) => {
   try {
@@ -2186,6 +2183,7 @@ export const getMessages = async ({ token , id }) => {
     throw error;
   }
 };
+
 export const postMessage = async ({
   user_id,
   message,
@@ -2281,7 +2279,6 @@ export const markAsRead = async ({
     throw error;
   }
 };
-
 //services
 export const getServices = async ({ token}) => {
   try {
@@ -2420,6 +2417,73 @@ export const getNotification = async ({ token}) => {
       return data.data;
     }
   } catch (error) {
+    throw error;
+  }
+};
+export const checkToken = async ({token})=>{
+  try{
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/admin-check-token` , {
+      method:"POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.msg || "An error occurred while checking the token");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+//refunds
+export const getRefunds= async ({ token , doctorname=""}) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/refund-booking?doctor_name=${doctorname}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const postRefund = async ({
+  booking_id,
+  token,
+}) => {
+  const formdata = new FormData();
+
+  formdata.append("booking_id",booking_id);
+
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/add-refund-booking`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.msg || "An error occurred while adding settings");
+    }
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
     throw error;
   }
 };

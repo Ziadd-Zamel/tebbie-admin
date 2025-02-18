@@ -6,6 +6,7 @@ import { getDoctors } from "../utlis/https";
 import placeholder from "../assets/placeholder.svg";
 import { Link } from "react-router-dom";
 import { IoPersonAddSharp, IoTrashSharp } from "react-icons/io5";
+import { FaAward } from "react-icons/fa";
 
 const token = localStorage.getItem("authToken");
 
@@ -38,7 +39,7 @@ const Doctors = () => {
             className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
           >
             Add Doctor
-            <IoPersonAddSharp  />
+            <IoPersonAddSharp />
           </Link>
         </div>
         <div className="flex justify-end">
@@ -47,16 +48,16 @@ const Doctors = () => {
             className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2  bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
           >
             {t("recyclebin")}
-            <IoTrashSharp  />
+            <IoTrashSharp />
           </Link>
         </div>
       </div>
 
       <div className="flex items-center flex-wrap sm:justify-start justify-center  gap-6 w-full">
-      {doctors.map((doctor) => (
+        {doctors.map((doctor) => (
           <div
             key={doctor.id}
-            className="bg-white h-56 md:w-[320px] w-[300px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
+            className="bg-white h-60 md:w-[320px] w-[300px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
           >
             <div className="flex">
               <div className="w-1/3">
@@ -65,7 +66,6 @@ const Doctors = () => {
                   alt={doctor.name}
                   className="w-full h-24 object-cover rounded-md"
                   onError={(e) => (e.target.src = placeholder)}
-
                 />
               </div>
               <div className="p-4 w-2/3">
@@ -74,13 +74,13 @@ const Doctors = () => {
                 </h2>
                 <p className="text-sm text-gray-500 mb-2">{doctor.job_title}</p>
                 <p className="text-sm text-gray-600">
-                  {doctor.bio.length > 150
-                    ? `${doctor.bio.substring(0, 78)}...`
+                  {doctor.bio.length > 55
+                    ? `${doctor.bio.substring(0, 55)}...`
                     : doctor.bio}
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex justify-between items-center">
+            <div className="mt-4 flex  gap-3 items-center w-full my-2">
               <span
                 className={`px-3 py-2 rounded-full text-sm ${
                   doctor.is_visitor === "yes"
@@ -91,13 +91,25 @@ const Doctors = () => {
                 {doctor.is_visitor === "yes" ? t("visitor") : t("notvisitor")}
               </span>
 
-              <Link
-                to={`/doctors/${doctor.id}`}
-                className="text-md text-[#3CAB8B] underline ]"
+              <span
+                className={`px-3 py-2 rounded-full text-sm flex gap-2  items-center ${
+                  doctor.isAbleToCancel === "yes"
+                    ? "bg-yellow-100 text-yellow-600"
+                    : "bg-red-100 text-red-600"
+                }`}
               >
-                {t("viewDetailsDoc")}
-              </Link>
+                {doctor.isAbleToCancel === "yes"
+                  ? t("special")
+                  : t("not-special")}
+                <FaAward />
+              </span>
             </div>
+            <Link
+              to={`/doctors/${doctor.id}`}
+              className="text-md text-[#3CAB8B] underline pt-4"
+            >
+              {t("viewDetailsDoc")}
+            </Link>
           </div>
         ))}
       </div>

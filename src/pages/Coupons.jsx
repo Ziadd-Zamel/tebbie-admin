@@ -109,7 +109,7 @@ const handleAddClick = () => {
       );
       return { previousCoupons };
     },
-    onError: (error, { id }, context) => {
+    onError: (error, context) => {
       if (context?.previousCoupons) {
         queryClient.setQueryData(["Coupons"], context.previousCoupons);
       }

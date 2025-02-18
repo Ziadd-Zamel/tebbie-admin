@@ -19,7 +19,6 @@ export const pageTranslations = {
       "customers/client-details":"client details",
       "/teams/add-team":"Add Team",
       "/area/select-area":"Select Area",
-      "/area/select-area":"Select Area",
       "/hospitals": "hospitals",
       "/hospitals/:HospitalId": "hospital details",
       "/doctors":"doctors",
@@ -45,7 +44,8 @@ export const pageTranslations = {
       "/labs-type":"labs types",
       "/employees/:empId":"edit employees",
       "/request-Form":"Request Form",
-      "/services":"services"
+      "/services":"services",
+      "/refunds":"refunds"
 ,
 
 
@@ -96,6 +96,10 @@ export const pageTranslations = {
       "/employees/:empId":"تعديل الموظفين",
       "/request-Form":"استمارة الطلب",
       "/services":"الخدمات",
+      "/refunds":"المبالغ المستردة",
+      "/doctorName":"اسم ال",
+
+
 
 
 

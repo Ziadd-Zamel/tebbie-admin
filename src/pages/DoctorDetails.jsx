@@ -8,6 +8,7 @@ import { MdEmail } from "react-icons/md";
 import { FaPhoneVolume } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import { placeholder } from "../assets";
+import { FaAward } from "react-icons/fa";
 
 const DoctorDetails = () => {
   const { t, i18n } = useTranslation();
@@ -25,7 +26,7 @@ const DoctorDetails = () => {
     queryKey: ["doctor-details", doctorId],
     queryFn: () => getSpecificDoctor({ id: doctorId, token }),
   });
-  const { mutate: handleDelete, isLoading: isDeleting } = useMutation({
+  const { mutate: handleDelete } = useMutation({
     mutationFn: () => deleteDoctor({ id: doctorId, token }),
     onSuccess: () => {
       alert(t("doctorDeleted"));
@@ -49,7 +50,7 @@ const DoctorDetails = () => {
   if (error) {
     return <ErrorMessage />;
   }
-  const { name, email, phone, bio, address, image, job_title, is_visitor ,id } =
+  const { name, email, phone, bio, address, image, job_title, is_visitor ,id ,isAbleToCancel } =
     doctorData;
 
   return (
@@ -94,9 +95,9 @@ const DoctorDetails = () => {
           <h2 className="  font-semibold">{t("bio")}</h2>
           <p className="text-gray-700 !leading-normal text-[18px]">{bio || t("No bio provided")}</p>
         </div>
-        <div className="mt-4 flex justify-center items-center">
+        <div className="mt-4 flex justify-center items-center gap-4">
           <span
-            className={`px-4 py-3 rounded-full text-md ${
+            className={`px-4 py-2 rounded-full text-md ${
               is_visitor === "yes"
                 ? "bg-green-100 text-green-600"
                 : "bg-red-100 text-red-600"
@@ -104,6 +105,18 @@ const DoctorDetails = () => {
           >
             {is_visitor === "yes" ? t("visitor") : t("notvisitor")}
           </span>
+          <span
+                className={`px-3 py-2 rounded-full text-sm flex gap-2  items-center ${
+                  isAbleToCancel === "yes"
+                    ? "bg-yellow-100 text-yellow-600"
+                    : "bg-red-100 text-red-600"
+                }`}
+              >
+                {isAbleToCancel === "yes"
+                  ? t("special")
+                  : t("not-special")}
+                <FaAward />
+              </span>
         </div>
 
         <div className="mt-6 flex justify-center gap-4 w-full">

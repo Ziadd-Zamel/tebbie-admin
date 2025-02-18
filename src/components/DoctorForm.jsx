@@ -39,7 +39,8 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
     city: "",
     job_title: "",
     specialization_id: "",
-    is_visitor: "",
+    is_visitor: "", 
+    isAbleToCancel: "",
     hospital_ids: [],
     media: null,
   });
@@ -59,7 +60,9 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
         job_title: initialData.job_title || "",
         specialization_id: initialData.specialization?.specialization_id || "",
         media: initialData.image || null,
-        is_visitor: initialData.is_visitor || "",
+        is_visitor: initialData.is_visitor === "yes" ? "yes" : "no",
+        isAbleToCancel: initialData.isAbleToCancel === "yes" ? "yes" : "no",
+
         hospital_ids: hospitalIds || [],
       });
       setImagePreview(initialData.image || null);
@@ -111,22 +114,23 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     const dataToSubmit = {
       ...doctorData,
-      is_visitor: doctorData.is_visitor ? "yes" : "no",
+      isAbleToCancel: doctorData.isAbleToCancel === "yes" ? "yes" : "no",
+      is_visitor: doctorData.is_visitor === "yes" ? "yes" : "no",
       ...(mode === "update" && { id: doctorId }),
     };
-console.log(dataToSubmit)
     mutation.mutate(dataToSubmit);
   };
+  
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
   return (
     <section dir={direction} className="container mx-auto p-4 w-full">
       <form
         onSubmit={handleSubmit}
-        className="w-auto rounded-3xl bg-white lg:p-12 p-6 shadow-lg flex justify-center md:items-center flex-col  mx-auto"
+        className="w-auto rounded-3xl bg-white lg:p-12 p-6 shadow-lg flex justify-center  flex-col  mx-auto"
       >
         <div className="flex justify-center items-center my-6">
           <div className="relative">
@@ -317,22 +321,40 @@ console.log(dataToSubmit)
             )}
           </div>
         </div>
-        <div className="text-2xl font-medium gap-2 flex justify-start items-center w-full my-4 px-4">
+     <div className="flex gap-2 ">
+        <div className="text-2xl font-medium gap-2 flex justify-start items-center  my-4 px-4">
         <label>{t("visitor")}</label>
 
-          <input
-            type="checkbox"
-            name="is_visitor"
-            className="InputPrimary"
-            checked={doctorData.is_visitor === "yes"}
-            onChange={(e) =>
-              setDoctorData((prevData) => ({
-                ...prevData,
-                is_visitor : e.target.checked ? "yes" : "no",
-              }))
-            }
-          />
+        <input
+  type="checkbox"
+  name="is_visitor"
+  className="InputPrimary"
+  checked={doctorData.is_visitor === "yes"}
+  onChange={(e) =>
+    setDoctorData((prevData) => ({
+      ...prevData,
+      is_visitor: e.target.checked ? "yes" : "no",
+    }))
+  }
+/>
         </div>
+        <div className="text-2xl font-medium gap-2 flex justify-start items-center my-4 px-4">
+        <label>{t("special")}</label>
+
+        <input
+  type="checkbox"
+  name="isAbleToCancel"
+  className="InputPrimary"
+  checked={doctorData.isAbleToCancel === "yes"}
+  onChange={(e) =>
+    setDoctorData((prevData) => ({
+      ...prevData,
+      isAbleToCancel: e.target.checked ? "yes" : "no",
+    }))
+  }
+/>
+        </div>
+     </div>
         <div className="flex justify-end items-end w-full my-4">
           <button
             type="submit"

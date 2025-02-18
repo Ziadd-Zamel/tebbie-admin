@@ -1,4 +1,3 @@
-import React from "react";
 import {  useLocation } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import Notifcation from "./Notifcation";
@@ -17,7 +16,11 @@ const Navbar = () => {
 const translatePageName = (pathname) => {
   if (pathname.startsWith("/orders/")) {
     return pageTranslations[language]["/orders/:OrderId"];
-  }  if (pathname.startsWith("/common-questions/")) {
+  } 
+  if (pathname.startsWith("/refunds/")) {
+    return pageTranslations[language]["/refunds/"];
+  }
+  if (pathname.startsWith("/common-questions/")) {
     return pageTranslations[language]["/common-questions/:questionId"];
   }
   if (pathname.startsWith("/hospitals/")) {

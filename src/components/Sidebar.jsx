@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoMdLogOut, IoMdPeople } from "react-icons/io";
 import { mainLogo } from "../assets";
@@ -11,7 +11,9 @@ import {
   FaClinicMedical,
   FaFlask,
   FaMapMarkerAlt,
+  FaRegMoneyBillAlt
 } from "react-icons/fa";
+
 import { useTranslation } from "react-i18next";
 import { pageTranslations } from "../utlis/translations";
 import { FaChartSimple } from "react-icons/fa6";
@@ -36,6 +38,8 @@ export const sidebarLinks = [
   { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
   { path: "/specializations", label: "specializations", icon: <FaClinicMedical size={22} /> },
   { path: "/request-Form", label: "requests", icon: <BsCardText   size={22} /> },
+  { path: "/refunds", label: "refunds", icon: <FaRegMoneyBillAlt   size={22} /> },
+
 
 
 

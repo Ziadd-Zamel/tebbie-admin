@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { sidebarLinks, therestofSidebarLinks } from "./Sidebar";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";

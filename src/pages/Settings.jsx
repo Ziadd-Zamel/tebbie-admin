@@ -30,9 +30,7 @@ const Settings = () => {
 
   return (
     <section dir={direction} className="container mx-auto p-6 bg-gray-50">
-      <div className="flex justify-start items-center mb-8">
      
-      </div>
       <div className="overflow-x-auto md:w-full w-[90vw] md:text-md text-sm">
       <table className="w-full  bg-white shadow-md">
         <thead>
