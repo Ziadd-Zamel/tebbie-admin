@@ -45,7 +45,9 @@ export const pageTranslations = {
       "/employees/:empId":"edit employees",
       "/request-Form":"Request Form",
       "/services":"services",
-      "/refunds":"refunds"
+      "/refunds":"refunds",
+      "/refunds/:refundsId":"refunds details"
+
 ,
 
 
@@ -97,6 +99,7 @@ export const pageTranslations = {
       "/request-Form":"استمارة الطلب",
       "/services":"الخدمات",
       "/refunds":"المبالغ المستردة",
+      "/refunds/:refundsId":"تفاصيل المبالغ المستردة",
       "/doctorName":"اسم ال",
 
 

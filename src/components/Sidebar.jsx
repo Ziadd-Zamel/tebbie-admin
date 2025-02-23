@@ -129,7 +129,7 @@ const Sidebar = () => {
   return (
     <aside
   dir={direction}
-  className={`font-almarai almarai-medium bg-[#FFFFFF] text-black p-4 h-full lg:flex hidden flex-col justify-between transition-all duration-300 top-0 
+  className={`font-almarai almarai-medium bg-[#FFFFFF] text-black p-4  lg:flex hidden flex-col justify-between transition-all duration-300 top-0 h-screen overflow-y-auto
   ${direction === "rtl" ? "right-0" : "left-0"} 
   ${isCollapsed ? "w-24" : "w-64"}
 `}
@@ -223,11 +223,11 @@ const Sidebar = () => {
   <div className="flex justify-end">
     <button
       onClick={handleLogut}
-      className={`flex justify-start items-center px-4 py-6 text-xl w-full ${
+      className={`flex justify-start items-center px-4 py-6 text-xl w-full shrink-0 ${
         isCollapsed ? "w-24" : "w-80"
       }`}
     >
-      <IoMdLogOut size={22} className="inline-block mx-2" />
+      <IoMdLogOut size={22} className="inline-block  shrink-0" />
       {!isCollapsed && <span> {translatePageName("logout")} </span>}
     </button>
   </div>

@@ -18,7 +18,7 @@ const translatePageName = (pathname) => {
     return pageTranslations[language]["/orders/:OrderId"];
   } 
   if (pathname.startsWith("/refunds/")) {
-    return pageTranslations[language]["/refunds/"];
+    return pageTranslations[language]["/refunds/:refundsId"];
   }
   if (pathname.startsWith("/common-questions/")) {
     return pageTranslations[language]["/common-questions/:questionId"];

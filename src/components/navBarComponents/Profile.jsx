@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { ashraf } from "../../assets";
 import { getUser } from "../../utlis/https";
@@ -33,11 +32,11 @@ const Profile = ({ direction }) => {
     <Link to="/profile" className="flex items-center">
       {[userdata]?.map((data) => (
         <div key={data.id} className="flex gap-2">
-          <div className="flex items-center border-[3px] border-primary transition-transform transform-gpu duration-300 ease-in-out rounded-full hover:scale-110 hover:shadow-lg delay-75  mx-5">
+          <div className="flex items-center border-[3px] border-primary transition-transform transform-gpu duration-300 ease-in-out rounded-full hover:scale-110 hover:shadow-lg delay-75  mx-5 shrink-0">
             <img
               src={data.media_url || ashraf}
               alt={name}
-              className="w-14 h-14 rounded-full  object-cover"
+              className="w-14 h-14 rounded-full  object-cover shrink-0"
             />
           </div>
           <div

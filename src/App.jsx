@@ -54,6 +54,7 @@ import UpdateService from "./pages/UpdateService";
 import { UserProvider } from "./chatcontext/UserContext";
 import HospitalLayout from "./pages/HospitalLayout";
 import Refunds from "./pages/Refunds";
+import RefundsDetails from "./pages/RefundsDetails";
 
 const queryClient = new QueryClient();
 
@@ -184,7 +185,13 @@ const router = createBrowserRouter([
             ],
           },
           { path: "request-Form", element: <RequestForm /> },
-          { path: "refunds", element: <Refunds /> },
+          {
+            path: "refunds",
+            children: [
+              { index: true, element: <Refunds /> },
+              { path: ":refundsId", element: <RefundsDetails /> },
+            ],
+          },
 
         ],
       },

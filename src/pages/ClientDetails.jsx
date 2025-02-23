@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import  { useState, useRef, useEffect } from "react";
 import { profile } from "../assets";
 import { useTranslation } from "react-i18next";
 import Devices from "../components/customers/Devices";
-import Maintenance from "../components/Invoices/Maintenance";
 import CustomerMaintenance from "../components/customers/CustomerMaintenance";
 import CustomerStore from "../components/customers/CustomerStore";
 

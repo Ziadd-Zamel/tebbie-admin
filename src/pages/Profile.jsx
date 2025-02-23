@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { ashraf } from "../assets";
 import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";

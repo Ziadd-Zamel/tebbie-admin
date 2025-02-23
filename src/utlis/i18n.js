@@ -86,9 +86,17 @@ const resources = {
         "recyclebin":"recycle bin",
         "special":"special",
         "not-special":"not special",
-        "doctorName":"search about doctor",
+        "doctorName":"Doctor Name",
+        "doctorNameSearch":"search on doctors",
+        "patientName":"patient Name",
         "Page":"page",
-        "confirmDelete":"confirm Delete "
+        "confirmDelete":"confirm Delete",
+        "of" : "of",
+        "price":"price",
+        "date":"Date",
+
+
+
 
 
 
@@ -182,9 +190,16 @@ const resources = {
         "recyclebin":"سلة المحذوفات",
         "special":"مميز",
         "not-special":"غير مميز",
-        "doctorName":"ابحث عن الدكتور",
+        "doctorNameSearch":"ابحث عن الدكتور",
+        "doctorName":"اسم الدكتور",
+        "patientName":"اسم المريض",
         "Page":"صفحة",
-        "confirmDelete":"تأكيد الحزف"
+        "of" : "من",
+        "confirmDelete":"تأكيد الحزف",
+        "price":"السعر",
+        "date":"التاريخ",
+
+
 
 
 

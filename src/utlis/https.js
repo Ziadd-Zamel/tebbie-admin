@@ -2440,9 +2440,27 @@ export const checkToken = async ({token})=>{
   }
 };
 //refunds
-export const getRefunds= async ({ token , doctorname=""}) => {
+export const getRefundsDetails= async ({ token , doctorname="",hospitalId}) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/refund-booking?doctor_name=${doctorname}`, {
+    const response = await fetch(`${API_URL}/dashboard/v1/refund-booking?doctor_name=${doctorname}&hospital_id=${hospitalId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getRefunds= async ({ token ,hospitalname }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/refund-one?hospital_name=${hospitalname}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
