@@ -193,7 +193,7 @@ const RefundsDetails = () => {
               paddingBottom: "16px",
             }}
           >
-            {t("confirmDelete")}
+            {t("confirmRefund")}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "flex-end", gap: 1 }}>

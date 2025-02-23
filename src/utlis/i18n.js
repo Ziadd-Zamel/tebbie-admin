@@ -94,6 +94,7 @@ const resources = {
         "of" : "of",
         "price":"price",
         "date":"Date",
+        "confirmRefund": "Are you sure you want to confirm the refund?"
 
 
 
@@ -198,6 +199,8 @@ const resources = {
         "confirmDelete":"تأكيد الحزف",
         "price":"السعر",
         "date":"التاريخ",
+        "confirmRefund": "هل أنت متأكد أنك تريد تأكيد استرداد الأموال؟"
+
 
 
 
