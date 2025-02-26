@@ -181,6 +181,8 @@ const RefundsDetails = () => {
             fontWeight: "bold",
             fontSize: "1.25rem",
             color: "#333",
+            textAlign: "center",
+
           }}
         >
           {t("confirmAction")}
@@ -191,6 +193,8 @@ const RefundsDetails = () => {
               fontSize: "1rem",
               color: "#666",
               paddingBottom: "16px",
+              textAlign: "center",
+
             }}
           >
             {t("confirmRefund")}

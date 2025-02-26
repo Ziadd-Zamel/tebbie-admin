@@ -61,7 +61,7 @@ const Refunds = () => {
           name="name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder={t("doctorNameSearch")}
+          placeholder={t("hospitalNameSearch")}
           className="border border-gray-300 rounded-lg py-2 px-4 bg-white h-[50px] focus:outline-none focus:border-primary w-full lg:w-[494px]"
         />
       </div>

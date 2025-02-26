@@ -7,12 +7,15 @@ import { Link } from "react-router-dom";
 import ErrorMessage from "./ErrorMessage";
 import { IoTrashSharp } from "react-icons/io5";
 import { FaHospitalUser } from "react-icons/fa";
+import { useState } from "react";
+import Pagination from "../components/Pagination";
 
 const token = localStorage.getItem("authToken");
 
 const Hospitals = () => {
   const { t, i18n } = useTranslation();
-
+  const hospitalPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(1);
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
   const {
@@ -23,6 +26,21 @@ const Hospitals = () => {
     queryKey: ["hospitalData", token],
     queryFn: () => getHospitals({ token }),
   });
+
+  const indexOfLastCoupon = currentPage * hospitalPerPage;
+  const indexOfFirstCoupon = indexOfLastCoupon - hospitalPerPage;
+  const currentHospital = hospitalData?.slice(
+    indexOfFirstCoupon,
+    indexOfLastCoupon
+  );
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+  const totalPages =
+  hospitalData?.length > 0
+      ? Math.ceil(hospitalData.length / hospitalPerPage)
+      : 0;
+
 
   if (isLoading) {
     return <Loader />;
@@ -52,7 +70,7 @@ const Hospitals = () => {
           </Link>
         </div>
         <div className="flex items-center flex-wrap sm:justify-start justify-center  gap-6 w-full">
-          {hospitalData.map((hospital) => (
+          {currentHospital.map((hospital) => (
             <div
               key={hospital.id}
               className="bg-white xl:w-[380px] w-[320px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
@@ -97,6 +115,11 @@ const Hospitals = () => {
             </div>
           ))}
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </section>
   );

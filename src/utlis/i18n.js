@@ -88,15 +88,17 @@ const resources = {
         "not-special":"not special",
         "doctorName":"Doctor Name",
         "doctorNameSearch":"search on doctors",
+        "hospitalNameSearch":"search on hospital",
         "patientName":"patient Name",
         "Page":"page",
         "confirmDelete":"confirm Delete",
         "of" : "of",
         "price":"price",
         "date":"Date",
-        "confirmRefund": "Are you sure you want to confirm the refund?"
-
-
+        "confirmRefund": "Are you sure you want to confirm the refund?",
+        "confirmAction": "Are you sure you want to proceed with this action?",
+        "confirm":"confirm",
+        "cancel":"cancel"
 
 
 
@@ -192,6 +194,7 @@ const resources = {
         "special":"مميز",
         "not-special":"غير مميز",
         "doctorNameSearch":"ابحث عن الدكتور",
+        "hospitalNameSearch":"ابحث عن المستشفى",
         "doctorName":"اسم الدكتور",
         "patientName":"اسم المريض",
         "Page":"صفحة",
@@ -199,7 +202,11 @@ const resources = {
         "confirmDelete":"تأكيد الحزف",
         "price":"السعر",
         "date":"التاريخ",
-        "confirmRefund": "هل أنت متأكد أنك تريد تأكيد استرداد الأموال؟"
+        "confirmRefund": "هل أنت متأكد أنك تريد تأكيد استرداد الأموال؟",
+        "confirmAction": "هل أنت متأكد أنك تريد متابعة هذا الإجراء؟",
+        "confirm":"تأكيد",
+        "cancel":"الغاء"
+
 
 
 
