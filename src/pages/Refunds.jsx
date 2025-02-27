@@ -71,7 +71,6 @@ const Refunds = () => {
           <thead>
             <tr className="bg-gray-100">
               <th className="p-4">#</th>
-              <th className="p-4 whitespace-nowrap">{t("doctorName")}</th>
               <th className="p-4 whitespace-nowrap">{t("hospital")}</th>
               <th className="p-4">number of booking</th>
             </tr>
@@ -91,7 +90,6 @@ const Refunds = () => {
                   className="text-center border border-b  hover:bg-gray-100 cursor-pointer"
                 >
                   <td className="p-4">{index}</td>
-                  <td className="p-4">{refund.doctor.name}</td>
                   <td className="p-4 whitespace-nowrap">
                     {refund.hospital.name}
                   </td>
