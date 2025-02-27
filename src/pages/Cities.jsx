@@ -40,7 +40,7 @@ const Cities = () => {
     onSuccess: () => {
       toast.success("تم حذف المدينه");
     },
-    onError: (error, { id }, context) => {
+    onError: ( context) => {
       queryClient.setQueryData(["cities", token], context.previousCities);
       toast.error("فشل في حذف المدينه");
     },

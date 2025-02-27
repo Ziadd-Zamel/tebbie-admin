@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { t, i18n } = useTranslation();
+  const { t} = useTranslation();
 
 
   const { data: cardData, isLoading, error } = useQuery({

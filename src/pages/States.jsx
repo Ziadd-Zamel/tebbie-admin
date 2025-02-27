@@ -21,7 +21,7 @@ const States = () => {
   const [editableId, setEditableId] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
   const [newStateName, setNewStateName] = useState("");
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const {
     data: statesData,

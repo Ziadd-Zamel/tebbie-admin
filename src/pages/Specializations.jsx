@@ -43,7 +43,7 @@ const Specializations = () => {
       );
       return { previousSliders };
     },
-    onError: (error, { id }, context) => {
+    onError: ( context) => {
       queryClient.setQueryData(
         ["Specializations", token],
         context.previousSliders
