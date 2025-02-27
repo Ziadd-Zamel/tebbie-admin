@@ -83,7 +83,7 @@ const Cities = () => {
         <table className="min-w-full bg-white border border-gray-200 rounded-lg">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">ID</th>
+              <th className="py-3 px-6 text-left">#</th>
               <th className="py-3 px-6 text-left">المدينة</th>
               <th className="py-3 px-6 text-center">إجراءات</th>
             </tr>

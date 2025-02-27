@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import  { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "./Loader";
@@ -96,9 +96,9 @@ const Specializations = () => {
         <thead>
           <tr className="bg-gray-100">
             <th className="p-4">#</th>
-            <th className="p-4">{t("image")}</th>
+            <th className="p-4">{t("images")}</th>
             <th className="p-4">{t("name")}</th>
-            <th className="p-4">{t("actions")}</th>
+            <th className="p-4">{t("Actions")}</th>
           </tr>
         </thead>
         <tbody>

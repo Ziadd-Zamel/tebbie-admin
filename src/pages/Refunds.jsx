@@ -72,7 +72,7 @@ const Refunds = () => {
             <tr className="bg-gray-100">
               <th className="p-4">#</th>
               <th className="p-4 whitespace-nowrap">{t("hospital")}</th>
-              <th className="p-4">number of booking</th>
+              <th className="p-4">{t("bookinNum")}</th>
             </tr>
           </thead>
           <tbody>

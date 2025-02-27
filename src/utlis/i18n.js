@@ -98,7 +98,10 @@ const resources = {
         "confirmRefund": "Are you sure you want to confirm the refund?",
         "confirmAction": "Are you sure you want to proceed with this action?",
         "confirm":"confirm",
-        "cancel":"cancel"
+        "cancel":"cancel",
+        "bookinNum":"number of booking",
+        "Excel-Export":"Export to Excel",
+
 
 
 
@@ -205,11 +208,9 @@ const resources = {
         "confirmRefund": "هل أنت متأكد أنك تريد تأكيد استرداد الأموال؟",
         "confirmAction": "هل أنت متأكد أنك تريد متابعة هذا الإجراء؟",
         "confirm":"تأكيد",
-        "cancel":"الغاء"
-
-
-
-
+        "cancel":"الغاء",
+        "bookinNum":"عدد الحجوزات",
+        "Excel-Export":"تصدير ملف اكسيل",
 
 
 

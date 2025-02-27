@@ -12,9 +12,9 @@ import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { FaCheck } from "react-icons/fa";
 import Pagination from "../components/Pagination";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const RefundsDetails = () => {
   const token = localStorage.getItem("authToken");
@@ -24,7 +24,7 @@ const RefundsDetails = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedRefundId, setSelectedRefundId] = useState(null);
+  const [selectedRefunds, setSelectedRefunds] = useState([]);
   const refundsPerPage = 10;
   const queryClient = useQueryClient();
   const { refundsId } = useParams();
@@ -33,9 +33,7 @@ const RefundsDetails = () => {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, 600);
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [searchTerm]);
 
   const {
@@ -43,38 +41,61 @@ const RefundsDetails = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["refunds-details", token, debouncedSearchTerm ,refundsId],
-    queryFn: () => getRefundsDetails({ token, doctorname: debouncedSearchTerm ,hospitalId:refundsId }),
+    queryKey: ["refunds-details", token, debouncedSearchTerm, refundsId],
+    queryFn: () =>
+      getRefundsDetails({
+        token,
+        doctorname: debouncedSearchTerm,
+        hospitalId: refundsId,
+      }),
   });
-
   const { mutate: handleAcceptRefund } = useMutation({
-    mutationFn: ({ id }) => postRefund({ booking_id: id, token }),
-    onError: (error, context) => {
-      if (context?.previousCoupons) {
-        queryClient.setQueryData(["refunds-details"], context.previousCoupons);
-      }
-      alert(`Failed to delete. Please try again ${error}`);
+    mutationFn: async () => {
+      const refundPayload = selectedRefunds.map((refund) => ({
+        doctor_id: refund.doctor.id,
+        hospital_id: refund.hospital.id,
+        date: refund.date,
+      }));
+
+      return postRefund({ appointments: refundPayload, token });
+    },
+    onSuccess: () => {
+      toast.success("تم قبول الطلب بنجاح");
+    },
+
+    onError: () => {
+      toast.error("حدث خطأ ما");
     },
     onSettled: () => {
       queryClient.invalidateQueries(["refunds-details"]);
+      setSelectedRefunds([]);
     },
   });
 
-  const handleOpenDialog = (id) => {
-    setSelectedRefundId(id);
-    setOpenDialog(true);
+  const handleToggleRefund = (refund) => {
+    setSelectedRefunds((prev) =>
+      prev.some((r) => r.id === refund.id)
+        ? prev.filter((r) => r.id !== refund.id)
+        : [...prev, refund]
+    );
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedRefundId(null);
+  const handleOpenDialog = () => {
+    if (selectedRefunds.length > 0) setOpenDialog(true);
   };
+
+  const handleCloseDialog = () => setOpenDialog(false);
 
   const handleConfirmAccept = () => {
-    if (selectedRefundId) {
-      handleAcceptRefund({ id: selectedRefundId });
-    }
+    handleAcceptRefund();
     handleCloseDialog();
+  };
+  const handleSelectAll = () => {
+    if (selectedRefunds.length === currentRefund.length) {
+      setSelectedRefunds([]);
+    } else {
+      setSelectedRefunds(currentRefund);
+    }
   };
 
   const indexOfLastCoupon = currentPage * refundsPerPage;
@@ -83,20 +104,15 @@ const RefundsDetails = () => {
     indexOfFirstCoupon,
     indexOfLastCoupon
   );
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
-  const totalPages =
-    refundsData?.length > 0
-      ? Math.ceil(refundsData.length / refundsPerPage)
-      : 0;
+  const totalPages = refundsData?.length
+    ? Math.ceil(refundsData.length / refundsPerPage)
+    : 0;
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
 
   return (
     <section dir={direction} className="container mx-auto p-6 bg-gray-50">
-      {/* Input for search */}
       <div className="my-10">
         <input
           type="text"
@@ -107,25 +123,43 @@ const RefundsDetails = () => {
           className="border border-gray-300 rounded-lg py-2 px-4 bg-white h-[50px] focus:outline-none focus:border-primary w-full lg:w-[494px]"
         />
       </div>
-      {/* Table for refunds */}
       <div className="overflow-x-auto md:w-full w-[90vw] md:text-md text-sm">
+        <div className="flex justify-end my-4">
+          <button
+            onClick={handleOpenDialog}
+            className="bg-blue-600 text-white px-4 py-2 rounded-md"
+          >
+            {t("confirm")}
+          </button>
+        </div>
         <table className="w-full bg-white shadow-md">
           <thead>
             <tr className="bg-gray-100">
               <th className="p-4">#</th>
-              <th className="p-4 whitespace-nowrap">{t("doctorName")}</th>
-              <th className="p-4 whitespace-nowrap">{t("patientName")}</th>
-              <th className="p-4 whitespace-nowrap">{t("hospital")}</th>
-              <th className="p-4 whitespace-nowrap">{t("price")}</th>
-              <th className="p-4 whitespace-nowrap">{t("date")}</th>
-              <th className="p-4">{t("Actions")}</th>
+
+              <th className="p-4">{t("doctorName")}</th>
+              <th className="p-4">{t("patientName")}</th>
+              <th className="p-4">{t("hospital")}</th>
+              <th className="p-4">{t("price")}</th>
+              <th className="p-4">{t("date")}</th>
+              <th className="p-4">
+                <input
+                  type="checkbox"
+                  className="InputPrimary"
+                  onChange={handleSelectAll}
+                  checked={
+                    selectedRefunds.length === currentRefund.length &&
+                    currentRefund.length > 0
+                  }
+                />
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentRefund.length === 0 ? (
               <tr>
                 <td colSpan={7} className="text-center p-4">
-                  {t("noData")}{" "}
+                  {t("noData")}
                 </td>
               </tr>
             ) : (
@@ -133,34 +167,30 @@ const RefundsDetails = () => {
                 <tr key={refund.id} className="text-center border border-b">
                   <td className="p-4">{refund.id}</td>
                   <td className="p-4">{refund.doctor.name}</td>
-                  <td className="p-4 whitespace-nowrap">{refund.user.name}</td>
-                  <td className="p-4 whitespace-nowrap">
-                    {refund.hospital.name}
-                  </td>
-                  <td className="p-4 whitespace-nowrap">{refund.price}</td>
-                  <td className="p-4 whitespace-nowrap">{refund.date}</td>
-                  <td className="p-4 flex justify-center items-center">
-                    <div>
-                      <button
-                        onClick={() => handleOpenDialog(refund.id)}
-                        className="text-blue-600 hover:text-blue-700"
-                      >
-                        <FaCheck size={25} />
-                      </button>
-                    </div>
+                  <td className="p-4">{refund.user.name}</td>
+                  <td className="p-4">{refund.hospital.name}</td>
+                  <td className="p-4">{refund.price}</td>
+                  <td className="p-4">{refund.date}</td>
+                  <td className="p-4">
+                    <input
+                      className="InputPrimary"
+                      type="checkbox"
+                      checked={selectedRefunds.some((r) => r.id === refund.id)}
+                      onChange={() => handleToggleRefund(refund)}
+                    />
                   </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
-        {/* Pagination */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={handlePageChange}
+          onPageChange={setCurrentPage}
         />
       </div>
+
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -182,7 +212,6 @@ const RefundsDetails = () => {
             fontSize: "1.25rem",
             color: "#333",
             textAlign: "center",
-
           }}
         >
           {t("confirmAction")}
@@ -194,7 +223,6 @@ const RefundsDetails = () => {
               color: "#666",
               paddingBottom: "16px",
               textAlign: "center",
-
             }}
           >
             {t("confirmRefund")}

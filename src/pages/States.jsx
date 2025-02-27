@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { IoTrashSharp } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 
 const States = () => {
   const token = localStorage.getItem("authToken");
@@ -20,6 +21,7 @@ const States = () => {
   const [editableId, setEditableId] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
   const [newStateName, setNewStateName] = useState("");
+  const { t, i18n } = useTranslation();
 
   const {
     data: statesData,
@@ -124,9 +126,9 @@ const States = () => {
         <table className="min-w-full bg-white border border-gray-200 rounded-lg">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">ID</th>
-              <th className="py-3 px-6 text-left">Name</th>
-              <th className="py-3 px-6 text-center">Actions</th>
+              <th className="py-3 px-6 text-left">#</th>
+              <th className="py-3 px-6 text-left"> {t("name")}</th>
+              <th className="py-3 px-6 text-center">{t("Actions")}</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">

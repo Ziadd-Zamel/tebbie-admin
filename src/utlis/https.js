@@ -2476,29 +2476,23 @@ export const getRefunds= async ({ token ,hospitalname }) => {
     throw error;
   }
 };
-export const postRefund = async ({
-  booking_id,
-  token,
-}) => {
-  const formdata = new FormData();
-
-  formdata.append("booking_id",booking_id);
-
-
+export const postRefund = async ({ appointments, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/add-refund-booking`, {
+    const response = await fetch(`${API_URL}/dashboard/v1/cancel-booking`, {
       method: "POST",
-      body: formdata,
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify({ appointments }), 
     });
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while adding settings");
+      throw new Error(result.msg || "An error occurred while processing the refund");
     }
+
     return result.data;
   } catch (error) {
     console.error("Error:", error);

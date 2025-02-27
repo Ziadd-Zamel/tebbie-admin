@@ -102,7 +102,7 @@ import { useTranslation } from "react-i18next";
           onClick={handleExport}
           className="px-6 py-2 bg-green-500 text-white text-lg rounded-[8px] hover:bg-green-600 flex justify-center items-center gap-2"
         >
-          Export to Excel
+          {t("Excel-Export")}
           <FaFileExcel/>
         </button>
       </div>
