@@ -71,28 +71,6 @@ const translatePageName = (pathname) => {
         >
           {pageName.charAt(0).toUpperCase() + pageName.slice(1)}
         </div>
-
-        <div
-          className={`relative w-1/3 text-[#737791] ${
-            direction === "rtl" ? "text-right" : "text-left"
-          }`}
-        >
-          <input
-            type="text"
-            placeholder={
-              direction === "rtl" ? "ابحث هنا ..." : "Search here..."
-            }
-            className="w-full h-16 pr-14 pl-4 rounded-lg text-xl focus:outline-none focus:border-primary bg-[#F9FAFB]"
-          />
-          <IoSearch
-            className={`absolute ${
-              direction === "rtl" ? "left-3" : "right-3"
-            } top-4`}
-            size={25}
-          />
-        </div>
-
-        {/* Dropdown */}
         <LanguageDropdown />
 
         <div className="flex items-center space-x-6">
