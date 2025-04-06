@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useTranslation } from "react-i18next";
 import { IoCloseCircle } from "react-icons/io5";
 
@@ -19,20 +20,16 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
           isOpen ? "scale-100" : "scale-95"
         }`}
         onClick={(e) => e.stopPropagation()}
-        dir={direction} 
+        dir={direction}
       >
         <div
           className={`flex items-center justify-between text-2xl font-bold mb-4 bg-[#E6F6F5] rounded-t-3xl h-[70px] w-full  ${textAlignment}`}
         >
           <div className="flex justify-between items-center w-full m-8 ">
-          <h1 className={`flex items-center`}>
-            {t(title)}
-          </h1>
-        <button  onClick={onClose} className="text-primary"    
-        >
-        <IoCloseCircle size={35}/>
-
-        </button>
+            <h1 className={`flex items-center`}>{t(title)}</h1>
+            <button onClick={onClose} className="text-primary">
+              <IoCloseCircle size={35} />
+            </button>
           </div>
         </div>
         <div

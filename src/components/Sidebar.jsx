@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { IoMdLogOut, IoMdPeople } from "react-icons/io";
+import { Link, NavLink} from "react-router-dom";
+import { IoMdPeople } from "react-icons/io";
 import { mainLogo } from "../assets";
 import { FaRegClock } from "react-icons/fa6";
 import { FaUserDoctor } from "react-icons/fa6";
@@ -9,7 +9,6 @@ import {
   FaArrowCircleLeft,
   FaArrowCircleRight,
   FaClinicMedical,
-  FaFlask,
   FaMapMarkerAlt,
   FaRegMoneyBillAlt
 } from "react-icons/fa";
@@ -18,31 +17,26 @@ import { useTranslation } from "react-i18next";
 import { pageTranslations } from "../utlis/translations";
 import { FaChartSimple } from "react-icons/fa6";
 import { CiHospital1 } from "react-icons/ci";
-import { useAuthContext } from "../_auth/authContext/JWTProvider";
 import { PiImagesSquareBold } from "react-icons/pi";
 import { FaQuestion } from "react-icons/fa";
 import { MdLocationCity } from "react-icons/md";
 import { FaCreditCard } from "react-icons/fa6";
 import { IoSettingsSharp } from "react-icons/io5";
 import { RiCoupon2Fill } from "react-icons/ri";
-import { GiChemicalDrop } from "react-icons/gi";
 import { BsCardText } from 'react-icons/bs';
 import { FaStethoscope } from "react-icons/fa";
+import LogoutDialog from "./LogoutDialog";
 
 export const sidebarLinks = [
   { path: "/", label: "dashboard", icon: <FaRegClock size={22} /> },
   { path: "/hospitals", label: "hospitals", icon: <CiHospital1 size={22} /> },
-  {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
+   {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
   { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
   { path: "/financial", label: "financial", icon: <FaChartSimple size={22} /> },
   { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
   { path: "/specializations", label: "specializations", icon: <FaClinicMedical size={22} /> },
   { path: "/request-Form", label: "requests", icon: <BsCardText   size={22} /> },
   { path: "/refunds", label: "refunds", icon: <FaRegMoneyBillAlt   size={22} /> },
-
-
-
-
 ];
 
 export const therestofSidebarLinks = [
@@ -55,16 +49,6 @@ export const therestofSidebarLinks = [
   { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
 
 
-  {
-    path: "/labs",
-    label: "labs",
-    icon: <FaFlask  size={22} />,
-  },
-  {
-    path: "/labs-type",
-    label: "labs types",
-    icon: <GiChemicalDrop size={22} />,
-  },
   {
     path: "/sliders",
     label: "sliders",
@@ -87,22 +71,12 @@ export const therestofSidebarLinks = [
   
 ];
 
-const Sidebar = () => {
+ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { i18n } = useTranslation();
   const currentLanguage = i18n.language;
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
-  const navigate = useNavigate();
-  const { logout } = useAuthContext();
 
- const handleLogut = async () => {
-    try {
-      await logout(); 
-      navigate("/auth/login");
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
-  };
 
   const isActiveclass = `
   block px-4 py-4 text-white bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] relative text-lg rounded-[8px] transition-all duration-300 ${
@@ -119,7 +93,7 @@ const Sidebar = () => {
       : "before:content-[''] before:absolute before:top-0 before:h-full before:w-[6px] before:bg-primary"
   }
 `;
-  const isNotActiveclass = `block px-4 py-4 text-lg rounded-[8px] text-start text-black hover:text-white hover:bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] transition-all duration-100  ${
+  const isNotActiveclass = `block px-4 py-4 text-lg rounded-[8px] text-start text-black  ${
     isCollapsed ? "w-18 " : "w-56 "
   }`;
   const translatePageName = (path) =>
@@ -129,7 +103,7 @@ const Sidebar = () => {
   return (
     <aside
   dir={direction}
-  className={`font-almarai almarai-medium bg-[#FFFFFF] text-black p-4  lg:flex hidden flex-col justify-between transition-all duration-300 top-0 h-screen overflow-y-auto
+  className={`font-almarai almarai-medium bg-[#FFFFFF] text-black p-4  lg:flex hidden flex-col justify-between transition-all duration-300 top-0 
   ${direction === "rtl" ? "right-0" : "left-0"} 
   ${isCollapsed ? "w-24" : "w-64"}
 `}
@@ -221,16 +195,8 @@ const Sidebar = () => {
   </div>
 
   <div className="flex justify-end">
-    <button
-      onClick={handleLogut}
-      className={`flex justify-start items-center px-4 py-6 text-xl w-full shrink-0 ${
-        isCollapsed ? "w-24" : "w-80"
-      }`}
-    >
-      <IoMdLogOut size={22} className="inline-block  shrink-0" />
-      {!isCollapsed && <span> {translatePageName("logout")} </span>}
-    </button>
-  </div>
+        <LogoutDialog isCollapsed={isCollapsed} />
+      </div>
 </aside>
 
   );

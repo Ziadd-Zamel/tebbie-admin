@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useState } from "react";
 import { useContext } from "react";
 const API_URL = import.meta.env.VITE_APP_API_URL;
@@ -23,12 +24,13 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-          throw new Error(data.message || "خطأ في تسجيل الدخول");
-        }
-  
+      const data = await response.json(); 
 
-      const data = await response.json();
+      if (!response.ok) {
+        const error = new Error(data.message || "خطأ في تسجيل الدخول");
+        error.status = response.status;
+        throw error;
+      }
       if (data.data) {
         localStorage.setItem("authToken", data.data);
      

@@ -1,27 +1,32 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { sidebarLinks, therestofSidebarLinks } from "./Sidebar";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ashraf, mainLogo } from "../assets";
 import { IoMdLogOut } from "react-icons/io";
-import { IoSearch } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { useAuthContext } from "../_auth/authContext/JWTProvider";
+import { pageTranslations } from "../utlis/translations";
 
+// eslint-disable-next-line react/prop-types
 const MenuBar = ({ pageName }) => {
   const { i18n, t } = useTranslation();
-  const location = useLocation(); 
-  const navigate = useNavigate(); 
-
+  const location = useLocation();
+  const navigate = useNavigate();
   const { logout } = useAuthContext();
+  const currentLanguage = i18n.language;
+
   const handleLogut = async () => {
     try {
-      await logout(); 
+      await logout();
       navigate("/auth/login");
     } catch (error) {
       console.error("Error during logout:", error);
     }
   };
+  const translatePageName = (path) =>
+    pageTranslations[currentLanguage][path] ||
+    pageTranslations[currentLanguage].default;
   const isActiveclassMenu =
     "flex justify-start px-4 py-3 text-xl rounded-[8px] text-center text-primary";
   const isNotActiveclassMenu =
@@ -32,16 +37,14 @@ const MenuBar = ({ pageName }) => {
   const textAlignment = direction === "rtl" ? "text-right" : "text-left";
   const marginLeftRight = direction === "rtl" ? "ml-4" : "mr-4";
 
-  const translatedPageName = t(pageName);
   useEffect(() => {
     setIsMobileOpen(false);
   }, [location]);
 
   return (
     <>
-      {/* Sidebar for Mobile */}
-      <div className="lg:hidden ">
-        <div className="flex items-center justify-between p-6 ">
+      <div className="lg:hidden">
+        <div className="flex items-center justify-between p-6">
           <div className="flex gap-4">
             <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -52,7 +55,7 @@ const MenuBar = ({ pageName }) => {
               <FaBars color={"#02A09B"} size={30} />
             </button>
             <Link
-              className={`flex items-center border-2 border-primary rounded-full transition-transform transform-gpu duration-300 ease-in-out  hover:scale-110 hover:shadow-lg delay-75 shrink-0 ${
+              className={`flex items-center border-2 border-primary rounded-full transition-transform transform-gpu duration-300 ease-in-out hover:scale-110 hover:shadow-lg delay-75 shrink-0 ${
                 direction === "rtl" ? "ml-4" : "mr-4"
               }`}
               to="/profile"
@@ -67,13 +70,13 @@ const MenuBar = ({ pageName }) => {
           <div
             className={`text-xl almarai-bold text-black whitespace-nowrap ${textAlignment}`}
           >
-            {translatedPageName}
+            {pageName} {/* Use pageName directly */}
           </div>
         </div>
 
         <aside
           dir={direction}
-          className={`font-almarai almarai-medium bg-[#ffffff] text-black p-4   fixed top-0 h-screen overflow-y-auto ${
+          className={`font-almarai almarai-medium bg-[#ffffff] text-black p-4 fixed top-0 h-screen overflow-y-auto ${
             direction === "rtl" ? "left-0" : "right-0"
           } z-50 shadow-lg rounded-3xl transition-transform duration-300
             ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} w-full`}
@@ -95,22 +98,8 @@ const MenuBar = ({ pageName }) => {
               />
             </Link>
           </div>
-          <div className={`relative w-full text-[#737791] ${textAlignment}`}>
-            <input
-              type="text"
-              placeholder={t("search-placeholder")}
-              className={`w-full h-16 ${
-                direction === "rtl" ? "pr-14 pl-4" : "pl-14 pr-4"
-              } rounded-lg text-xl focus:outline-none bg-[#F9FAFB]`}
-            />
-            <IoSearch
-              className={`absolute ${
-                direction === "rtl" ? "left-3" : "right-3"
-              } top-4`}
-              size={25}
-            />
-          </div>
-          <nav className="space-y-1  text-lg  mt-4">
+
+          <nav className="space-y-1 text-lg mt-4">
             <div>
               {sidebarLinks.map((link, index) => (
                 <NavLink
@@ -128,7 +117,7 @@ const MenuBar = ({ pageName }) => {
                         {link.icon}
                       </span>
                     )}
-                    <span>{t(link.label)}</span>
+                    <span>{translatePageName(link.path)} </span>
                   </div>
                 </NavLink>
               ))}
@@ -150,7 +139,7 @@ const MenuBar = ({ pageName }) => {
                         {link.icon}
                       </span>
                     )}
-                    <span>{t(link.label)}</span>
+                    {translatePageName(link.path)}{" "}
                   </div>
                 </NavLink>
               ))}
@@ -158,8 +147,8 @@ const MenuBar = ({ pageName }) => {
           </nav>
           <div className="mt-auto border-t-2">
             <button
-        onClick={handleLogut}
-        className={`flex justify-start items-center px-4 py-5 text-xl rounded-[8px] w-full`}
+              onClick={handleLogut}
+              className={`flex justify-start items-center px-4 py-5 text-xl rounded-[8px] w-full`}
             >
               <IoMdLogOut
                 size={22}

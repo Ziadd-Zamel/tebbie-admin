@@ -53,7 +53,7 @@ const UpdateSlider = () => {
       toast.success("Slider added successfully!");
       navigate("/sliders");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to add slider. Please try again.");
     },
   });
@@ -80,6 +80,7 @@ const UpdateSlider = () => {
   });
   useEffect(() => {
     if (sliderData) {
+      // eslint-disable-next-line no-unused-vars
       const extractedType = sliderData.realtable_type
         ? sliderData.realtable_type.split("\\").pop()
         : "";

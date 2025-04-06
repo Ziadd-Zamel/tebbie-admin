@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import  { useState, useEffect } from "react";
 import { MenuItem, Select, Checkbox, ListItemText } from "@mui/material";
 import { useTranslation } from "react-i18next";
 

@@ -1,18 +1,26 @@
-import Loader from "./Loader";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { getTrashedHospitals, restoreHospital } from "../utlis/https";
+import Loader from "./Loader";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaUndo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import Pagination from "../components/Pagination";
 
 const token = localStorage.getItem("authToken");
 
 const TrashedHospital = () => {
+  const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const {  i18n } = useTranslation();
+
+  // Pagination and search states
+  const hospitalPerPage = 9; // Same as Hospitals
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
+
   const {
     data: hospitalData,
     isLoading,
@@ -27,76 +35,149 @@ const TrashedHospital = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["trashed-hospital"]);
       navigate("/hospitals");
-
     },
   });
+
+  // Pagination logic
+  const indexOfLastHospital = currentPage * hospitalPerPage;
+  const indexOfFirstHospital = indexOfLastHospital - hospitalPerPage;
+
+  // Filter hospitals based on search query
+  const filteredHospitals = hospitalData?.filter((hospital) =>
+    hospital.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const currentHospital = filteredHospitals?.slice(
+    indexOfFirstHospital,
+    indexOfLastHospital
+  );
+
+  const totalPages =
+    filteredHospitals?.length > 0
+      ? Math.ceil(filteredHospitals.length / hospitalPerPage)
+      : 0;
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+    setCurrentPage(1); // Reset to first page on search
+  };
 
   if (isLoading) {
     return <Loader />;
   }
 
   if (error) {
-    return <div className="text-red-500 text-center py-4">حدث خطأ أثناء جلب البيانات. الرجاء المحاولة لاحقًا.</div>;
+    return (
+      <div className="text-red-500 text-center py-4">
+        {t("errorFetchingData")}
+      </div>
+    );
   }
 
-   if (!hospitalData?.length) {
+  if (!hospitalData?.length) {
     return (
-      <div className="text-gray-600 text-center text-xl py-4 h-full flex justify-center items-center">
-        <p>
-        لا توجد مستشفيات محذوفة لعرضها.
-        </p>
+      <div className="text-gray-600 text-center text-2xl py-4 h-[50vh] flex justify-center items-center">
+        <p>{t("noTrashedHospitals")}</p>
       </div>
     );
   }
 
   return (
-    <section dir={direction}  className="container mx-auto py-8">
-      <div className="rounded-3xl md:p-8 p-4 bg-white shadow-lg overflow-auto">
-        <h2 className="text-2xl font-bold mb-6">المستشفيات المحذوفة</h2>
-        <table className="max-w-[100vh] lg:w-full mx-auto border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-200 p-2">#</th>
-              <th className="border border-gray-200 p-2">الصورة</th>
-              <th className="border border-gray-200 p-2">اسم المستشفى</th>
-              <th className="border border-gray-200 p-2">الوصف</th>
-              <th className="border border-gray-200 p-2">العنوان</th>
-              <th className="border border-gray-200 p-2">الإجراء</th>
-            </tr>
-          </thead>
-          <tbody>
-            {hospitalData.map((hospital, index) => (
-              <tr key={hospital.id} className="hover:bg-gray-50">
-                <td className="border border-gray-200 p-2 text-center">{index + 1}</td>
-                <td className="border border-gray-200 p-2 text-center">
-                  {hospital.media_url?.length > 0 ? (
-                    <img
-                      src={hospital.media_url[0]}
-                      alt={hospital.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  ) : (
-                    "لا توجد صورة"
-                  )}
-                </td>
-                <td className="border border-gray-200 p-2">{hospital.name}</td>
-                <td className="border border-gray-200 p-2">{hospital.description || "لا يوجد"}</td>
-                <td className="border border-gray-200 p-2">{hospital.address || "لا يوجد"}</td>
-                <td className="border border-gray-200 p-2 text-center">
-                  <button
-                    onClick={() => mutation.mutate(hospital.id)}
-                    className={`text-blue-500 hover:text-blue-700 ${
-                      mutation.isLoading && "opacity-50 pointer-events-none"
-                    }`}
-                    title="استعادة"
-                  >
-                    <FaUndo size={18} />
-                  </button>
-                </td>
+    <section dir={direction} className="container mx-auto py-8">
+      <div className="rounded-3xl md:p-8 p-4 bg-white overflow-auto min-h-screen">
+        <h2 className="text-2xl font-bold mb-6">{t("trashedHospitals")}</h2>
+
+        {/* Search Bar */}
+        <div className="my-4 w-full text-end">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder={t("hospitalNameSearch")}
+            className="border border-gray-300 rounded-lg py-2 px-4 h-[50px] focus:outline-none focus:border-primary w-full"
+          />
+        </div>
+
+        <div className="overflow-x-auto md:w-full w-[90vw]">
+          <table className="min-w-full table-auto mt-4 border-collapse">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-4 text-center whitespace-nowrap">#</th>
+                <th className="p-4 text-center whitespace-nowrap">
+                  {t("image")}
+                </th>
+                <th className="p-4 text-center whitespace-nowrap">
+                  {t("HospitalName")}
+                </th>
+                <th className="p-4 text-center whitespace-nowrap">
+                  {t("description")}
+                </th>
+                <th className="p-4 text-center whitespace-nowrap">
+                  {t("address")}
+                </th>
+                <th className="p-4 text-center whitespace-nowrap">
+                  {t("Actions")}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentHospital.map((hospital, index) => (
+                <tr key={hospital.id} className="border-b">
+                  <td className="p-4 text-center whitespace-nowrap">
+                    {indexOfFirstHospital + index + 1}
+                  </td>
+                  <td className="p-4 text-center whitespace-nowrap">
+                    {hospital.media_url?.length > 0 ? (
+                      <img
+                        src={hospital.media_url[0]}
+                        alt={hospital.name}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                    ) : (
+                      t("noImage")
+                    )}
+                  </td>
+                  <td className="p-4 text-center whitespace-nowrap">
+                    {hospital.name}
+                  </td>
+                  <td className="p-4 text-center whitespace-nowrap">
+                    {hospital.description || t("none")}
+                  </td>
+                  <td className="p-4 text-center whitespace-nowrap">
+                    {hospital.address || t("none")}
+                  </td>
+                  <td className="p-4 text-center whitespace-nowrap">
+                    <button
+                      onClick={() => mutation.mutate(hospital.id)}
+                      className={`text-blue-500 hover:text-blue-700 ${
+                        mutation.isLoading && "opacity-50 pointer-events-none"
+                      }`}
+                      title={t("restore")}
+                    >
+                      <FaUndo size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination and Total */}
+        <div className="flex justify-between items-end mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+          <p className="text-2xl text-gray-500 text-end">
+            {t("Total")}: {filteredHospitals.length}
+          </p>
+        </div>
       </div>
     </section>
   );

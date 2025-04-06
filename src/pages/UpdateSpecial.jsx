@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getSpecificSpecializations } from "../utlis/https";
@@ -11,8 +10,7 @@ const UpdateSpecial = () => {
 
   const {
     data: specializationData,
-    error,
-    isLoading,
+
   } = useQuery({
     queryKey: ["Specialization-details", spId],
     queryFn: () => getSpecificSpecializations({ id: spId, token }),

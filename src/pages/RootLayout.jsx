@@ -9,7 +9,7 @@ const RootLayout = () => {
   const currentLanguage = i18n.language;
 
   return (
-    <div className={`min-h-screen flex ${currentLanguage === 'ar' ? 'flex-row-reverse' : ''}`}>
+    <div className={`min-h-screen w-full flex ${currentLanguage === 'ar' ? 'flex-row-reverse' : ''}`}>
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Navbar />

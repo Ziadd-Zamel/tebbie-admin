@@ -1,6 +1,7 @@
 
 import { IoPersonCircle } from "react-icons/io5";
 
+// eslint-disable-next-line react/prop-types
 const UserList = ({ users, selectedUser, onSelectUser }) => {
     return (
        <div className="w-1/4 h-[80vh] overflow-auto">

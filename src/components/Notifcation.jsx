@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Loader from "../pages/Loader";
@@ -83,7 +83,7 @@ const NotificationDropdown = () => {
         <IoMdNotificationsOutline color="#FFA412" size={30} />
       </button>
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-[370px] bg-white shadow-lg rounded-xl overflow-hidden z-50 h-96 overflow-y-auto">
+        <div className="absolute top-full end-0 mt-2 w-[370px] bg-white shadow-lg rounded-xl overflow-hidden z-50 h-96 overflow-y-auto">
           <h1 className="p-6">{t("notification")}</h1>
           <ul className="divide-y divide-gray-200">
             {isLoading ? (

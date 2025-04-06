@@ -127,7 +127,7 @@ const RefundsDetails = () => {
         <div className="flex justify-end my-4">
           <button
             onClick={handleOpenDialog}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md"
+            className="bg-primary text-white px-4 py-2 rounded-md"
           >
             {t("confirm")}
           </button>

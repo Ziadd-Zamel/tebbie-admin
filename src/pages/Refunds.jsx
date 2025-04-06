@@ -37,7 +37,6 @@ const Refunds = () => {
         hospitalname: encodeURIComponent(debouncedSearchTerm),
       }),
   });
-
   const indexOfLastCoupon = currentPage * refundsPerPage;
   const indexOfFirstCoupon = indexOfLastCoupon - refundsPerPage;
   const currentRefund = refundsData?.slice(

@@ -47,7 +47,7 @@ export const pageTranslations = {
       "/services":"services",
       "/refunds":"refunds",
       "/refunds/:refundsId":"refunds details"
-
+      
 ,
 
 
@@ -88,7 +88,7 @@ export const pageTranslations = {
       "/recharge-card":"اعادة شحن البطاقه",
       "/settings":"نقاط الولاء",
       "/settings/:settingId":"تعديل الاعدادات",
-      "/chat":"المحادثه",
+      "/chat":"المحاداثات",
       "/specializations":"التخصاصات",
       "/coupons":"الكوبونات",
       "/labs":"المعامل",

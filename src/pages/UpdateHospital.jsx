@@ -17,6 +17,7 @@ import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { IoMdAdd, IoIosCloseCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { TextField } from "@mui/material";
 
 const token = localStorage.getItem("authToken");
 
@@ -103,7 +104,7 @@ const UpdateHospital = () => {
         open_visits: hospital.open_visits,
         end_visit_at: hospital.end_visit_at || "00:00",
         start_visit_from: hospital.start_visit_from || "00:00",
-        visit_time: hospital.visit_time ||"",
+        visit_time: hospital.visit_time || "",
       });
     }
   }, [hospital]);
@@ -145,35 +146,33 @@ const UpdateHospital = () => {
     });
   };
 
-const mutation = useMutation({
-  mutationFn: (userData) => {
-    const { email, ...otherData } = userData;
-    const payload = {
-      ...otherData,
-      ...(email !== hospital?.email && { email }),
-    };
-    return updateHospital({ token, ...payload });
-  },
-  onSuccess: (data) => {
-    toast.success("تم تعديل بيانات المستشفى بنجاح");
-    setErrorMessage(""); 
-    console.log("hospital data updated successfully", data);
-  },
-  onError: (error) => {
-    toast.error("حدث خطأ أثناء تعديل بيانات المستشفى");
-  
-    const message = error?.errors
-      ? error.errors.map((err, index) => `${index + 1}. ${err}`).join("\n")
-      : "حدث خطأ غير معروف";
-  
-    console.error("Validation Errors:", error.errors);
-  
-    setErrorMessage(message);
-    toast.error(message);
-  },
-  
-});
+  const mutation = useMutation({
+    mutationFn: (userData) => {
+      const { email, ...otherData } = userData;
+      const payload = {
+        ...otherData,
+        ...(email !== hospital?.email && { email }),
+      };
+      return updateHospital({ token, ...payload });
+    },
+    onSuccess: (data) => {
+      toast.success("تم تعديل بيانات المستشفى بنجاح");
+      setErrorMessage("");
+      console.log("hospital data updated successfully", data);
+    },
+    onError: (error) => {
+      toast.error("حدث خطأ أثناء تعديل بيانات المستشفى");
 
+      const message = error?.errors
+        ? error.errors.map((err, index) => `${index + 1}. ${err}`).join("\n")
+        : "حدث خطأ غير معروف";
+
+      console.error("Validation Errors:", error.errors);
+
+      setErrorMessage(message);
+      toast.error(message);
+    },
+  });
 
   const [marker, setMarker] = useState(null);
 
@@ -237,7 +236,8 @@ const mutation = useMutation({
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="name"
                 >
-                  {t("name")}
+                  
+                  <span className="text-red-500">*</span> {t("name")}
                 </label>
                 <input
                   type="text"
@@ -255,7 +255,7 @@ const mutation = useMutation({
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="email"
                 >
-                  {t("email")}
+                 <span className="text-red-500">*</span>  {t("email")}
                 </label>
                 <input
                   type="text"
@@ -267,7 +267,6 @@ const mutation = useMutation({
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                 />
               </div>
-              
             </div>
             <div className="lg:flex mb-6 w-full ">
               <div className="px-3 my-6 md:mb-0 w-full">
@@ -304,35 +303,34 @@ const mutation = useMutation({
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                 />
               </div>
-           
             </div>
-          <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 px-4 w-full">
-          <div className="mb-4 relative w-full flex flex-col justify-end items-start  col-span-1">
-              <label
-                htmlFor="imgs"
-                className="block text-md almarai-semibold mb-4"
-              >
-                {t("password")}
-              </label>
-              <input
-                placeholder="********"
-                onChange={handleChange}
-                name="password"
-                type={showPassword ? "text" : "password"}
-                className="border border-gray-300 rounded-lg py-4 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                />
-              <button
-                type="button"
-                onClick={togglePassword}
-                className="absolute  top-1/2 end-4 transform translate-y-1/2 text-gray-500 text-xl"
-              >
-                {showPassword ? <FaEyeSlash  /> : <FaEye  />}
-              </button>
-         </div>
-          </div>
-            <div className="lg:flex mb-6 w-full">
-              <div className="px-3 my-6 md:mb-0 w-full">
+            <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 px-4 w-full">
+              <div className="mb-4 relative w-full flex flex-col justify-end items-start  col-span-1">
                 <label
+                  htmlFor="imgs"
+                  className="block text-md almarai-semibold mb-4"
+                >
+                <span className="text-red-500">*</span>   {t("password")}
+                </label>
+                <input
+                  placeholder="********"
+                  onChange={handleChange}
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  className="border border-gray-300 rounded-lg py-4 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
+                />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute  top-1/2 end-4 transform translate-y-1/2 text-gray-500 text-xl"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+            </div>
+            <div className="lg:flex mb-6 w-full">
+            <div className="px-3 my-6 md:mb-0 w-full lg:w-1/2">
+            <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="specializations"
                 >
@@ -348,7 +346,7 @@ const mutation = useMutation({
                   />
                 )}
               </div>
-              <div className="px-3 my-6 md:mb-0 w-full">
+              <div className="px-3 my-6 md:mb-0 w-full lg:w-1/2">
                 <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="doctor_ids"
@@ -367,92 +365,82 @@ const mutation = useMutation({
               </div>
             </div>
             <div className="lg:flex mb-6 w-full">
-            
-            <div className="px-3 my-6 md:mb-0 w-full">
-              <label
-                className="block text-md almarai-semibold mb-4"
-                htmlFor="city_id"
-              >
-                {t("cities")}
-              </label>
-              {citiesIsLoading ? (
-                <div className="text-gray-500">Loading...</div>
-              ) : (
-                <select
-                  name="city_id"
-                  value={hospitalData.city_id}
-                  onChange={handleChange}
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                >
-                  <option value="">Select City</option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-            <div className="px-3 my-6 md:mb-0 w-full">
-              <label
-                className="block text-md almarai-semibold mb-4"
-                htmlFor="state"
-              >
-                {t("state")}
-              </label>
-              {stateIsLoading ? (
-                <div className="text-gray-500">Loading...</div>
-              ) : (
-                <select
-                  name="state"
-                  value={hospitalData.state_id}
-                  onChange={handleChange}
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                >
-                  <option value="">Select State</option>
-                  {states.map((state) => (
-                    <option key={state.id} value={state.id}>
-                      {state.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-            </div>
-            <div className="lg:flex mb-6 w-full">
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
                   className="block text-md almarai-semibold mb-4"
-                  htmlFor="start_visit_from"
+                  htmlFor="city_id"
                 >
-                  start visit from
+                  {t("cities")}
                 </label>
-                <input
-                  type="time"
-                  value={hospitalData.start_visit_from}
-                  onChange={handleChange}
-                  id="start_visit_from"
-                  name="start_visit_from"
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                />
+                {citiesIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="city_id"
+                    value={hospitalData.city_id}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
+                  >
+                    <option value="">Select City</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
+              <div className="px-3 my-6 md:mb-0 w-full">
+                <label
+                  className="block text-md almarai-semibold mb-4"
+                  htmlFor="state"
+                >
+                  {t("state")}
+                </label>
+                {stateIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="state"
+                    value={hospitalData.state_id}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
+                  >
+                    <option value="">Select State</option>
+                    {states.map((state) => (
+                      <option key={state.id} value={state.id}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-4 mb-6 w-full">
+        
 
-              <div className="px-3 my-6 md:mb-0 w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="email"
-                >
-                  end visit at
-                </label>
-                <input
-                  type="time"
-                  value={hospitalData.end_visit_at}
-                  onChange={handleChange}
-                  id="end_visit_at"
-                  name="end_visit_at"
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                />
-              </div>
+              <TextField
+                label="Start Visit From"
+                type="time"
+                value={hospitalData.start_visit_from}
+                onChange={handleChange}
+                name="start_visit_from"
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                className="bg-[#F7F8FA] rounded-lg"
+                // inputProps={{ min: hospitalData.end_visit_at }}
+              />
+                    <TextField
+                label="End Visit At"
+                type="time"
+                value={hospitalData.end_visit_at}
+                onChange={handleChange}
+                name="end_visit_at"
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                className="bg-[#F7F8FA] rounded-lg"
+                // inputProps={{ max: hospitalData.start_visit_from }}
+              />
             </div>
             <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full ">
               <div className="  w-full">
@@ -474,7 +462,7 @@ const mutation = useMutation({
 
               <div className="flex justify-center my-3  items-center  w-full">
                 <div className="text-xl font-semibold  w-full flex items-center gap-3">
-                  <label>{t("active")}</label>
+                <span className="text-red-500">*</span>  <label>{t("active")}</label>
                   <input
                     className="InputPrimary"
                     type="checkbox"
@@ -571,19 +559,19 @@ const mutation = useMutation({
             </div>
           </div>
           {errorMessage && (
-  <ul className=" text-red-700 px-4 py-3 rounded mb-4">
-    {errorMessage.split(", ").map((error, index) => (
-      <li key={index} className="list-disc ml-4">
-        {error}
-      </li>
-    ))}
-  </ul>
-)}
+            <ul className=" text-red-700 px-4 py-3 rounded mb-4">
+              {errorMessage.split(", ").map((error, index) => (
+                <li key={index} className="list-disc ml-4">
+                  {error}
+                </li>
+              ))}
+            </ul>
+          )}
 
           <div className="text-end justify-end py-10 flex w-full">
             <button
               type="submit"
-            className="px-6 py-2 hover:bg-[#048c87] w-36 text-white  bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
+              className="px-6 py-2 hover:bg-[#048c87] w-36 text-white  bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
               disabled={mutation.isPending}
             >
               {mutation.isPending ? t("saving") : t("save")}

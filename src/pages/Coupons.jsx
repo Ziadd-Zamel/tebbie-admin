@@ -1,8 +1,7 @@
+import { useState, useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorMessage from "./ErrorMessage";
 import Loader from "./Loader";
-import { useState } from "react";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import {
   deleteCoupon,
   getCoupons,
@@ -12,23 +11,27 @@ import {
 import { RiCoupon2Fill } from "react-icons/ri";
 import { AiFillDelete, AiFillEdit, AiFillPlusCircle } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@mui/material";
+
+const token = localStorage.getItem("authToken");
 
 const Coupons = () => {
-  const token = localStorage.getItem("authToken");
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
-
-  const {
-    data: couponData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["Coupons"],
-    queryFn: () => getCoupons({ token }),
-  });
+  const { t, i18n } = useTranslation();
+  const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
   const [currentPage, setCurrentPage] = useState(1);
-  const couponsPerPage = 5;
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
   const [formState, setFormState] = useState({
     code: "",
     type: "fixed",
@@ -41,6 +44,78 @@ const Coupons = () => {
     amount: "",
   });
 
+  const couponsPerPage = 5;
+
+  const {
+    data: couponData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["Coupons", token],
+    queryFn: () => getCoupons({ token }),
+  });
+
+  const { mutate: handleUpdate } = useMutation({
+    mutationFn: ({ id, token, code, type, amount }) =>
+      UpdateCoupon({ id, token, code, type, amount }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["Coupons", token]);
+      setEditingCoupon(null);
+      toast.success(t("couponUpdatedSuccess"));
+    },
+    onError: (error) => {
+      toast.error(t("couponUpdateFailed", { error: error.message }));
+    },
+  });
+
+  const { mutate: handleAdd } = useMutation({
+    mutationFn: ({ code, type, amount }) =>
+      newCoupon({ code, type, amount, token }),
+    onMutate: async ({ code, type, amount }) => {
+      await queryClient.cancelQueries(["Coupons", token]);
+      const previousCoupons = queryClient.getQueryData(["Coupons", token]);
+      const newCouponData = { id: `temp-${Date.now()}`, code, type, amount };
+      queryClient.setQueryData(["Coupons", token], (oldCoupons) => [
+        ...(oldCoupons || []),
+        newCouponData,
+      ]);
+      setFormState({ code: "", type: "fixed", amount: "" });
+      return { previousCoupons };
+    },
+    onError: (error, _, context) => {
+      queryClient.setQueryData(["Coupons", token], context.previousCoupons);
+      toast.error(t("couponAddFailed", { error: error.message }));
+    },
+    onSuccess: () => {
+      toast.success(t("couponAddedSuccess"));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["Coupons", token]);
+    },
+  });
+
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: ({ id }) => deleteCoupon({ id, token }),
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries(["Coupons", token]);
+      const previousCoupons = queryClient.getQueryData(["Coupons", token]);
+      queryClient.setQueryData(["Coupons", token], (oldCoupons) =>
+        oldCoupons.filter((coupon) => coupon.id !== id)
+      );
+      return { previousCoupons };
+    },
+    onError: (error, _, context) => {
+      queryClient.setQueryData(["Coupons", token], context.previousCoupons);
+      toast.error(t("couponDeleteFailed", { error: error.message }));
+    },
+    onSuccess: () => {
+      toast.success(t("couponDeletedSuccess"));
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries(["Coupons", token]);
+    },
+  });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({
@@ -49,81 +124,30 @@ const Coupons = () => {
     }));
   };
 
-  const { mutate: handleUpdate } = useMutation({
-    mutationFn: ({ id, token, code, type, amount }) =>
-      UpdateCoupon({ id, token, code, type, amount }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["Coupons"]);
-      setEditingCoupon(null);
-    },
-    onError: (error) => {
-      console.error("Failed to update coupon:", error);
-      alert("Update failed. Please try again.");
-    },
-  });
-const { mutate: handleAdd } = useMutation({
-  mutationFn: ({ code, type, amount }) =>
-    newCoupon({ code, type, amount, token }),
-  onMutate: async ({ code, type, amount }) => {
-    await queryClient.cancelQueries(["Coupons"]);
-
-    const previousCoupons = queryClient.getQueryData(["Coupons"]);
-
-    const newCouponData = { id: `temp-${Date.now()}`, code, type, amount };
-    queryClient.setQueryData(["Coupons"], (oldCoupons) => [
-      ...(oldCoupons || []),
-      newCouponData,
-    ]);
-
-    // Clear the form
-    setFormState({ code: "", type: "fixed", amount: "" });
-
-    return { previousCoupons };
-  },
-  onError: (error, _, context) => {
-    queryClient.setQueryData(["Coupons"], context.previousCoupons);
-      alert(`Failed to add the coupon ${error}`);
-  },
-  onSuccess: () => {
-    alert("Coupon added successfully!");
-  },
-  onSettled: () => {
-    queryClient.invalidateQueries(["Coupons"]);
-  },
-});
-const handleAddClick = () => {
-  const { code, type, amount } = formState;
-  if (code.trim() && amount) {
-    handleAdd({ code, type, amount });
-  } else {
-    alert("Please fill in all fields for the new coupon.");
-  }
-};
-  const { mutate: handleDelete } = useMutation({
-    mutationFn: ({ id }) => deleteCoupon({ id, token }),
-    onMutate: async ({ id }) => {
-      await queryClient.cancelQueries(["Coupons"]);
-      const previousCoupons = queryClient.getQueryData(["Coupons"]);
-      queryClient.setQueryData(["Coupons"], (oldCoupons) =>
-        oldCoupons.filter((coupon) => coupon.id !== id)
-      );
-      return { previousCoupons };
-    },
-    onError: (error, context) => {
-      if (context?.previousCoupons) {
-        queryClient.setQueryData(["Coupons"], context.previousCoupons);
-      }
-      alert(`Failed to delete. Please try again ${error}`);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(["Coupons"]);
-    },
-  });
+  const handleAddClick = () => {
+    const { code, type, amount } = formState;
+    if (code.trim() && amount) {
+      handleAdd({ code, type, amount });
+    } else {
+      toast.error(t("fillAllFields"));
+    }
+  };
 
   const handleDeleteClick = (id) => {
-    if (window.confirm(t("confirmDelete"))) {
-      handleDelete({ id });
+    setSelectedId(id);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedId(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedId) {
+      handleDelete({ id: selectedId });
     }
+    handleCloseDialog();
   };
 
   const handleEditClick = (coupon) => {
@@ -139,204 +163,258 @@ const handleAddClick = () => {
     handleUpdate({ id, token, ...updatedCoupon });
   };
 
+  const filteredCoupons = useMemo(() => {
+    if (!couponData) return [];
+    return couponData.filter((coupon) =>
+      coupon.code.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [couponData, searchTerm]);
+
   const indexOfLastCoupon = currentPage * couponsPerPage;
   const indexOfFirstCoupon = indexOfLastCoupon - couponsPerPage;
-  const currentCoupons = couponData?.slice(
+  const currentCoupons = filteredCoupons.slice(
     indexOfFirstCoupon,
     indexOfLastCoupon
   );
 
-  const totalPages = Math.ceil(couponData?.length / couponsPerPage);
+  const totalPages =
+    filteredCoupons.length > 0
+      ? Math.ceil(filteredCoupons.length / couponsPerPage)
+      : 0;
 
   if (isLoading) return <Loader />;
-  if (error)
-    return (
-      <ErrorMessage message="Failed to load Coupons. Please try again later." />
-    );
+  if (error) return <ErrorMessage message={t("errorFetchingCoupons")} />;
 
   return (
-    <section className="container mx-auto p-6 bg-gray-50">
-      <div className="overflow-x-auto md:w-full w-[90vw]">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-          <thead>
-            <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal text-left">
-              <th className="py-3 px-6">#</th>
-              <th className="py-3 px-6">Code</th>
-              <th className="py-3 px-6">Type</th>
-              <th className="py-3 px-6">Amount</th>
-              <th className="py-3 px-6">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 md:text-xl text-lg font-light">
-            {currentCoupons?.map((coupon, index) => (
-              <tr
-                key={coupon.id}
-                className={`border-b ${
-                  coupon.id.toString().startsWith("temp-") ? "opacity-50" : ""
-                }`}
-              >
-                <td className="py-3 px-6 text-left flex items-center gap-3">
-                  {index + 1 + (currentPage - 1) * couponsPerPage}
-                  <RiCoupon2Fill />
-                </td>
-                <td className="py-3 px-6">
-                  {editingCoupon === coupon.id ? (
-                    <input
-                      type="text"
-                      value={updatedCoupon.code}
-                      onChange={(e) =>
-                        setUpdatedCoupon((prev) => ({
-                          ...prev,
-                          code: e.target.value,
-                        }))
-                      }
-                      className="border rounded px-2 py-1"
-                    />
-                  ) : (
-                    coupon.code
-                  )}
-                </td>
-                <td className="py-3 px-6">
-                  {editingCoupon === coupon.id ? (
-                    <select
-                      onChange={(e) =>
-                        setUpdatedCoupon((prev) => ({
-                          ...prev,
-                          type: e.target.value,
-                        }))
-                      }
-                    >
-                      <option value="fixed">Fixed</option>
-                      <option value="percentage">Percentage</option>
-                    </select>
-                  ) : (
-                    coupon.type
-                  )}
-                </td>
+    <section dir={direction} className="container mx-auto py-8">
+      <div className="rounded-3xl md:p-8 p-4 bg-white overflow-auto min-h-screen">
+        <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
+          <input
+            type="text"
+            placeholder={t("couponSearchPlaceholder")}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full md:w-1/3 p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
 
-                <td className="py-3 px-6">
-                  {editingCoupon === coupon.id ? (
-                    <input
-                      type="number"
-                      value={updatedCoupon.amount}
-                      onChange={(e) =>
-                        setUpdatedCoupon((prev) => ({
-                          ...prev,
-                          amount: e.target.value,
-                        }))
-                      }
-                      className="border rounded px-2 py-1"
-                    />
-                  ) : (
-                    coupon.amount
-                  )}
+        <div className="overflow-x-auto md:w-full w-[90vw]">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead>
+              <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-center">#</th>
+                <th className="py-3 px-6 text-center">{t("code")}</th>
+                <th className="py-3 px-6 text-center">{t("type")}</th>
+                <th className="py-3 px-6 text-center">{t("amount")}</th>
+                <th className="py-3 px-6 text-center">{t("Actions")}</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-600 text-lg font-light">
+              {currentCoupons.length === 0 && searchTerm && (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    {t("noCouponsFound")}
+                  </td>
+                </tr>
+              )}
+              {currentCoupons.map((coupon, index) => (
+                <tr
+                  key={coupon.id}
+                  className={`border-b border-gray-200 hover:bg-gray-100 ${
+                    coupon.id.toString().startsWith("temp-") ? "opacity-50" : ""
+                  }`}
+                >
+                  <td className="py-3 px-6 text-center flex items-center justify-center gap-3">
+                    {indexOfFirstCoupon + index + 1}
+                    <RiCoupon2Fill />
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    {editingCoupon === coupon.id ? (
+                      <input
+                        type="text"
+                        value={updatedCoupon.code}
+                        onChange={(e) =>
+                          setUpdatedCoupon((prev) => ({
+                            ...prev,
+                            code: e.target.value,
+                          }))
+                        }
+                        className="border border-gray-300 rounded p-2 w-full"
+                      />
+                    ) : (
+                      coupon.code
+                    )}
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    {editingCoupon === coupon.id ? (
+                      <select
+                        value={updatedCoupon.type}
+                        onChange={(e) =>
+                          setUpdatedCoupon((prev) => ({
+                            ...prev,
+                            type: e.target.value,
+                          }))
+                        }
+                        className="border border-gray-300 rounded p-2 w-full"
+                      >
+                        <option value="fixed">{t("fixed")}</option>
+                        <option value="percentage">{t("percentage")}</option>
+                      </select>
+                    ) : (
+                      coupon.type === "fixed" ? t("fixed") : t("percentage")
+                    )}
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    {editingCoupon === coupon.id ? (
+                      <input
+                        type="number"
+                        value={updatedCoupon.amount}
+                        onChange={(e) =>
+                          setUpdatedCoupon((prev) => ({
+                            ...prev,
+                            amount: e.target.value,
+                          }))
+                        }
+                        className="border border-gray-300 rounded p-2 w-full"
+                      />
+                    ) : (
+                      coupon.amount
+                    )}
+                  </td>
+                  <td className="py-3 px-6 text-center">
+                    <div className="flex justify-center gap-4">
+                      {editingCoupon === coupon.id ? (
+                        <>
+                          <button
+                            onClick={() => handleSaveClick(coupon.id)}
+                            className="text-green-500 hover:text-green-700 focus:outline-none"
+                          >
+                            {t("save")}
+                          </button>
+                          <button
+                            onClick={() => setEditingCoupon(null)}
+                            className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                          >
+                            {t("cancel")}
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleEditClick(coupon)}
+                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                          >
+                            <AiFillEdit size={28} />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(coupon.id)}
+                            className="text-red-500 hover:text-red-700 focus:outline-none"
+                          >
+                            <AiFillDelete size={28} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                <td className="py-3 px-6 text-center">{t("new")}</td>
+                <td className="py-3 px-6 text-center">
+                  <input
+                    type="text"
+                    name="code"
+                    placeholder={t("enterCode")}
+                    value={formState.code}
+                    onChange={handleInputChange}
+                    className="border border-gray-300 rounded p-2 w-full"
+                  />
                 </td>
                 <td className="py-3 px-6 text-center">
-                  <div className="flex space-x-4">
-                    {editingCoupon === coupon.id ? (
-                      <>
-                        <button
-                          onClick={() => handleSaveClick(coupon.id)}
-                          className="text-green-500 hover:text-green-700 focus:outline-none"
-                        >
-                          Save
-                        </button>
-                        <button
-                          onClick={() => setEditingCoupon(null)}
-                          className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                        >
-                          Cancel
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => handleEditClick(coupon)}
-                          className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                        >
-                          <AiFillEdit size={28} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteClick(coupon.id)}
-                          className="text-red-500 hover:text-red-700 focus:outline-none"
-                        >
-                          <AiFillDelete size={28} />
-                        </button>
-                      </>
-                    )}
-                  </div>
+                  <select
+                    name="type"
+                    value={formState.type}
+                    onChange={handleInputChange}
+                    className="border border-gray-300 rounded p-2 w-full"
+                  >
+                    <option value="fixed">{t("fixed")}</option>
+                    <option value="percentage">{t("percentage")}</option>
+                  </select>
+                </td>
+                <td className="py-3 px-6 text-center">
+                  <input
+                    type="number"
+                    name="amount"
+                    placeholder={t("enterAmount")}
+                    value={formState.amount}
+                    onChange={handleInputChange}
+                    className="border border-gray-300 rounded p-2 w-full"
+                  />
+                </td>
+                <td className="py-3 px-6 text-center">
+                  <button
+                    onClick={handleAddClick}
+                    className="text-green-500 hover:text-green-700 focus:outline-none"
+                  >
+                    <AiFillPlusCircle size={28} />
+                  </button>
                 </td>
               </tr>
-            ))}
-            <tr className="hover:bg-gray-100 text-lg">
-              <td className="py-3 px-6 text-left whitespace-nowrap">New</td>
-              <td className="py-3 px-6 text-left">
-                <input
-                  type="text"
-                  name="code"
-                  placeholder="Enter new code"
-                  value={formState.code}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded p-2 md:w-full min-w-56"
-                />
-              </td>
-              <td className="py-3 px-6 text-left">
-                <select
-                  name="type"
-                  value={formState.type}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded p-2 md:w-full min-w-56"
-                >
-                  <option value="fixed">Fixed</option>
-                  <option value="percentage">Percentage</option>
-                </select>
-              </td>
-              <td className="py-3 px-6 text-left">
-                <input
-                  type="number"
-                  name="amount"
-                  placeholder="Enter new amount"
-                  value={formState.amount}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded p-2 md:w-full min-w-56"
-                />
-              </td>
-              <td className="py-3 px-6 text-center">
-                <button
-                  onClick={handleAddClick}
-                  className="text-green-500 hover:text-green-700 focus:outline-none"
-                >
-                  <AiFillPlusCircle size={28} />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-6 flex gap-2 justify-center items-center">
-        <button
-          className={`px-3 py-1 text-white rounded-lg bg-primary ${
-            currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination and Total */}
+        <div className="flex justify-between items-end mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(newPage) => setCurrentPage(newPage)}
+          />
+          <p className="text-2xl text-gray-500 text-end">
+            {t("Total")}: {filteredCoupons.length}
+          </p>
+        </div>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          PaperProps={{ sx: { borderRadius: "12px", padding: "16px" } }}
         >
-          <IoIosArrowBack size={20} />
-        </button>
-        <p>
-          Page {currentPage} of {totalPages}
-        </p>
-        <button
-          className={`px-3 py-1 text-white rounded-lg bg-primary ${
-            currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-        >
-          <IoIosArrowForward size={20} />
-        </button>
+          <DialogTitle sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+            {t("confirmDelete")}
+          </DialogTitle>
+          <DialogContent>
+            <p className="text-gray-600">{t("areYouSureDeleteCoupon")}</p>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: "center", gap: "16px" }}>
+            <Button
+              onClick={handleCloseDialog}
+              sx={{
+                backgroundColor: "#3AAB95",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                "&:hover": { backgroundColor: "#33A9C7" },
+              }}
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              sx={{
+                backgroundColor: "#DC3545",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                "&:hover": { backgroundColor: "#a71d2a" },
+              }}
+            >
+              {t("delete")}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </section>
   );

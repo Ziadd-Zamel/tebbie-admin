@@ -6,9 +6,7 @@ import ProductOrders from "../components/Financial/ProductOrders";
 import ProfileVeiw from "../components/Financial/ProfileVeiw";
 
 const Financial = () => {
-  const { t, i18n } = useTranslation();
-
-
+  const { t } = useTranslation();
 
   return (
     <section  className="container max-auto md:px-4 px-2 ">

@@ -1,124 +1,114 @@
-import React, { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {  useParams } from "react-router-dom";
-import {
-  getHospitals,
-  getSpecializations,
-  getSpecificEmployee,
-  updateEmployee,
-} from "../utlis/https";
+import { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { getHospitals, getSpecializations, getSpecificEmployee, updateEmployee } from "../utlis/https";
 import { useTranslation } from "react-i18next";
 import { FaCamera } from "react-icons/fa";
 import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const UpdateEmployee = () => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
+  const { empId } = useParams();
+  const [imagePreview, setImagePreview] = useState(null);
+  const queryClient = useQueryClient()
+
   const { data: hospitalData } = useQuery({
     queryKey: ["hospitals"],
     queryFn: () => getHospitals({ token }),
   });
-  const { empId } = useParams();
 
-  const { data: specializations, isLoading: specializationsisLoading } =
-    useQuery({
-      queryKey: ["specializations"],
-      queryFn: () => getSpecializations({ token }),
-    });
-  const {
-    data: initialData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["employee" ,empId],
-    queryFn: () => getSpecificEmployee({ token, id:empId }),
+  const { data: specializations, isLoading: specializationsisLoading } = useQuery({
+    queryKey: ["specializations"],
+    queryFn: () => getSpecializations({ token }),
   });
-  const [formState, setFormState] = useState({
-    name: "",
-    media: "",
-    phone: "",
-    email: "",
-    password: "",
-    hospital_id: "",
+
+  const { data: initialData, isLoading, error } = useQuery({
+    queryKey: ["employee", empId],
+    queryFn: () => getSpecificEmployee({ token, id: empId }),
   });
-  const [imagePreview, setImagePreview] = useState(null);
+
+  // Validation schema using Yup
+  const validationSchema = Yup.object({
+    name: Yup.string().required("الاسم مطلوب"),
+    email: Yup.string().email("البريد الإلكتروني غير صحيح").required("البريد الإلكتروني مطلوب"),
+    phone: Yup.string().required("الهاتف مطلوب"),
+    hospital_id: Yup.string().required("المستشفى مطلوب"),
+    specialization_id: Yup.string().required("التخصص مطلوب"),
+    password: Yup.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      media: "",
+      phone: "",
+      email: "",
+      password: "",
+      hospital_id: "",
+      specialization_id: "",
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      const dataToSubmit = {
+        ...values,
+        id: empId,
+        email: values.email !== initialData.email ? values.email : undefined,
+      };
+      mutation.mutate(dataToSubmit);
+    },
+  });
 
   useEffect(() => {
     if (empId && initialData) {
-      setFormState((prev) => ({
-        ...prev,
+      formik.setValues({
         name: initialData.name || "",
         email: initialData.email || "",
         phone: initialData.phone || "",
         media: initialData.media || "",
-        hospital_id: initialData.hospital_id || "",
-      }));
+        hospital_id: initialData.hospital.id || "",
+        specialization_id: initialData.specialization_id || "",
+        password: "",
+      });
       setImagePreview(initialData.media_url || null);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [empId, initialData]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
-      setFormState((prevData) => ({
-        ...prevData,
-        media: file,
-      }));
+      formik.setFieldValue("media", file);
     }
   };
 
   const mutation = useMutation({
-    mutationFn: (data) => {
-      updateEmployee({ ...data, token });
-    },
+    mutationFn: (data) => updateEmployee({ ...data, token }),
     onSuccess: () => {
-      toast.success("تم تعديل بيانات الموظف بنجاح");
-    },
-    onError: (error) => {
-        toast.error("فضل في تعديل بيانات الموظف بنجاح");
-    },
+      queryClient.invalidateQueries({ queryKey: ['employee'] })
+
+      toast.success("تم تعديل بيانات الموظف بنجاح")},
+    onError: () => toast.error("حدث خطأ اثناء تعديل البيانات"),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormState((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  
-    const dataToSubmit = {
-      ...formState,
-       id: empId ,
-      email: formState.email !== initialData.email ? formState.email : undefined,
-    };
-  
-    mutation.mutate(dataToSubmit);
-  };
-  
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
 
   return (
-    <section className="container mx-auto p-4 w-full flex justify-center items-center  ">
+    <section className="container mx-auto p-4 w-full flex justify-center items-center">
       <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-8 rounded-3xl shadow w-full h-full max-w-xl"
+        onSubmit={formik.handleSubmit}
+        className="space-y-4 bg-white p-8 rounded-3xl shadow w-full max-w-xl"
       >
         <div className="flex justify-center items-center my-6">
           <div className="relative">
             {imagePreview ? (
-              <img
-                src={imagePreview}
-                alt="Doctor"
-                className="w-36 h-36 rounded-full object-cover"
-              />
+              <img src={imagePreview} alt="Doctor" className="w-36 h-36 rounded-full object-cover" />
             ) : (
               <div className="w-32 h-32 rounded-full bg-gray-200 flex justify-center items-center">
                 <FaCamera size={24} className="text-gray-500" />
@@ -139,82 +129,84 @@ const UpdateEmployee = () => {
             />
           </div>
         </div>
+
         <div>
-          <label className="block text-md almarai-semibold mb-4 text-center">
-            الاسم
+          <label className="block text-md almarai-semibold mb-4 text-start">
+          <span className="text-red-500">*</span> {t("name")} 
           </label>
           <input
             type="text"
             name="name"
-            value={formState.name}
-            onChange={handleChange}
-            className=" border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-            required
+            {...formik.getFieldProps("name")}
+            className="border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
           />
+          {formik.touched.name && formik.errors.name && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.name}</div>
+          )}
         </div>
+
         <div>
-          <label className="block text-md almarai-semibold mb-4 text-center">
-            البريد الالكتروني
+          <label className="block text-md almarai-semibold mb-4 text-start">
+          <span className="text-red-500">*</span>    {t("email")}
           </label>
           <input
             type="text"
             name="email"
-            value={formState.email}
-            onChange={handleChange}
-            className=" border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-            required
+            {...formik.getFieldProps("email")}
+            className="border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
           />
+          {formik.touched.email && formik.errors.email && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
+          )}
         </div>
+
         <div>
-          <label className="block text-md almarai-semibold mb-4 text-center">
-            الهاتف
+          <label className="block text-md almarai-semibold mb-4 text-start">
+          <span className="text-red-500">*</span> {t("phone")} 
           </label>
           <input
             type="text"
             name="phone"
-            value={formState.phone}
-            onChange={handleChange}
-            className=" border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-            required
+            {...formik.getFieldProps("phone")}
+            className="border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
           />
+          {formik.touched.phone && formik.errors.phone && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.phone}</div>
+          )}
         </div>
+
         <div className="my-5">
-          <label
-            className="block almarai-semibold mb-4 text-center"
-            htmlFor="hospital"
-          >
-            {t("hospital")}
+          <label className="block almarai-semibold mb-4 text-start">
+          <span className="text-red-500">*</span>    {t("hospital")} 
           </label>
           <select
             name="hospital_id"
-            id="hospital_id"
-            onChange={handleChange}
+            {...formik.getFieldProps("hospital_id")}
             className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
           >
-            <option value="">Select Hospital</option>
+            <option value="">{t("select_hospital")}</option>
             {hospitalData?.map((data) => (
               <option key={data.id} value={data.id}>
                 {data.name}
               </option>
             ))}
           </select>
+          {formik.touched.hospital_id && formik.errors.hospital_id && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.hospital_id}</div>
+          )}
         </div>
 
         <div className="my-5 w-full">
-          <label
-            className="block almarai-semibold mb-4 text-center"
-            htmlFor="specialization"
-          >
-            {t("specialization")}
+          <label className="block almarai-semibold mb-4 text-start">
+          <span className="text-red-500">*</span>  {t("specialization")} 
           </label>
           {specializationsisLoading ? (
             <div className="text-gray-500">Loading...</div>
           ) : (
             <select
               name="specialization_id"
-              id="specialization_id"
-              onChange={handleChange}
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
+              {...formik.getFieldProps("specialization_id")}
+              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
             >
               <option value="">{t("select_specialization")}</option>
               {specializations?.map((data) => (
@@ -224,32 +216,37 @@ const UpdateEmployee = () => {
               ))}
             </select>
           )}
+          {formik.touched.specialization_id && formik.errors.specialization_id && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.specialization_id}</div>
+          )}
         </div>
 
         <div>
-          <label className="block text-md almarai-semibold mb-4 text-center">
-            كلمة المرور
+          <label className="block text-md almarai-semibold mb-4 text-start">
+          <span className="text-red-500">*</span>  {t("password")}
           </label>
           <input
             type="password"
             name="password"
-            value={formState.password}
-            onChange={handleChange}
-            className=" border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-            required
+            {...formik.getFieldProps("password")}
+            className="border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
           />
+          {formik.touched.password && formik.errors.password && (
+            <div className="text-red-500 text-sm mt-1">{formik.errors.password}</div>
+          )}
         </div>
+
         <div className="flex justify-center items-center w-full py-6">
           <button
             type="submit"
             className={`px-4 py-2 rounded-lg text-white ${
               mutation.isPending
                 ? "bg-gray-400"
-                : " px-6 py-2 hover:bg-[#048c87] w-60 flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-centere"
+                : "px-6 py-2 hover:bg-[#048c87] w-60 flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-start"
             }`}
             disabled={mutation.isPending}
           >
-            تعديل
+            {t("edit")}
           </button>
         </div>
       </form>

@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import { IoTrashSharp } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+import Pagination from "../components/Pagination";
 
 const States = () => {
   const token = localStorage.getItem("authToken");
@@ -21,6 +22,8 @@ const States = () => {
   const [editableId, setEditableId] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
   const [newStateName, setNewStateName] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+  
   const { t } = useTranslation();
 
   const {
@@ -31,6 +34,9 @@ const States = () => {
     queryKey: ["states", token],
     queryFn: () => getstates({ token }),
   });
+  const hospitalPerPage = 9;
+  const indexOfLastHospital = currentPage * hospitalPerPage;
+  const indexOfFirstHospital = indexOfLastHospital - hospitalPerPage;
 
   const { mutate: handleDelete } = useMutation({
     mutationFn: ({ id }) => deleteState({ id, token }),
@@ -87,7 +93,9 @@ const States = () => {
     setEditableId(id);
     setUpdatedName(currentName);
   };
-
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
   const handleSaveClick = (id) => {
     handleUpdate({ id, name: updatedName });
   };
@@ -98,7 +106,10 @@ const States = () => {
       toast.info("جاري حذف الولاية...");
     }
   };
-
+  const currentHospital = statesData?.slice(
+    indexOfFirstHospital,
+    indexOfLastHospital
+  );
   const handleAddClick = () => {
     if (newStateName.trim()) {
       handleAdd({ name: newStateName });
@@ -106,6 +117,10 @@ const States = () => {
       alert("Please enter a name for the new state.");
     }
   };
+  const totalPages =
+  statesData?.length > 0
+    ? Math.ceil(statesData.length / hospitalPerPage)
+    : 0;
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
@@ -132,7 +147,7 @@ const States = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {statesData?.map((state) => (
+            {currentHospital?.map((state) => (
               <tr
                 key={state.id}
                 className="border-b border-gray-200 hover:bg-gray-100 text-lg"
@@ -202,6 +217,16 @@ const States = () => {
           </tbody>
         </table>
       </div>
+           <div className="flex justify-between items-end mt-4">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+                <p className="text-2xl text-gray-500 text-end">
+                  {t("Total")} : {statesData.length}
+                </p>
+              </div>
       </div>
     </section>
   );

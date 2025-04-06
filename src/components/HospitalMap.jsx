@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import  { useEffect, useState } from "react";
 import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 
 const mapContainerStyle = {
@@ -23,7 +24,7 @@ const HospitalMap = ({ hospital }) => {
   }
 
   return (
-    <div className="md:w-1/2 w-full">
+    <div className="px-4 w-full">
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={center}

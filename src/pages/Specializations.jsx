@@ -1,4 +1,4 @@
-import  { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "./Loader";
@@ -6,9 +6,17 @@ import ErrorMessage from "./ErrorMessage";
 import { deleteSpecializations, getSpecializations } from "../utlis/https";
 import { Link } from "react-router-dom";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import LazyLoad from 'react-lazyload'; 
+import LazyLoad from "react-lazyload";
 import { IoMdAddCircle } from "react-icons/io";
 import { placeholder } from "../assets";
+import Pagination from "../components/Pagination";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 
 const token = localStorage.getItem("authToken");
 
@@ -16,8 +24,11 @@ const Specializations = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const queryClient = useQueryClient();
-
+  const hospitalPerPage = 9;
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedId, setSelectedId] = useState(null);
 
   const {
     data: specializationsData,
@@ -43,7 +54,7 @@ const Specializations = () => {
       );
       return { previousSliders };
     },
-    onError: ( context) => {
+    onError: (context) => {
       queryClient.setQueryData(
         ["Specializations", token],
         context.previousSliders
@@ -56,9 +67,24 @@ const Specializations = () => {
   });
 
   const handleDeleteClick = (id) => {
-    if (window.confirm(t("confirmDelete"))) {
-      handleDelete({ id });
+    setSelectedId(id);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedId(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedId) {
+      handleDelete({ id: selectedId });
     }
+    handleCloseDialog();
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   const filteredSpecializations = useMemo(() => {
@@ -68,12 +94,17 @@ const Specializations = () => {
     );
   }, [specializationsData, searchTerm]);
 
+  const totalPages =
+    filteredSpecializations?.length > 0
+      ? Math.ceil(filteredSpecializations.length / hospitalPerPage)
+      : 0;
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
 
   return (
     <section dir={direction} className="container mx-auto p-6 rounded-3xl">
-      <div className="mb-6 flex justify-between items-center  w-full">
+      <div className="mb-6 flex justify-between items-center w-full">
         <input
           type="text"
           placeholder={t("search-placeholder")}
@@ -84,10 +115,10 @@ const Specializations = () => {
         <div className="flex justify-end w-full md:w-1/3">
           <Link
             to="/specializations/add"
-            className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
-            >
-                     <IoMdAddCircle  />
-                     {t("add")}
+            className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+          >
+            <IoMdAddCircle />
+            {t("add")}
           </Link>
         </div>
       </div>
@@ -102,9 +133,9 @@ const Specializations = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredSpecializations.map((specialization) => (
+          {filteredSpecializations.map((specialization ,index) => (
             <tr key={specialization.id} className="text-center border-b">
-              <td className="p-4">{specialization.id}</td>
+              <td className="p-4">{index + 1}</td>
               <td className="p-4">
                 <LazyLoad height={150} offset={100}>
                   <img
@@ -113,7 +144,6 @@ const Specializations = () => {
                     className="w-14 h-14 object-fit rounded-lg mx-auto"
                     loading="lazy"
                     onError={(e) => (e.target.src = placeholder)}
-                    
                   />
                 </LazyLoad>
               </td>
@@ -138,6 +168,61 @@ const Specializations = () => {
           ))}
         </tbody>
       </table>
+
+      <Dialog
+        className="text-center"
+        open={openDialog}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle>{t("confirmDelete")}</DialogTitle>
+        <DialogContent>
+          <p>{t("areYouSureDeleteSpeilize")}</p>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseDialog}
+            sx={{
+              backgroundColor: "primary.main",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "8px",
+              margin: "0 8px",
+              "&:hover": {
+                backgroundColor: "primary.dark",
+                opacity: 0.9,
+              },
+            }}
+          >
+            {t("cancel")}
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            sx={{
+              backgroundColor: "#DC3545",
+              color: "#fff",
+              padding: "8px 16px",
+              borderRadius: "8px",      
+             textTransform: "none",
+              margin: "0 8px",
+              fontWeight: "500",
+              "&:hover": { backgroundColor: "#a71d2a" },
+            }}
+          >
+            {t("delete")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <div className="flex justify-between items-end mt-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+        <p className="text-2xl text-gray-500 text-end">
+          {t("Total")} : {specializationsData.length}
+        </p>
+      </div>
     </section>
   );
 };

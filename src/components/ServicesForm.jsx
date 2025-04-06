@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useMutation } from "@tanstack/react-query";
 import { postServices, updateService } from "../utlis/https";
 import { toast } from "react-toastify";
@@ -36,9 +37,9 @@ const ServicesForm = ({ initialData, mode = "add", isLoading, error }) => {
   };
 
   const homeVisit = [
-    { id: 1, name: "دكتور" },
-    { id: 2, name: "تمريص" },
-    { id: 3, name: "علاج طبيعي" },
+    { id: 1, name: t("doctor") },
+    { id: 2, name: t("nursing")},
+    { id: 3, name: t("physiotherapy") },
   ];
 
   const mutation = useMutation({

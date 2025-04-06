@@ -1,37 +1,48 @@
 import { useTranslation } from "react-i18next";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { IconButton, Typography } from "@mui/material";
 
+// eslint-disable-next-line react/prop-types
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar"; 
 
   return (
-    <div className="mt-6 flex gap-2 justify-center items-center">
-      <button
-        className={`px-3 py-1 text-white rounded-lg bg-primary ${
-          currentPage === 1 || totalPages === 0
-            ? "opacity-50 cursor-not-allowed"
-            : ""
-        }`}
+    <div
+      className="mt-6 flex gap-4 justify-center items-center"
+      style={{ direction: isRTL ? "rtl" : "ltr" }} 
+    >
+      <IconButton
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1 || totalPages === 0}
+        sx={{
+          backgroundColor: currentPage === 1 || totalPages === 0 ? "#ccc" : "#02A09B",
+          color: currentPage === 1 || totalPages === 0 ? "#888" : "#fff",
+          '&:hover': {
+            backgroundColor: currentPage === 1 || totalPages === 0 ? "#ccc" : "#027F7F",
+          },
+        }}
       >
-        <IoIosArrowForward size={20} />
-      </button>
+        {isRTL ? <IoIosArrowForward size={20} /> : <IoIosArrowBack size={20} />}
+      </IconButton>
 
-      {t("Page")} {currentPage} {t("of")} {totalPages}
+      <Typography variant="body1" color="text.secondary">
+        {t("Page")} {currentPage} {t("of")} {totalPages}
+      </Typography>
 
-
-      <button
-        className={`px-3 py-1 text-white rounded-lg bg-primary ${
-          currentPage === totalPages || totalPages === 0
-            ? "opacity-50 cursor-not-allowed"
-            : ""
-        }`}
+      <IconButton
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages || totalPages === 0}
+        sx={{
+          backgroundColor: currentPage === totalPages || totalPages === 0 ? "#ccc" : "#02A09B",
+          color: currentPage === totalPages || totalPages === 0 ? "#888" : "#fff",
+          '&:hover': {
+            backgroundColor: currentPage === totalPages || totalPages === 0 ? "#ccc" : "#027F7F",
+          },
+        }}
       >
-        <IoIosArrowBack size={20} />
-      </button>
+        {isRTL ? <IoIosArrowBack size={25} /> : <IoIosArrowForward size={25} />}
+      </IconButton>
     </div>
   );
 };

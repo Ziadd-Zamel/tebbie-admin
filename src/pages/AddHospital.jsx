@@ -101,7 +101,7 @@ const AddHospital = () => {
   };
   const mutation = useMutation({
     mutationFn: (userData) => newHospital({ token, ...userData }),
-    onSuccess: (data) => {
+    onSuccess: () => {
       setErrorMessage("");
 
       toast.success("تم اضافة المستشفى بنجاح");
@@ -162,7 +162,7 @@ const AddHospital = () => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="name"
                 >
-                  {t("name")}
+               <span className="text-red-500">*</span> {t("name")}
                 </label>
                 <input
                   type="text"
@@ -179,7 +179,7 @@ const AddHospital = () => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="email"
                 >
-                  {t("email")}
+               <span className="text-red-500">*</span>  {t("email")}
                 </label>
                 <input
                   type="text"
@@ -232,7 +232,7 @@ const AddHospital = () => {
                   htmlFor="password"
                   className="block text-md almarai-semibold mb-4"
                 >
-                  كلمة المرور
+                  {t("password")}
                 </label>
                 <input
                   placeholder="********"
@@ -262,6 +262,7 @@ const AddHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
+                  translation={"التخصصات"}
                     doctors={specializationsData}
                     selectedDoctors={hospitalData.specialization_id}
                     handleDoctorChange={handleSpecializationChange}
@@ -279,6 +280,7 @@ const AddHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
+                  translation={t("doctors")}
                     doctors={doctors}
                     selectedDoctors={hospitalData.doctor_ids}
                     handleDoctorChange={handleDoctorChange}
@@ -392,7 +394,7 @@ const AddHospital = () => {
 
               <div className="flex justify-center my-3  items-center  w-full">
                 <div className="text-xl font-semibold  w-full flex items-center gap-3">
-                  <label>{t("active")}</label>
+                  <label> <span className="text-red-500">*</span>  {t("active")}</label>
                   <input
                     className="InputPrimary"
                     type="checkbox"
@@ -451,7 +453,7 @@ const AddHospital = () => {
                           img instanceof File ? URL.createObjectURL(img) : img
                         }
                         alt={`Image ${index + 1}`}
-                        fill
+                        
                         className="rounded object-fill w-auto h-40"
                       />
                       <button

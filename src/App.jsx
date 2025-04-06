@@ -39,13 +39,7 @@ import Specializations from "./pages/Specializations";
 import UpdateSpecial from "./pages/UpdateSpecial";
 import AddSpecial from "./pages/AddSpecial";
 import Coupons from "./pages/Coupons";
-import Labs from "./pages/Labs";
-import AddLab from "./pages/AddLab";
-import UpdateLab from "./pages/UpdateLab";
-import LabTypes from "./pages/LabTypes";
 import Employees from "./pages/Employees";
-import AddLabType from "./pages/AddLabType";
-import UpdateLabType from "./pages/UpdateLabType";
 import UpdateEmployee from "./pages/UpdateEmployee";
 import RequestForm from "./pages/RequestForm";
 import Services from "./pages/Services";
@@ -118,22 +112,10 @@ const router = createBrowserRouter([
               { path: "add", element: <AddSpecial /> },
             ],
           },
-          {
-            path: "labs",
-            children: [
-              { index: true, element: <Labs /> },
-              { path: "add-lab", element: <AddLab /> },
-              { path: ":labId", element: <UpdateLab /> },
-            ],
-          },
-          {
-            path: "labs-type",
-            children: [
-              { index: true, element: <LabTypes /> },
-              { path: "add-lab-type", element: <AddLabType /> },
-              { path: ":labTypeId", element: <UpdateLabType /> },
-            ],
-          },
+   
+          
+         
+          
           { path: "coupons", element: <Coupons /> },
           { path: "financial", element: <Financial /> },
           {

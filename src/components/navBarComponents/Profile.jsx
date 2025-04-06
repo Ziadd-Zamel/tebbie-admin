@@ -4,7 +4,7 @@ import { getUser } from "../../utlis/https";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorMessage } from "formik";
 
-const Profile = ({ direction }) => {
+const Profile = () => {
   const token = localStorage.getItem("authToken");
 
   const {
@@ -15,9 +15,9 @@ const Profile = ({ direction }) => {
     queryKey: ["userData"],
     queryFn: () => getUser({ token }),
   });
-  userdata;
+
   if (isLoading) {
-    return <p>loading...</p>
+    return <p>loading...</p>;
   }
 
   if (error) {
@@ -29,26 +29,14 @@ const Profile = ({ direction }) => {
   }
 
   return (
-    <Link to="/profile" className="flex items-center">
-      {[userdata]?.map((data) => (
-        <div key={data.id} className="flex gap-2">
-          <div className="flex items-center border-[3px] border-primary transition-transform transform-gpu duration-300 ease-in-out rounded-full hover:scale-110 hover:shadow-lg delay-75  mx-5 shrink-0">
-            <img
-              src={data.media_url || ashraf}
-              alt={name}
-              className="w-14 h-14 rounded-full  object-cover shrink-0"
-            />
-          </div>
-          <div
-            className={`flex flex-col text-black ${
-              direction === "rtl" ? "text-right" : "text-left"
-            }`}
-          >
-            <span className="text-lg almarai-semibold">{data.name}</span>
-            <span className="text-md">responsible</span>
-          </div>
-        </div>
-      ))}
+    <Link to="/profile" className="flex items-center max-w-[200px] shrink">
+      <div className="flex items-center border-[3px] border-primary transition-transform transform-gpu duration-300 ease-in-out rounded-full hover:scale-105 hover:shadow-lg delay-75 mx-2 lg:mx-5 shrink-0">
+        <img
+          src={userdata?.media_url || ashraf}
+          alt={userdata?.name}
+          className="w-10 lg:w-14 h-10 lg:h-14 rounded-full object-cover shrink-0"
+        />
+      </div>
     </Link>
   );
 };

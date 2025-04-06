@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 const API_URL = import.meta.env.VITE_APP_API_URL;
 //admin
 export const getUser = async ({ token }) => {
@@ -70,7 +71,7 @@ export const getDoctors = async ({ token }) => {
     throw error;
   }
 };
-export const getSpecificDoctor = async ({ token ,id }) => {
+export const getSpecificDoctor = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/doctors/${id}`, {
       method: "GET",
@@ -88,11 +89,7 @@ export const getSpecificDoctor = async ({ token ,id }) => {
     throw error;
   }
 };
-export const deleteDoctor = async ({
-  id,
-  token,
-  
-}) => {
+export const deleteDoctor = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/doctors/${id}`, {
       method: "DELETE",
@@ -104,7 +101,9 @@ export const deleteDoctor = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the doctor");
+      throw new Error(
+        result.msg || "An error occurred while deleting the doctor"
+      );
     }
 
     return result.data;
@@ -117,7 +116,7 @@ export const updateDoctor = async ({
   id,
   name,
   bio,
-  _method = "PATCH", 
+  _method = "PATCH",
   token,
   address,
   email,
@@ -125,15 +124,14 @@ export const updateDoctor = async ({
   media,
   job_title,
   specialization_id,
-  hospital_ids= [],
+  hospital_ids = [],
   is_visitor,
   isAbleToCancel,
-  
 }) => {
   const formdata = new FormData();
 
   formdata.append("name", name);
-  formdata.append("_method",  _method);
+  formdata.append("_method", _method);
   formdata.append("bio", bio);
   formdata.append("address", address);
   formdata.append("email", email);
@@ -141,23 +139,22 @@ export const updateDoctor = async ({
   formdata.append("is_visitor", is_visitor);
   formdata.append("is_special", isAbleToCancel);
 
-
   hospital_ids.forEach((id) => {
     formdata.append("hospital_ids[]", id);
   });
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);
-  }  formdata.append("job_title", job_title);
-  formdata.append("specialization_id",  specialization_id);
+  }
+  formdata.append("job_title", job_title);
+  formdata.append("specialization_id", specialization_id);
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/doctors/${id}`, {
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
-    
 
     const result = await response.json();
 
@@ -166,7 +163,9 @@ export const updateDoctor = async ({
         console.error("Validation Errors:", result.errors);
         throw new Error(result.errors.join(", "));
       } else {
-        throw new Error(result.message || "An error occurred while updating the doctor");
+        throw new Error(
+          result.message || "An error occurred while updating the doctor"
+        );
       }
     }
 
@@ -186,10 +185,9 @@ export const addDoctor = async ({
   media,
   job_title,
   specialization_id,
-  hospital_ids= [],
+  hospital_ids = [],
   is_visitor,
-  isAbleToCancel
-  
+  isAbleToCancel,
 }) => {
   const formdata = new FormData();
 
@@ -198,7 +196,7 @@ export const addDoctor = async ({
   formdata.append("address", address);
   formdata.append("email", email);
   formdata.append("phone", phone);
-  formdata.append("is_visitor",  is_visitor);
+  formdata.append("is_visitor", is_visitor);
   formdata.append("is_special", isAbleToCancel);
 
   hospital_ids.forEach((id) => {
@@ -206,17 +204,18 @@ export const addDoctor = async ({
   });
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);
-  }  formdata.append("job_title", job_title);
-  formdata.append("specialization_id",  specialization_id);
+  }
+  formdata.append("job_title", job_title);
+  formdata.append("specialization_id", specialization_id);
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/doctors`, {
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
-    
+
     const result = await response.json();
 
     if (!response.ok) {
@@ -224,7 +223,9 @@ export const addDoctor = async ({
         console.error("Validation Errors:", result.errors);
         throw new Error(result.errors.join(", "));
       } else {
-        throw new Error(result.message || "An error occurred while adding the doctor");
+        throw new Error(
+          result.message || "An error occurred while adding the doctor"
+        );
       }
     }
 
@@ -234,23 +235,24 @@ export const addDoctor = async ({
     throw error;
   }
 };
-export const restoreDoctor = async ({
-  id,
-  token,
-  
-}) => {
+export const restoreDoctor = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/doctors/${id}/restore`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/doctors/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the doctors");
+      throw new Error(
+        result.msg || "An error occurred while restoring the doctors"
+      );
     }
 
     return result.data;
@@ -279,7 +281,7 @@ export const getTrashedDoctor = async ({ token }) => {
 };
 //hospitals
 
-export const getSpecificHospital = async ({ token , id }) => {
+export const getSpecificHospital = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/hospitals/${id}`, {
       method: "GET",
@@ -291,7 +293,7 @@ export const getSpecificHospital = async ({ token , id }) => {
 
     if (response.ok) {
       const data = await response.json();
-      
+
       return data.data;
     }
   } catch (error) {
@@ -353,7 +355,7 @@ export const newHospital = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw result; 
+      throw result;
     }
 
     return result.data;
@@ -392,8 +394,8 @@ export const updateHospital = async ({
   long,
   city_id,
   address,
-  email, 
-  previousEmail, 
+  email,
+  previousEmail,
   state_id,
   start_visit_from,
   end_visit_at,
@@ -415,13 +417,12 @@ export const updateHospital = async ({
   formdata.append("long", long);
   formdata.append("city_id", city_id);
   formdata.append("state_id", state_id);
-  formdata.append("start_visit_from",start_visit_from);
-  formdata.append("end_visit_at",end_visit_at);
+  formdata.append("start_visit_from", start_visit_from);
+  formdata.append("end_visit_at", end_visit_at);
   formdata.append("visit_time", visit_time);
   formdata.append("open_visits", open_visits);
   formdata.append("active", active);
   formdata.append("password", password);
-
 
   if (email && email !== previousEmail) {
     formdata.append("email", email);
@@ -458,9 +459,8 @@ export const updateHospital = async ({
 
     const result = await response.json();
 
-   
     if (!response.ok) {
-      throw result; 
+      throw result;
     }
 
     return result.data;
@@ -469,11 +469,7 @@ export const updateHospital = async ({
     throw error;
   }
 };
-export const deleteHospital = async ({
-  id,
-  token,
-  
-}) => {
+export const deleteHospital = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/hospitals/${id}`, {
       method: "DELETE",
@@ -485,7 +481,9 @@ export const deleteHospital = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the Hospital");
+      throw new Error(
+        result.msg || "An error occurred while deleting the Hospital"
+      );
     }
 
     return result.data;
@@ -494,23 +492,24 @@ export const deleteHospital = async ({
     throw error;
   }
 };
-export const restoreHospital = async ({
-  id,
-  token,
-  
-}) => {
+export const restoreHospital = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/hospitals/${id}/restore`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/hospitals/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the Hospital");
+      throw new Error(
+        result.msg || "An error occurred while restoring the Hospital"
+      );
     }
 
     return result.data;
@@ -556,15 +555,18 @@ export const getSpecializations = async ({ token }) => {
     throw error;
   }
 };
-export const getSpecificSpecializations = async ({ token ,id }) => {
+export const getSpecificSpecializations = async ({ token, id }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/specializations/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/specializations/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -574,12 +576,17 @@ export const getSpecificSpecializations = async ({ token ,id }) => {
     throw error;
   }
 };
-export const newSpecializations = async ({ token, name, media, hospital_ids = [] }) => {
+export const newSpecializations = async ({
+  token,
+  name,
+  media,
+  hospital_ids = [],
+}) => {
   const formdata = new FormData();
   formdata.append("name", name);
-  formdata.append("media", media); 
+  formdata.append("media", media);
   hospital_ids.forEach((id) => {
-    formdata.append("hospital_ids[]", id); 
+    formdata.append("hospital_ids[]", id);
   });
 
   try {
@@ -587,14 +594,16 @@ export const newSpecializations = async ({ token, name, media, hospital_ids = []
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while adding a new Specializations");
+      throw new Error(
+        result.msg || "An error occurred while adding a new Specializations"
+      );
     }
 
     return result.data;
@@ -609,32 +618,37 @@ export const updateSpecializations = async ({
   token,
   name,
   media,
-  _method = "PATCH", 
-  hospital_ids=[],
+  _method = "PATCH",
+  hospital_ids = [],
 }) => {
   const formdata = new FormData();
 
   formdata.append("name", name);
   formdata.append("media", media);
-  formdata.append("_method",  _method);
+  formdata.append("_method", _method);
 
   hospital_ids.forEach((id) => {
     formdata.append(" hospital_ids[]", id);
   });
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/specializations/${id}`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/specializations/${id}`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating a new Specializations ");
+      throw new Error(
+        result.msg || "An error occurred while updating a new Specializations "
+      );
     }
 
     return result.data;
@@ -643,23 +657,24 @@ export const updateSpecializations = async ({
     throw error;
   }
 };
-export const deleteSpecializations = async ({
-  id,
-  token,
-  
-}) => {
+export const deleteSpecializations = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/specializations/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/specializations/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the specializations");
+      throw new Error(
+        result.msg || "An error occurred while deleting the specializations"
+      );
     }
 
     return result.data;
@@ -668,23 +683,24 @@ export const deleteSpecializations = async ({
     throw error;
   }
 };
-export const restorespecializations= async ({
-  id,
-  token,
-  
-}) => {
+export const restorespecializations = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/specializations/${id}/restore`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/specializations/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the specializations");
+      throw new Error(
+        result.msg || "An error occurred while restoring the specializations"
+      );
     }
 
     return result.data;
@@ -695,13 +711,16 @@ export const restorespecializations= async ({
 };
 export const getTrashedSpecializations = async ({ token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/trashed/specializations`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/trashed/specializations`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -731,7 +750,7 @@ export const getstates = async ({ token }) => {
     throw error;
   }
 };
-export const getSpecificState = async ({ token ,id }) => {
+export const getSpecificState = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/states/${id}`, {
       method: "GET",
@@ -749,11 +768,7 @@ export const getSpecificState = async ({ token ,id }) => {
     throw error;
   }
 };
-export const deleteState = async ({
-  id,
-  token,
-  
-}) => {
+export const deleteState = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/states/${id}`, {
       method: "DELETE",
@@ -765,7 +780,9 @@ export const deleteState = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the state");
+      throw new Error(
+        result.msg || "An error occurred while deleting the state"
+      );
     }
 
     return result.data;
@@ -774,79 +791,16 @@ export const deleteState = async ({
     throw error;
   }
 };
-export const updateState = async ({
-  id,
-  name,
-  _method = "PATCH", 
-  token,
-  
-}) => {
+export const updateState = async ({ id, name, _method = "PATCH", token }) => {
   const formdata = new FormData();
 
   formdata.append("name", name);
-  formdata.append("_method",  _method);
-
+  formdata.append("_method", _method);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/states/${id}`, {
       method: "POST",
       body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`, 
-      },
-    });
-    
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the state");
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-export const addState = async ({
-  name,
-  token,
-}) => {
-  const formdata = new FormData();
-
-  formdata.append("name", name);
-  
-  try {
-    const response = await fetch(`${API_URL}/dashboard/v1/states`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`, 
-      },
-    });
-    
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the state");
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-export const restoreState= async ({
-  id,
-  token,
-  
-}) => {
-  try {
-    const response = await fetch(`${API_URL}/dashboard/v1/states/${id}/restore`, {
-      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -855,7 +809,9 @@ export const restoreState= async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the specializations");
+      throw new Error(
+        result.msg || "An error occurred while updating the state"
+      );
     }
 
     return result.data;
@@ -864,7 +820,61 @@ export const restoreState= async ({
     throw error;
   }
 };
-export const getTrashedState= async ({ token }) => {
+export const addState = async ({ name, token }) => {
+  const formdata = new FormData();
+
+  formdata.append("name", name);
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/states`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while updating the state"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const restoreState = async ({ id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/states/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while restoring the specializations"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const getTrashedState = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/trashed/states`, {
       method: "GET",
@@ -902,7 +912,7 @@ export const getcities = async ({ token }) => {
     throw error;
   }
 };
-export const getCity = async ({ token ,id }) => {
+export const getCity = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/cities/${id}`, {
       method: "GET",
@@ -920,11 +930,7 @@ export const getCity = async ({ token ,id }) => {
     throw error;
   }
 };
-export const deleteCity = async ({
-  id,
-  token,
-  
-}) => {
+export const deleteCity = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/cities/${id}`, {
       method: "DELETE",
@@ -936,7 +942,9 @@ export const deleteCity = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the city");
+      throw new Error(
+        result.msg || "An error occurred while deleting the city"
+      );
     }
 
     return result.data;
@@ -949,79 +957,19 @@ export const updateCity = async ({
   id,
   name,
   state_id,
-  _method = "PATCH", 
+  _method = "PATCH",
   token,
-  
 }) => {
   const formdata = new FormData();
 
   formdata.append("name", name);
-  formdata.append("state_id",state_id);
-  formdata.append("_method",  _method);
-
+  formdata.append("state_id", state_id);
+  formdata.append("_method", _method);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/cities/${id}`, {
       method: "POST",
       body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`, 
-      },
-    });
-    
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the city");
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-export const addCity = async ({
-  name,
-  token,
-  state_id
-}) => {
-  const formdata = new FormData();
-
-  formdata.append("name", name);
-  formdata.append("state_id",state_id);
-
-  try {
-    const response = await fetch(`${API_URL}/dashboard/v1/cities`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`, 
-      },
-    });
-    
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the city");
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-export const restoreCity= async ({
-  id,
-  token,
-  
-}) => {
-  try {
-    const response = await fetch(`${API_URL}/dashboard/v1/cities/${id}/restore`, {
-      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -1030,7 +978,9 @@ export const restoreCity= async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the cities");
+      throw new Error(
+        result.msg || "An error occurred while updating the city"
+      );
     }
 
     return result.data;
@@ -1039,7 +989,62 @@ export const restoreCity= async ({
     throw error;
   }
 };
-export const getTrashedCity= async ({ token }) => {
+export const addCity = async ({ name, token, state_id }) => {
+  const formdata = new FormData();
+
+  formdata.append("name", name);
+  formdata.append("state_id", state_id);
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/cities`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while updating the city"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const restoreCity = async ({ id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/cities/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while restoring the cities"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const getTrashedCity = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/trashed/cities`, {
       method: "GET",
@@ -1057,7 +1062,6 @@ export const getTrashedCity= async ({ token }) => {
     throw error;
   }
 };
-
 
 //sliders
 export const getSliders = async ({ token }) => {
@@ -1078,7 +1082,7 @@ export const getSliders = async ({ token }) => {
     throw error;
   }
 };
-export const getSliderById = async ({ token ,id }) => {
+export const getSliderById = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/sliders/${id}`, {
       method: "GET",
@@ -1096,10 +1100,7 @@ export const getSliderById = async ({ token ,id }) => {
     throw error;
   }
 };
-export const deleteSliders = async ({
-  id,
-  token,
-}) => {
+export const deleteSliders = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/sliders/${id}`, {
       method: "DELETE",
@@ -1121,33 +1122,32 @@ export const updateSliders = async ({
   token,
   media,
   id,
-  _method = "PATCH", 
-
-  
+  _method = "PATCH",
 }) => {
   const formdata = new FormData();
 
   formdata.append("realtable_type", realtable_type);
-  formdata.append("_method",  _method);
-  formdata.append("realtable_id",  realtable_id);
+  formdata.append("_method", _method);
+  formdata.append("realtable_id", realtable_id);
 
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);
-  } 
+  }
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/sliders/${id}`, {
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
-    
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the doctor");
+      throw new Error(
+        result.msg || "An error occurred while updating the doctor"
+      );
     }
 
     return result.data;
@@ -1161,8 +1161,6 @@ export const addSlider = async ({
   realtable_id,
   token,
   media,
-
-  
 }) => {
   const formdata = new FormData();
 
@@ -1170,21 +1168,22 @@ export const addSlider = async ({
   formdata.append("realtable_id", realtable_id);
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);
-  } 
+  }
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/sliders`, {
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
-    
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while adding the slider");
+      throw new Error(
+        result.msg || "An error occurred while adding the slider"
+      );
     }
 
     return result.data;
@@ -1194,7 +1193,7 @@ export const addSlider = async ({
   }
 };
 
-//xrays 
+//xrays
 export const getXrays = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/x-rays`, {
@@ -1215,7 +1214,6 @@ export const getXrays = async ({ token }) => {
 };
 //common questions
 
-
 export const getQuestions = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/common-questions`, {
@@ -1234,15 +1232,18 @@ export const getQuestions = async ({ token }) => {
     throw error;
   }
 };
-export const getQuestion = async ({ token ,id }) => {
+export const getQuestion = async ({ token, id }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/common-questions/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/common-questions/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -1252,17 +1253,17 @@ export const getQuestion = async ({ token ,id }) => {
     throw error;
   }
 };
-export const deleteQuestion= async ({
-  id,
-  token,
-}) => {
+export const deleteQuestion = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/common-questions/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/common-questions/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     if (response.ok) {
       const data = await response.json();
       return data.data;
@@ -1276,29 +1277,31 @@ export const updateQuestions = async ({
   answer,
   token,
   id,
-  _method = "PATCH", 
-
-  
+  _method = "PATCH",
 }) => {
   const formdata = new FormData();
   formdata.append("question", question);
   formdata.append("answer", answer);
-  formdata.append("_method",  _method);
+  formdata.append("_method", _method);
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/common-questions/${id}`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`, 
-      },
-    });
-    
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/common-questions/${id}`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the doctor");
+      throw new Error(
+        result.msg || "An error occurred while updating the doctor"
+      );
     }
 
     return result.data;
@@ -1307,12 +1310,7 @@ export const updateQuestions = async ({
     throw error;
   }
 };
-export const addQuestion = async ({
-  question,
-  answer,
-  token,
-
-}) => {
+export const addQuestion = async ({ question, answer, token }) => {
   const formdata = new FormData();
 
   formdata.append("question", question);
@@ -1322,15 +1320,16 @@ export const addQuestion = async ({
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
-    
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while adding the question");
+      throw new Error(
+        result.msg || "An error occurred while adding the question"
+      );
     }
 
     return result.data;
@@ -1363,7 +1362,6 @@ export const addRechargeCards = async ({
   expire_date,
   price,
   token,
-
 }) => {
   const formdata = new FormData();
 
@@ -1376,15 +1374,16 @@ export const addRechargeCards = async ({
       method: "POST",
       body: formdata,
       headers: {
-        Authorization: `Bearer ${token}`, 
+        Authorization: `Bearer ${token}`,
       },
     });
-    
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || "An error occurred while adding the card");
+      throw new Error(
+        result.message || "An error occurred while adding the card"
+      );
     }
 
     return result.data;
@@ -1430,13 +1429,16 @@ export const addSettings = async ({
   }
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/store-settings`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/store-settings`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
@@ -1450,15 +1452,18 @@ export const addSettings = async ({
   }
 };
 
-export const getSetting = async ({ token ,id }) => {
+export const getSetting = async ({ token, id }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/get-settings/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/get-settings/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -1475,19 +1480,24 @@ export const updateSetting = async ({ id, token, ...data }) => {
   };
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/update-settings/${id}`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/update-settings/${id}`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating settings");
+      throw new Error(
+        result.msg || "An error occurred while updating settings"
+      );
     }
     return result.data;
   } catch (error) {
@@ -1516,10 +1526,16 @@ export const getCoupons = async ({ token }) => {
     throw error;
   }
 };
-export const UpdateCoupon = async ({ token, code, type, amount , id, _method = "PATCH", 
+export const UpdateCoupon = async ({
+  token,
+  code,
+  type,
+  amount,
+  id,
+  _method = "PATCH",
 }) => {
   const formdata = new FormData();
-  formdata.append("_method",  _method);
+  formdata.append("_method", _method);
   formdata.append("code", code);
   formdata.append("type", type);
   formdata.append("amount", amount);
@@ -1536,7 +1552,9 @@ export const UpdateCoupon = async ({ token, code, type, amount , id, _method = "
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the Coupon");
+      throw new Error(
+        result.msg || "An error occurred while updating the Coupon"
+      );
     }
 
     return result.data;
@@ -1566,7 +1584,9 @@ export const newCoupon = async ({ token, code, type, amount }) => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || "An error occurred while adding the Coupon");
+      throw new Error(
+        result.message || "An error occurred while adding the Coupon"
+      );
     }
 
     return result.data;
@@ -1576,10 +1596,7 @@ export const newCoupon = async ({ token, code, type, amount }) => {
   }
 };
 
-export const deleteCoupon= async ({
-  id,
-  token,
-}) => {
+export const deleteCoupon = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/coupons/${id}`, {
       method: "DELETE",
@@ -1632,7 +1649,7 @@ export const getTrashedLabs = async ({ token }) => {
     throw error;
   }
 };
-export const getSpecificLab = async ({ token , id }) => {
+export const getSpecificLab = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}`, {
       method: "GET",
@@ -1706,7 +1723,9 @@ export const newLab = async ({
 
     // Handle errors
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while adding a new Hospital");
+      throw new Error(
+        result.msg || "An error occurred while adding a new Hospital"
+      );
     }
 
     // Return the response data
@@ -1770,7 +1789,9 @@ export const updateLab = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating  the Hospital");
+      throw new Error(
+        result.msg || "An error occurred while updating  the Hospital"
+      );
     }
 
     return result.data;
@@ -1779,11 +1800,7 @@ export const updateLab = async ({
     throw error;
   }
 };
-export const deleteLab = async ({
-  id,
-  token,
-  
-}) => {
+export const deleteLab = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}`, {
       method: "DELETE",
@@ -1795,7 +1812,9 @@ export const deleteLab = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the Hospital");
+      throw new Error(
+        result.msg || "An error occurred while deleting the Hospital"
+      );
     }
 
     return result.data;
@@ -1804,11 +1823,7 @@ export const deleteLab = async ({
     throw error;
   }
 };
-export const restoreLab = async ({
-  id,
-  token,
-  
-}) => {
+export const restoreLab = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}/restore`, {
       method: "POST",
@@ -1820,7 +1835,9 @@ export const restoreLab = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the Hospital");
+      throw new Error(
+        result.msg || "An error occurred while restoring the Hospital"
+      );
     }
 
     return result.data;
@@ -1880,8 +1897,6 @@ export const newLabType = async ({
   formdata.append("media", media);
   formdata.append("active", active ? "1" : "0");
 
-
-
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/lab-types`, {
       method: "POST",
@@ -1894,7 +1909,9 @@ export const newLabType = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while adding a new Lab type");
+      throw new Error(
+        result.msg || "An error occurred while adding a new Lab type"
+      );
     }
 
     return result.data;
@@ -1909,15 +1926,14 @@ export const updateLabType = async ({
   name,
   description,
   media,
-  _method = "PATCH", 
-
+  _method = "PATCH",
 }) => {
   const formdata = new FormData();
 
   formdata.append("name", name);
   formdata.append("description", description);
   formdata.append("media", media);
-  formdata.append("_method",  _method);
+  formdata.append("_method", _method);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}`, {
@@ -1931,7 +1947,9 @@ export const updateLabType = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while updating the Lab type");
+      throw new Error(
+        result.msg || "An error occurred while updating the Lab type"
+      );
     }
 
     return result.data;
@@ -1952,7 +1970,9 @@ export const deleteLabType = async ({ id, token }) => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the Lab type");
+      throw new Error(
+        result.msg || "An error occurred while deleting the Lab type"
+      );
     }
 
     return result.data;
@@ -1963,17 +1983,22 @@ export const deleteLabType = async ({ id, token }) => {
 };
 export const restoreLabType = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}/restore`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/lab-types/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the Lab type");
+      throw new Error(
+        result.msg || "An error occurred while restoring the Lab type"
+      );
     }
 
     return result.data;
@@ -2001,7 +2026,7 @@ export const getEmployees = async ({ token }) => {
     throw error;
   }
 };
-export const getSpecificEmployee = async ({ token,id }) => {
+export const getSpecificEmployee = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/employee/${id}`, {
       method: "GET",
@@ -2041,9 +2066,7 @@ export const newEmployee = async ({
   formdata.append("specialization_id", specialization_id);
   formdata.append("active", active ? "1" : "0");
 
-  
-      formdata.append("media", media); 
-      
+  formdata.append("media", media);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/employee`, {
@@ -2057,7 +2080,7 @@ export const newEmployee = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message );
+      throw new Error(result.message);
     }
 
     return result.data;
@@ -2068,7 +2091,7 @@ export const newEmployee = async ({
 };
 
 export const updateEmployee = async ({
-  id, 
+  id,
   token,
   name,
   email,
@@ -2077,29 +2100,24 @@ export const updateEmployee = async ({
   hospital_id,
   specialization_id,
   active,
-  media = [],
+  media,
 }) => {
   const formdata = new FormData();
-
-  formdata.append("name", name);
+  if (name) {
+    formdata.append("name", name);
+  }
   if (email) {
     formdata.append("email", email);
   }
-    formdata.append("_method", "patch");
-    if (email) {
-      formdata.append("email", email);
-    }
-
+  formdata.append("_method", "patch");
   formdata.append("phone", phone);
-  formdata.append("password", password);
+  if (password) formdata.append("password", password);
   formdata.append("hospital_id", hospital_id);
   formdata.append("specialization_id", specialization_id);
   formdata.append("active", active ? "1" : "0");
 
-  if (media && media.length > 0) {
-    media.forEach((file) => {
-      formdata.append("media", file); 
-    });
+  if (media instanceof File) {
+    formdata.append("media", media);
   }
 
   try {
@@ -2134,7 +2152,9 @@ export const deleteEmployee = async ({ id, token }) => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the Employee");
+      throw new Error(
+        result.msg || "An error occurred while deleting the Employee"
+      );
     }
 
     return result.data;
@@ -2145,17 +2165,22 @@ export const deleteEmployee = async ({ id, token }) => {
 };
 export const restoreEmployee = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/employee/${id}/restore`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/employee/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while restoring the Employee");
+      throw new Error(
+        result.msg || "An error occurred while restoring the Employee"
+      );
     }
 
     return result.data;
@@ -2165,15 +2190,18 @@ export const restoreEmployee = async ({ id, token }) => {
   }
 };
 //chat
-export const getMessages = async ({ token , id }) => {
+export const getMessages = async ({ token, id }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/messages-user/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/messages-user/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -2184,25 +2212,23 @@ export const getMessages = async ({ token , id }) => {
   }
 };
 
-export const postMessage = async ({
-  user_id,
-  message,
-  token,
-}) => {
+export const postMessage = async ({ user_id, message, token }) => {
   const formdata = new FormData();
 
-  formdata.append("user_id",user_id);
-  formdata.append("message",message);
-
+  formdata.append("user_id", user_id);
+  formdata.append("message", message);
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/admin-message`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/admin-message`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
@@ -2215,7 +2241,7 @@ export const postMessage = async ({
     throw error;
   }
 };
-export const getUsers = async ({ token  }) => {
+export const getUsers = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/admin/get-users`, {
       method: "GET",
@@ -2233,7 +2259,7 @@ export const getUsers = async ({ token  }) => {
     throw error;
   }
 };
-export const getRequestForm = async ({ token  }) => {
+export const getRequestForm = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/admin/requestform`, {
       method: "GET",
@@ -2251,12 +2277,9 @@ export const getRequestForm = async ({ token  }) => {
     throw error;
   }
 };
-export const markAsRead = async ({
-  token,
-  name,
-}) => {
+export const markAsRead = async ({ token, name }) => {
   const formdata = new FormData();
-  formdata.append("name",name);
+  formdata.append("name", name);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/admin/mark-as-read`, {
@@ -2270,7 +2293,7 @@ export const markAsRead = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw result; 
+      throw result;
     }
 
     return result.data;
@@ -2280,7 +2303,7 @@ export const markAsRead = async ({
   }
 };
 //services
-export const getServices = async ({ token}) => {
+export const getServices = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/home-visit-service`, {
       method: "GET",
@@ -2301,29 +2324,32 @@ export const getServices = async ({ token}) => {
 export const updateService = async ({
   token,
   name,
-  _method = "PATCH", 
+  _method = "PATCH",
   id,
 
-  type
+  type,
 }) => {
   const formdata = new FormData();
-  formdata.append("name",name);
-  formdata.append("type",type);
-  formdata.append("_method",  _method);
+  formdata.append("name", name);
+  formdata.append("type", type);
+  formdata.append("_method", _method);
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/home-visit-service/${id}`, {
-      method: "POST",
-      body: formdata,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/home-visit-service/${id}`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw result; 
+      throw result;
     }
 
     return result.data;
@@ -2334,17 +2360,22 @@ export const updateService = async ({
 };
 export const deleteService = async ({ id, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/home-visit-service/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/home-visit-service/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while deleting the service");
+      throw new Error(
+        result.msg || "An error occurred while deleting the service"
+      );
     }
 
     return result.data;
@@ -2353,15 +2384,18 @@ export const deleteService = async ({ id, token }) => {
     throw error;
   }
 };
-export const getService = async ({ token ,id}) => {
+export const getService = async ({ token, id }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/home-visit-service/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/home-visit-service/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -2371,14 +2405,10 @@ export const getService = async ({ token ,id}) => {
     throw error;
   }
 };
-export const postServices = async ({
-  token,
-  name,
-  type
-}) => {
+export const postServices = async ({ token, name, type }) => {
   const formdata = new FormData();
-  formdata.append("name",name);
-  formdata.append("type",type);
+  formdata.append("name", name);
+  formdata.append("type", type);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/home-visit-service`, {
@@ -2392,7 +2422,7 @@ export const postServices = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw result; 
+      throw result;
     }
 
     return result.data;
@@ -2401,8 +2431,8 @@ export const postServices = async ({
     throw error;
   }
 };
-//notifcation 
-export const getNotification = async ({ token}) => {
+//notifcation
+export const getNotification = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/notification`, {
       method: "GET",
@@ -2420,17 +2450,22 @@ export const getNotification = async ({ token}) => {
     throw error;
   }
 };
-export const checkToken = async ({token})=>{
-  try{
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/admin-check-token` , {
-      method:"POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+export const checkToken = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/admin-check-token`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     const result = await response.json();
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while checking the token");
+      throw new Error(
+        result.msg || "An error occurred while checking the token"
+      );
     }
 
     return result;
@@ -2440,15 +2475,22 @@ export const checkToken = async ({token})=>{
   }
 };
 //refunds
-export const getRefundsDetails= async ({ token , doctorname="",hospitalId}) => {
+export const getRefundsDetails = async ({
+  token,
+  doctorname = "",
+  hospitalId,
+}) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/refund-booking?doctor_name=${doctorname}&hospital_id=${hospitalId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/refund-booking?doctor_name=${doctorname}&hospital_id=${hospitalId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -2458,15 +2500,18 @@ export const getRefundsDetails= async ({ token , doctorname="",hospitalId}) => {
     throw error;
   }
 };
-export const getRefunds= async ({ token ,hospitalname }) => {
+export const getRefunds = async ({ token, hospitalname }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/refund-one?hospital_name=${hospitalname}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/refund-one?hospital_name=${hospitalname}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -2484,13 +2529,15 @@ export const postRefund = async ({ appointments, token }) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ appointments }), 
+      body: JSON.stringify({ appointments }),
     });
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.msg || "An error occurred while processing the refund");
+      throw new Error(
+        result.msg || "An error occurred while processing the refund"
+      );
     }
 
     return result.data;

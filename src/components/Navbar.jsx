@@ -1,5 +1,4 @@
-import {  useLocation } from "react-router-dom";
-import { IoSearch } from "react-icons/io5";
+import { useLocation } from "react-router-dom";
 import Notifcation from "./Notifcation";
 import MenuBar from "./MenuBar";
 import LanguageDropdown from "./LanguageDropdown";
@@ -10,58 +9,54 @@ import Profile from "./navBarComponents/Profile";
 const Navbar = () => {
   const location = useLocation();
   const { i18n } = useTranslation();
-
   const language = i18n.language;
 
-const translatePageName = (pathname) => {
-  if (pathname.startsWith("/orders/")) {
-    return pageTranslations[language]["/orders/:OrderId"];
-  } 
-  if (pathname.startsWith("/refunds/")) {
-    return pageTranslations[language]["/refunds/:refundsId"];
-  }
-  if (pathname.startsWith("/common-questions/")) {
-    return pageTranslations[language]["/common-questions/:questionId"];
-  }
-  if (pathname.startsWith("/hospitals/")) {
-    return pageTranslations[language]["/hospitals/:HospitalId"];
-  }
-
-  if (pathname.startsWith("/recharge-card/add-card")) {
-    return pageTranslations[language]["/recharge-card/add-card"];
-  }
-  if (pathname.startsWith("/doctors/add-doctor")) {
-    return pageTranslations[language]["/doctors/add-doctor"];
-  }
-  if (pathname.startsWith("/doctors/")) {
-    return pageTranslations[language]["/doctors/:doctorId"];
-  }
-  if (pathname.startsWith("/cities/")) {
-    return pageTranslations[language]["/cities/:cityId"];
-  }
-  if (pathname.startsWith("/sliders/")) {
-    return pageTranslations[language]["/sliders/:sliderId"];
-  }
-  if (pathname.startsWith("/employees/")) {
-    return pageTranslations[language]["/employees/:empId"];
-  }
-  if (pathname.startsWith("/settings/")) {
-    return pageTranslations[language]["/settings/:settingId"];
-  }
- 
-  return (
-    pageTranslations[language][pathname] || pageTranslations[language].default
-  );
-};
+  const translatePageName = (pathname) => {
+    if (pathname.startsWith("/orders/")) {
+      return pageTranslations[language]["/orders/:OrderId"];
+    }
+    if (pathname.startsWith("/refunds/")) {
+      return pageTranslations[language]["/refunds/:refundsId"];
+    }
+    if (pathname.startsWith("/common-questions/")) {
+      return pageTranslations[language]["/common-questions/:questionId"];
+    }
+    if (pathname.startsWith("/hospitals/")) {
+      return pageTranslations[language]["/hospitals/:HospitalId"];
+    }
+    if (pathname.startsWith("/recharge-card/add-card")) {
+      return pageTranslations[language]["/recharge-card/add-card"];
+    }
+    if (pathname.startsWith("/doctors/add-doctor")) {
+      return pageTranslations[language]["/doctors/add-doctor"];
+    }
+    if (pathname.startsWith("/doctors/")) {
+      return pageTranslations[language]["/doctors/:doctorId"];
+    }
+    if (pathname.startsWith("/cities/")) {
+      return pageTranslations[language]["/cities/:cityId"];
+    }
+    if (pathname.startsWith("/sliders/")) {
+      return pageTranslations[language]["/sliders/:sliderId"];
+    }
+    if (pathname.startsWith("/employees/")) {
+      return pageTranslations[language]["/employees/:empId"];
+    }
+    if (pathname.startsWith("/settings/")) {
+      return pageTranslations[language]["/settings/:settingId"];
+    }
+    return (
+      pageTranslations[language][pathname] || pageTranslations[language].default
+    );
+  };
 
   const pageName = translatePageName(location.pathname);
-
   const direction = language === "ar" ? "rtl" : "ltr";
 
   return (
     <nav
       dir={direction}
-      className="bg-[#FFFFFF] font-almarai md:h-[90px] h-auto my-5 lg:flex"
+      className="bg-[#FFFFFF] font-almarai md:h-[90px] h-auto my-5 lg:flex w-full"
     >
       <div className="container py-4 mx-auto justify-between items-center hidden lg:flex">
         <div
@@ -71,16 +66,12 @@ const translatePageName = (pathname) => {
         >
           {pageName.charAt(0).toUpperCase() + pageName.slice(1)}
         </div>
-        <LanguageDropdown />
-
-        <div className="flex items-center space-x-6">
-          {/* notification */}
+        <div className="flex items-center gap-3 lg:gap-5 xl:gap-6 shrink-0 ">
+          <LanguageDropdown />
           <Notifcation />
-          {/* profile */}
-        <Profile direction={direction}/>
+          <Profile />
         </div>
       </div>
-
       <MenuBar pageName={pageName} />
     </nav>
   );

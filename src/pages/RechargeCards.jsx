@@ -9,16 +9,21 @@ import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { FaFileExcel } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-  const RechargeCards = () => {
+import Pagination from "../components/Pagination";
+const RechargeCards = () => {
   const token = localStorage.getItem("authToken");
   const [selectedFilter, setSelectedFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const { t} = useTranslation();
+  const { t, i18n } = useTranslation();
+  const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
-
-  const { data: cardData, isLoading, error } = useQuery({
+  const {
+    data: cardData,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["recharge-card", token],
     queryFn: () => getRechargeCards({ token }),
   });
@@ -26,21 +31,17 @@ import { useTranslation } from "react-i18next";
   if (isLoading) {
     return <Loader />;
   }
-
   if (error) {
     return <ErrorMessage />;
   }
-
   const today = new Date();
   const next30Days = new Date();
   const next60Days = new Date();
   const next90Days = new Date();
-
   next30Days.setDate(today.getDate() + 30);
   next60Days.setDate(today.getDate() + 60);
   next90Days.setDate(today.getDate() + 90);
-
-  const filteredCards = cardData?.filter((card) => {
+  const filteredCards = cardData?.recharge_cards.filter((card) => {
     const cardDate = new Date(card.expire_date);
     const matchesSearch = card.card_number
       .toLowerCase()
@@ -73,37 +74,31 @@ import { useTranslation } from "react-i18next";
       "Expire Date": card.expire_date,
       Price: card.price,
     }));
-  
+
     const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const columnWidths = [
-      { wch: 20 }, 
-      { wch: 15 }, 
-      { wch: 10 }, 
-    ];
+    const columnWidths = [{ wch: 20 }, { wch: 15 }, { wch: 10 }];
     worksheet["!cols"] = columnWidths;
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Recharge Cards");
     XLSX.writeFile(workbook, "RechargeCards.xlsx");
   };
-  
 
   return (
-    <section className="container mx-auto p-6 w-full">
-   
+    <section dir={direction} className="container mx-auto p-6 w-full">
       <div className="flex justify-end gap-2 items-center">
         <Link
           to={"/recharge-card/add-card"}
           className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
-          >
-            {t("AddCard")}
-          <IoMdAddCircle  />
+        >
+          {t("AddCard")}
+          <IoMdAddCircle />
         </Link>
         <button
           onClick={handleExport}
           className="px-6 py-2 bg-green-500 text-white text-lg rounded-[8px] hover:bg-green-600 flex justify-center items-center gap-2"
         >
           {t("Excel-Export")}
-          <FaFileExcel/>
+          <FaFileExcel />
         </button>
       </div>
       <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center">
@@ -115,7 +110,7 @@ import { useTranslation } from "react-i18next";
             id="dateFilter"
             value={selectedFilter}
             onChange={(e) => setSelectedFilter(e.target.value)}
-            className="w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary "
+            className="w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary "
           >
             <option value="">عرض الكل</option>
             <option value="30">الأيام القادمة (30 يومًا)</option>
@@ -133,7 +128,7 @@ import { useTranslation } from "react-i18next";
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="أدخل رقم البطاقة..."
-            className="  w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary"
+            className="  w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
           />
         </div>
       </div>
@@ -141,7 +136,7 @@ import { useTranslation } from "react-i18next";
         <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">#</th>
+              <th className="py-3 px-6 text-start">#</th>
               <th className="py-3 px-6 text-left">رقم البطاقة</th>
               <th className="py-3 px-6 text-left whitespace-nowrap">
                 تاريخ الانتهاء
@@ -178,34 +173,16 @@ import { useTranslation } from "react-i18next";
         </table>
       </div>
 
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`py-2 px-4 rounded-lg mx-2 text-white min-w-28 ${
-            currentPage === 1
-              ? "bg-[#5CB2AF] text-white cursor-not-allowed"
-              : "bg-primary hover:bg-[#5CB2AF]"
-          }`}
-        >
-          السابق
-        </button>
-        <span className="px-4 py-2 mx-2">{currentPage}</span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`py-2 px-4 rounded-lg mx-2 text-white min-w-28 ${
-            currentPage === totalPages
-              ? "bg-[#5CB2AF] text-white cursor-not-allowed"
-              : "bg-primary hover:bg-[#5CB2AF]"
-          }`}
-        >
-          التالي
-        </button>
+      <div className="flex justify-between items-end">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+        <p className="text-2xl text-gray-500 text-end">
+          {t("total")} : {filteredCards.length}
+        </p>
       </div>
-      <p className="text-2xl text-gray-500 text-end">
-        totel card : {filteredCards.length}
-      </p>
     </section>
   );
 };

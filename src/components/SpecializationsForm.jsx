@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   newSpecializations,
   getHospitals,
@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 
+// eslint-disable-next-line react/prop-types
 const SpecializationsForm = ({ initialData = {}, mode = "add" }) => {
   const { spId } = useParams();
   const token = localStorage.getItem("authToken");
@@ -96,10 +97,10 @@ onSuccess: () => {
   };
 
   return (
-    <section className="container mx-auto p-4 w-full flex justify-center items-center  h-[60vh]">
+    <section className="container mx-auto p-4 w-full flex justify-center items-center  h-full">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-8 rounded-3xl shadow w-full h-[60vh] max-w-xl"
+        className="space-y-4 bg-white p-8 rounded-3xl shadow w-full h-full max-w-xl"
       >
         <div className="flex justify-center items-center my-6">
           <div className="relative">

@@ -2,7 +2,6 @@ import { IoIosSend } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
-import { ErrorMessage } from "formik";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import Pusher from "pusher-js";
 import { getMessages, getUsers, markAsRead, postMessage } from "../utlis/https";
@@ -121,8 +120,19 @@ const ChatPage = () => {
   }
 
   if (error) {
-    return <ErrorMessage />;
+    return (
+      <div className="h-[70vh] flex flex-col justify-center items-center text-red-500">
+        <p>حدث خطأ أثناء تحميل الرسائل. يرجى المحاولة لاحقًا.</p>
+        <button
+          onClick={() => queryClient.invalidateQueries(["messages", selectedUser])}
+          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+        >
+          إعادة المحاولة
+        </button>
+      </div>
+    );
   }
+  
 
   const handleSendClick = () => {
     if (messageText.trim()) {
@@ -152,15 +162,17 @@ const ChatPage = () => {
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
         <div className="flex">
-        <UserList users={usersData} selectedUser={selectedUser} onSelectUser={handleUserSelect} />
+
+          {usersData &&         <UserList users={usersData} selectedUser={selectedUser} onSelectUser={handleUserSelect} />
+        }
           <div className="w-3/4 relative p-8">
             <div
               ref={chatContainerRef}
               className="flex-grow  h-[80vh] overflow-auto"
             >
               <div className="grid pb-11">
-                {messages.length > 0 ? (
-                  messages.map((message) => (
+                {messages?.length > 0 ? (
+                  messages?.map((message) => (
                     <div
                       key={message.id}
                       className={`flex gap-2.5 mb-4 ${
@@ -172,7 +184,7 @@ const ChatPage = () => {
                       {message.message_from === "admin" && (
                         <img
                           className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
-                          src={message.admin_image}
+                          src={message?.admin_image}
                         />
                       )}
 

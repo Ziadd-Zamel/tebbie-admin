@@ -3,20 +3,25 @@ import { useTranslation } from "react-i18next";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteDoctor, getSpecificDoctor } from "../utlis/https";
 import Loader from "./Loader";
-import { ErrorMessage } from "formik";
 import { MdEmail } from "react-icons/md";
-import { FaPhoneVolume } from "react-icons/fa6";
-import { FaLocationDot } from "react-icons/fa6";
+import { FaPhoneVolume, FaLocationDot, FaAward } from "react-icons/fa6";
 import { placeholder } from "../assets";
-import { FaAward } from "react-icons/fa";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 
 const DoctorDetails = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
-
   const navigate = useNavigate();
   const { doctorId } = useParams();
   const token = localStorage.getItem("authToken");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const {
     data: doctorData,
@@ -26,10 +31,10 @@ const DoctorDetails = () => {
     queryKey: ["doctor-details", doctorId],
     queryFn: () => getSpecificDoctor({ id: doctorId, token }),
   });
+
   const { mutate: handleDelete } = useMutation({
     mutationFn: () => deleteDoctor({ id: doctorId, token }),
     onSuccess: () => {
-      alert(t("doctorDeleted"));
       navigate("/doctors");
     },
     onError: () => {
@@ -38,9 +43,16 @@ const DoctorDetails = () => {
   });
 
   const handleDeleteClick = () => {
-    if (window.confirm(t("confirmDelete"))) {
-      handleDelete();
-    }
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirmDelete = () => {
+    handleDelete();
+    handleCloseDialog();
   };
 
   if (isLoading) {
@@ -48,90 +60,159 @@ const DoctorDetails = () => {
   }
 
   if (error) {
-    return <ErrorMessage />;
+    return (
+      <div className="text-red-500 text-center py-4">{t("errorFetchingData")}</div>
+    );
   }
-  const { name, email, phone, bio, address, image, job_title, is_visitor ,id ,isAbleToCancel } =
-    doctorData;
+
+  const {
+    name,
+    email,
+    phone,
+    bio,
+    address,
+    image,
+    job_title,
+    is_visitor,
+    id,
+    isAbleToCancel,
+  } = doctorData;
 
   return (
-    <section className="flex justify-center items-center h-auto">
-         <div 
-              dir={isArabic ? "rtl" : "ltr"}
-              className="p-4 text-center  mx-auto container py-10 rounded-2xl bg-white">
-        <div className="flex items-center justify-center">
-          <img
-            src={image || placeholder}
-            alt={`${name}'s profile`}
-            className="w-36 h-36 rounded-full object-cover"
-            onError={(e) => (e.target.src = placeholder)}
-
-          />
-        </div>
-        <div>
-          <h1 className="md:text-3xl text-2xl font-bold text-center my-4">{name}</h1>
-          <p className="text-gray-500 text-lg">
-            {job_title || "Job title not provided"}
-          </p>
-        </div>
-        <div className="mt-6">
-          <h2 className="md:text-2xl text-xl font-semibold">{t("DoctorInformation")}</h2>
-          <div className="space-y-2 my-2 text-xl flex flex-col">
-            <div className="flex justify-center items-center gap-2">
-            <MdEmail size={25}/>
-               {email}
-            </div>
-            <div className="flex justify-center items-center gap-2">
-            <FaPhoneVolume  size={25}/>
-               {phone}
-            </div>
-           <div className="flex justify-center items-center gap-2">
-            <FaLocationDot size={25}/>
-            {t("address")}: {address || t("Not provided")}
-            </div>
+    <section className="container mx-auto py-8 min-h-[80vh] flex items-center justify-center">
+      <div
+        dir={isArabic ? "rtl" : "ltr"}
+        className="bg-white rounded-3xl shadow-lg p-6 md:p-8 w-full max-w-4xl"
+      >
+        {/* Profile Header */}
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <div className="flex-shrink-0">
+            <img
+              src={image || placeholder}
+              alt={`${name}'s profile`}
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-primary shadow-md"
+              onError={(e) => (e.target.src = placeholder)}
+            />
           </div>
-        </div>
-
-        <div className="my-8 md:text-2xl text-xl max-w-3xl mx-auto">
-          <h2 className="  font-semibold">{t("bio")}</h2>
-          <p className="text-gray-700 !leading-normal text-[18px]">{bio || t("No bio provided")}</p>
-        </div>
-        <div className="mt-4 flex justify-center items-center gap-4">
-          <span
-            className={`px-4 py-2 rounded-full text-md ${
-              is_visitor === "yes"
-                ? "bg-green-100 text-green-600"
-                : "bg-red-100 text-red-600"
-            }`}
-          >
-            {is_visitor === "yes" ? t("visitor") : t("notvisitor")}
-          </span>
-          <span
-                className={`px-3 py-2 rounded-full text-sm flex gap-2  items-center ${
+          <div className="text-center md:text-left">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+              {name}
+            </h1>
+            <p className="text-lg text-gray-500 mt-1">
+              {job_title || t("jobTitleNotProvided")}
+            </p>
+            <div className="flex gap-4 mt-4 justify-center md:justify-start">
+              <span
+                className={`px-4 py-1 rounded-full text-sm font-medium ${
+                  is_visitor === "yes"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-red-100 text-red-600"
+                }`}
+              >
+                {is_visitor === "yes" ? t("visitor") : t("notVisitor")}
+              </span>
+              <span
+                className={`px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
                   isAbleToCancel === "yes"
                     ? "bg-yellow-100 text-yellow-600"
                     : "bg-red-100 text-red-600"
                 }`}
               >
-                {isAbleToCancel === "yes"
-                  ? t("special")
-                  : t("not-special")}
+                {isAbleToCancel === "yes" ? t("special") : t("notSpecial")}
                 <FaAward />
               </span>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-6 flex justify-center gap-4 w-full">
+        {/* Doctor Information */}
+        <div className="mt-8">
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
+            {t("doctorInformation")}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg text-gray-700">
+            <div className="flex items-center gap-3">
+              <MdEmail size={24} className="text-primary" />
+              <span>{email}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <FaPhoneVolume size={24} className="text-primary" />
+              <span>{phone}</span>
+            </div>
+            <div className="flex items-center gap-3 md:col-span-2">
+              <FaLocationDot size={24} className="text-primary" />
+              <span>
+                {t("address")}: {address || t("notProvided")}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bio Section */}
+        <div className="mt-8">
+          <h2 className="text-xl md:text-2xl font-semibold text-gray-800 mb-4">
+            {t("bio")}
+          </h2>
+          <p className="text-gray-600 text-lg leading-relaxed bg-gray-50 p-4 rounded-lg">
+            {bio || t("noBioProvided")}
+          </p>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
           <button
             onClick={handleDeleteClick}
-            className="px-6 py-2 text-white bg-red-500 hover:bg-red-600 rounded-md"
+            className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-300"
           >
             {t("delete")}
           </button>
-          <Link to={`/doctors/update-doctor/${id}`}
-            className="px-6 py-2 hover:bg-[#048c87] w-auto text-white  bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
-            >
+          <Link
+            to={`/doctors/update-doctor/${id}`}
+            className="px-6 py-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white rounded-lg hover:bg-[#048c87] transition-colors duration-300 text-center"
+          >
             {t("edit")}
           </Link>
         </div>
+
+        {/* Delete Confirmation Dialog */}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          PaperProps={{ sx: { borderRadius: "12px", padding: "16px" } }}
+        >
+          <DialogTitle sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+            {t("confirmDelete")}
+          </DialogTitle>
+          <DialogContent>
+            <p className="text-gray-600">{t("areYouSureDeleteDoctor")}</p>
+          </DialogContent>
+          <DialogActions sx={{ justifyContent: "center", gap: "16px" }}>
+            <Button
+              onClick={handleCloseDialog}
+              sx={{
+                backgroundColor: "#3AAB95",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                "&:hover": { backgroundColor: "#33A9C7" },
+              }}
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              onClick={handleConfirmDelete}
+              sx={{
+                backgroundColor: "#DC3545",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                "&:hover": { backgroundColor: "#a71d2a" },
+              }}
+            >
+              {t("delete")}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </section>
   );
