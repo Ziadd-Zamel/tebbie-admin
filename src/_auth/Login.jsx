@@ -74,10 +74,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full">
+    <div className=" w-full">
       <div
         dir="rtl"
-        className="h-[100vh] flex flex-col justify-center items-center custom-radial-gradient p-4"
+        className="min-h-screen flex flex-col justify-center items-center custom-radial-gradient p-4"
       >
         <div className="w-full max-w-md h-full flex flex-col justify-center items-center">
           <div className="xl:my-8 my-6 flex w-full justify-center items-center">
@@ -91,7 +91,7 @@ const Login = () => {
             <div className="xl:mb-4 mb-3">
               <label
                 htmlFor="email"
-                className="block text-lg almarai-thin xl:mb-4 mb-3 text-center md:text-right"
+                className="block text-lg almarai-thin xl:mb-4 mb-3 text-right"
               >
                 البريد الالكتروني
               </label>

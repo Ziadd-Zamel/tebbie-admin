@@ -214,6 +214,11 @@ const resources = {
       created_at: "Created At",
       yes: "Yes",
       no: "No",
+      states:"states",
+      noOfPatients:"Number of patients",
+      In:"In"
+
+
     },
   },
   ar: {
@@ -427,6 +432,12 @@ const resources = {
       created_at: "تاريخ الإنشاء",
       yes: "نعم",
       no: "لا",
+      states:"الولايات",
+      noOfPatients:"عدد المرضى",
+      In:"فى"
+
+
+
     },
   },
 };

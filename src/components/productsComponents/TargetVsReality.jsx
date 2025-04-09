@@ -1,4 +1,3 @@
-import React from "react";
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useTranslation } from "react-i18next";
 import { realitySales, targetSales } from "../../assets";

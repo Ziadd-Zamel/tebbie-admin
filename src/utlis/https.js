@@ -2546,3 +2546,25 @@ export const postRefund = async ({ appointments, token }) => {
     throw error;
   }
 };
+//dashboard
+export const getStateAndCitiesReport = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-states-with-user-counts`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
