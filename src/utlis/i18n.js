@@ -216,7 +216,16 @@ const resources = {
       no: "No",
       states:"states",
       noOfPatients:"Number of patients",
-      In:"In"
+      In:"In",
+      GDOP:"Geographical distribution of patients",
+      selectUser:"select User",
+      "ReviewsReport": "Reviews Report",
+      "user_name":"user name",
+      "total_reviews":"total reviews",
+      "reviews":"reviews",
+      "selectType": "Choose a review type to filter",
+      "avg_rating":"average rating",
+
 
 
     },
@@ -434,7 +443,18 @@ const resources = {
       no: "لا",
       states:"الولايات",
       noOfPatients:"عدد المرضى",
-      In:"فى"
+      In:"فى",
+      GDOP:"توزيع المرضى جغرافيا",
+      selectUser:"حدد المستخدم",
+      "ReviewsReport":"تقرير التقييمات",
+      "user_name":"اسم الستحدم",
+      "total_reviews":"اجمالى التقيمات",
+      "reviews":"التقيمات",
+      "avg_rating":"متوسط التقيمات",
+      "selectType": "حدد نوع التقييم للفلترة"
+
+
+
 
 
 
@@ -444,8 +464,8 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: "en",
-  fallbackLng: "en",
+  lng: "ar",
+  fallbackLng: "ar",
   interpolation: {
     escapeValue: false,
   },

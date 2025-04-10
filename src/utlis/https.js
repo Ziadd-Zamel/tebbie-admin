@@ -2547,6 +2547,74 @@ export const postRefund = async ({ appointments, token }) => {
   }
 };
 //dashboard
+export const getAllUsers = async () => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-all-users`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getAllHospitals = async () => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-all-hospitals`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getAllDoctors = async () => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-all-doctors`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getAllHomeVisit = async () => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-all-home-visit-services`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 export const getStateAndCitiesReport = async ({ token }) => {
   try {
     const response = await fetch(
@@ -2566,5 +2634,43 @@ export const getStateAndCitiesReport = async ({ token }) => {
     }
   } catch (error) {
     throw error;
+  }
+};
+export const getReviewsReport = async ({ token, user_id, type, reviewable_id }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/get-reviews-report`;
+    const params = [];
+
+    if (user_id) {
+      params.push(`user_id=${user_id}`);
+    }
+    if (type) {
+      params.push(`reviewable_type=${type}`);
+    }
+    if (reviewable_id) {
+      params.push(`reviewable_id=${reviewable_id}`);
+    }
+
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch reviews report: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getReviewsReport: ${error.message}`);
   }
 };

@@ -1,54 +1,98 @@
 import { useTranslation } from "react-i18next";
-import {
-  addPersonIcon,
-  exportIcon,
-  productSoldIcon,
-  totalOrderIcon,
-  totalSalesIcon,
-} from "../../assets";
+import { budgetIcon, CompletionIcon, hoursIcon, taskIcon } from "../../assets";
+
 
 const TodaySales = () => {
   const { t } = useTranslation();
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <p className="font-bold text-xl md:text-2xl">{t("today-sales")}</p>
-          <p className="text-slate-500 text-lg md:text-xl py-2">
-            {t("Sales-Summary")}
-          </p>
+   <div className="grid lg:grid-cols-8 grid-cols-12 gap-4 my-6">
+          <div className="p-6 lg:col-span-2 md:col-span-6 col-span-12 bg-white border-[2px] shadow-sm border-[#EDF2F7] rounded-[20px] ">
+            <div className="flex justify-between ">
+              <div>
+                <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">
+                  {t("hospitals")}
+                </p>
+                <span className="font-bold text-3xl">63%</span>
+              </div>
+              <div>
+                <img src={CompletionIcon} />
+              </div>
+            </div>
+            <div className="flex gap-4 py-3">
+              <span className="py-2 rounded-lg text-xl font-extrabold text-[#F16063] px-4 bg-[#FFE6E4]">
+                -4 %
+              </span>
+              <p className="text-[#718096] font-medium text-lg flex items-center">
+                since last month
+              </p>
+            </div>
+          </div>
+           <div className="lg:col-span-2 md:col-span-6 col-span-12 bg-white p-6  rounded-[20px] border-[2px] border-[#EDF2F7] shadow-sm">
+            <div className="flex justify-between">
+              <div>
+                <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">
+                  {t("totalHours")}
+                </p>
+                <span className="font-bold text-3xl">1,500</span>
+              </div>
+              <div>
+                <img src={hoursIcon} />
+              </div>
+            </div>
+            <div className="flex gap-4 py-3">
+              <span className="py-2 rounded-lg text-xl font-extrabold text-[#66CB9F] px-4 bg-[#DEFFEE]">
+              +23 %
+              </span>
+              <p className="text-[#718096] font-medium text-lg flex items-center">
+                since last month
+              </p>
+            </div>
+          </div>
+          <div className="lg:col-span-2 md:col-span-6 col-span-12 bg-white p-6  rounded-[20px] border-[2px] border-[#EDF2F7] shadow-sm">
+            <div className="flex justify-between">
+              <div>
+                <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">
+                  {t("Tasks")}
+                </p>
+                <span className="font-bold text-3xl">215</span>
+              </div>
+              <div>
+                <img src={taskIcon} />
+              </div>
+            </div>
+            <div className="flex gap-4 py-3">
+              <span className="py-2 rounded-lg text-xl font-extrabold text-[#66CB9F] px-4 bg-[#DEFFEE]">
+              +2 %
+              </span>
+              <p className="text-[#718096] font-medium text-lg flex items-center">
+                since last month
+              </p>
+            </div>
+          </div>
+          <div className="lg:col-span-2 md:col-span-6 col-span-12 bg-white p-6  rounded-[20px] border-[2px] border-[#EDF2F7] shadow-sm">
+            <div className="flex justify-between">
+              <div>
+                <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">
+                  {t("Budget")}
+                </p>
+                <span className="font-bold text-3xl">$17,500.90</span>
+              </div>
+              <div>
+                <img src={budgetIcon} />
+              </div>
+            </div>
+            <div className="flex gap-4 py-3">
+              <span className="py-2 rounded-lg text-xl font-extrabold text-[#66CB9F] px-4 bg-[#DEFFEE]">
+              +13 %
+              </span>
+              <p className="text-[#718096] font-medium text-lg flex items-center">
+                since last month
+              </p>
+            </div>
+          </div>
         </div>
-        <div>
-          <img alt="export Icon" src={exportIcon} className="h-full w-full" />
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-wrap">
-        <div className="bg-[#F3E8FF] p-4 rounded-xl flex flex-col items-start shrink-0">
-          <img alt="addPersonIcon" src={addPersonIcon} className="h-8 w-8 mb-2" />
-          <div className="font-bold text-xl">8</div>
-          <h1 className="font-semibold text-md">New Customers</h1>
-          <p className="text-[#4079ED] my-2 text-sm">0.5% from yesterday</p>
-        </div>
-        <div className="bg-[#DCFCE7] p-4 rounded-xl flex flex-col items-start">
-          <img alt="productSoldIcon" src={productSoldIcon} className="h-8 w-8 mb-2" />
-          <div className="font-bold text-xl">5</div>
-          <h1 className="font-semibold text-md">Product Sold</h1>
-          <p className="text-[#4079ED] my-2 text-sm">0.5% from yesterday</p>
-        </div>
-        <div className="bg-[#FFF4DE] p-4 rounded-xl flex flex-col items-start">
-          <img alt="totalOrderIcon" src={totalOrderIcon} className="h-8 w-8 mb-2" />
-          <div className="font-bold text-xl">300</div>
-          <h1 className="font-semibold text-md">Total Orders</h1>
-          <p className="text-[#4079ED] my-2 text-sm">0.5% from yesterday</p>
-        </div>
-        <div className="bg-[#FFE2E5] p-4 rounded-xl flex flex-col items-start">
-          <img alt="totalSalesIcon" src={totalSalesIcon} className="h-8 w-8 mb-2" />
-          <div className="font-bold text-xl">$1k</div>
-          <h3 className="font-semibold text-md">Total Sales</h3>
-          <p className="text-[#4079ED] my-2 text-sm">0.5% from yesterday</p>
-        </div>
-      </div>
     </>
   );
 };

@@ -6,11 +6,11 @@ import Loader from "../../pages/Loader";
 import { getStateAndCitiesReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
+import { MdLocationOn } from "react-icons/md";
 
 const StateAndCitiesReport = () => {
   const token = localStorage.getItem("authToken");
-  const { t, i18n } = useTranslation();
-  const direction = i18n.language === "ar" ? "rtl" : "ltr";
+  const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,15 +51,18 @@ const StateAndCitiesReport = () => {
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
   return (
-    <div className="p-4 flex flex-col gap-4 font-sans" dir={direction}>
-      {/* Search Input */}
-      <div className="flex justify-start">
+    <div className="p-4 flex flex-col gap-4 font-sans" >
+            <p className="font-bold  text-xl md:text-2xl mb-5 flex gap-2  items-center">
+            <MdLocationOn size={30} className="text-[#3CAB8B]" />
+        {t('GDOP')}
+      </p>
+      <div className="flex justify-start ">
         <input
           type="text"
           placeholder={t("citySearchPlaceholder")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/3 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-right"
+          className="w-full md:w-1/3 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 "
         />
       </div>
 
@@ -86,7 +89,7 @@ const StateAndCitiesReport = () => {
                     {state.cities.length > 0 && (
                       <button
                         onClick={() => toggleExpand(state.id)}
-                        className="text-blue-500 hover:text-blue-700"
+                        className="text-[#3CAB8B] hover:text-[#4db799]"
                         aria-label={
                           expanded === state.id ? t("hideCities") : t("showCities")
                         }

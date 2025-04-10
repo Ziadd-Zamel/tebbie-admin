@@ -340,6 +340,7 @@ const UpdateHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
+                  translation="specializations"
                     doctors={specializationsData}
                     selectedDoctors={hospitalData.specialization_id}
                     handleDoctorChange={handleSpecializationChange}
@@ -357,6 +358,7 @@ const UpdateHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
+                  translation="doctors"
                     doctors={doctors}
                     selectedDoctors={hospitalData.doctor_ids}
                     handleDoctorChange={handleDoctorChange}
