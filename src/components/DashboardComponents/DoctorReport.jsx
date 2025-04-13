@@ -109,7 +109,7 @@ const DoctorReport = () => {
     return doctorData.filter((review) => {
       const matchesSearch =
         !filters.searchTerm ||
-        review.user_name
+        review.doctor_name
           ?.toLowerCase()
           .includes(filters.searchTerm.toLowerCase());
       const matchesUser =

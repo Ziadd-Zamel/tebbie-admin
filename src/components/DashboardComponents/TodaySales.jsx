@@ -27,16 +27,9 @@ const TodaySales = () => {
     enabled: !!token,
   });
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <ErrorMessage />;
-  }
-
-
-
+  if (isLoading) return <Loader />;
+  if (error) return <ErrorMessage />;
+  if (!StatisticsData) return <ErrorMessage />;
   return (
     <>
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4 my-6">
@@ -45,7 +38,7 @@ const TodaySales = () => {
           <div className="flex justify-between">
             <div>
               <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">{t("hospitals")}</p>
-              <span className="font-bold text-3xl">{StatisticsData.hospitals_count || 0}</span>
+              <span className="font-bold text-3xl">{StatisticsData?.hospitals_count || 0}</span>
             </div>
             <div className="size-12 rounded-full bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] flex justify-center items-center">
               <FaHospital className="text-white" size={25} />
