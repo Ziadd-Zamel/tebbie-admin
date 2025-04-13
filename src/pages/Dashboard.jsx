@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import StateAndCitiesReport from "../components/DashboardComponents/StateAndCitiesReport";
 import ReviewsReport from "../components/DashboardComponents/ReviewsReport";
 import CancelledReport from "../components/DashboardComponents/CancelledReport";
+import DoctorReport from "../components/DashboardComponents/DoctorReport";
 const Dashboard = () => {
   const { i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
@@ -31,7 +32,9 @@ const Dashboard = () => {
             <div className="col-span-1 md:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <StateAndCitiesReport />
             </div>
-            <div className="col-span-1 md:col-span-3 bg-white p-4 rounded-[20px] shadow-sm"></div>
+            <div className="col-span-1 md:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
+              <DoctorReport/>
+            </div>
           </div>
         </div>
       </section>
