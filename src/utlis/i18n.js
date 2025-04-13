@@ -238,7 +238,8 @@ const resources = {
       unknown: "Unknown",
       fromDate: "from date",
       toDate: "to date",
-      clearFilter: "reset"
+      clearFilter: "reset",
+      doctorReport : "doctors report"
     },
   },
   ar: {
@@ -477,6 +478,8 @@ const resources = {
       fromDate: "من تاريخ",
       toDate: "إلى تاريخ",
       clearFilter:"إعادة تعيين ",
+      doctorReport : "تقارير الاطباء"
+
       
     },
   },

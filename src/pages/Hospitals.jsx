@@ -72,28 +72,28 @@ const Hospitals = () => {
   }
 
   return (
-    <section dir={direction} className="container mx-auto p-6 bg-gray-50">
+    <section dir={direction} className="container mx-auto  bg-gray-50">
       <div className="rounded-3xl md:p-8 p-4 min-h-screen overflow-auto bg-white">
-        <div className="flex justify-between my-4">
+        <div className="flex justify-between md:flex-row flex-col gap-2 my-4">
           <Link
             to={"/hospitals/add-hospital"}
-            className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+            className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
           >
             <FaHospitalUser />
             {t("AddHospital")}
           </Link>
           <Link
             to={"/hospitals/trashed-hospitals"}
-            className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+            className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
           >
             <IoTrashSharp />
             {t("trash")}
           </Link>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex   md:flex-row flex-col gap-2">
           {/* Search Bar */}
-          <div className="my-4 w-full text-end">
+          <div className="my-4 md:w-1/2 w-full text-end">
             <input
               type="text"
               value={searchQuery}
@@ -103,7 +103,7 @@ const Hospitals = () => {
               />
           </div>
 
-          <div className="my-4 w-full">
+          <div className="my-4  md:w-1/2 w-full">
             <select
               value={statusFilter}
               onChange={handleStatusFilterChange}

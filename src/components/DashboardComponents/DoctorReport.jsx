@@ -9,7 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
-import { FaBan } from "react-icons/fa";
+import { FaUserDoctor } from "react-icons/fa6";
 import DocotrReportTable from "./DocotrReportTable";
 
 const useDebounce = (value, delay) => {
@@ -55,15 +55,15 @@ const DoctorReport = () => {
     error,
   } = useQuery({
     queryKey: [
-        "doctors-Report",
-        token,
+      "doctors-Report",
+      token,
       filters.selectedDoctor,
       filters.selectedHospital,
       filters.fromDate,
       filters.toDate,
     ],
     queryFn: () =>
-        getDocotrReport({
+      getDocotrReport({
         token,
         doctor_id: filters.selectedDoctor,
         hospital_id: filters.selectedHospital,
@@ -72,8 +72,6 @@ const DoctorReport = () => {
       }),
     enabled: !!token,
   });
-
- 
 
   const { data: hospitalsData = [], isLoading: hospitalsIsLoading } = useQuery({
     queryKey: ["Hospitals-Data"],
@@ -84,8 +82,6 @@ const DoctorReport = () => {
     queryKey: ["Doctors-Data"],
     queryFn: getAllDoctors,
   });
-
-
 
   const doctorOptions = useMemo(
     () =>
@@ -102,7 +98,6 @@ const DoctorReport = () => {
     [hospitalsData]
   );
 
-  // Memoize filtered data
   const filteredData = useMemo(() => {
     if (!Array.isArray(doctorData)) return [];
 
@@ -155,8 +150,8 @@ const DoctorReport = () => {
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <FaBan size={30} className="text-[#3CAB8B]" />
-        {t("CancelledReport")}
+        <FaUserDoctor size={30} className="text-[#3CAB8B]" />
+        {t("doctorReport")}
       </p>
       <input
         type="text"
@@ -166,8 +161,7 @@ const DoctorReport = () => {
         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div className="flex xl:flex-row flex-col gap-4">
-    
-        <div className="xl:w-1/3 w-full">
+        <div className="xl:w-1/2 w-full">
           <OneSelectDropdown
             options={doctorOptions}
             onChange={(value) => handleFilterChange("selectedDoctor", value)}
@@ -179,7 +173,7 @@ const DoctorReport = () => {
             fallbackMessage={t("noUsersFound")}
           />
         </div>
-        <div className="xl:w-1/3 w-full">
+        <div className="xl:w-1/2 w-full">
           <OneSelectDropdown
             options={hospitalOptions}
             onChange={(value) => handleFilterChange("selectedHospital", value)}
@@ -226,9 +220,7 @@ const DoctorReport = () => {
       </div>
       <DocotrReportTable
         currentStates={currentStates}
-        isLoading={
-          isLoading || hospitalsIsLoading || doctorsIsLoading
-        }
+        isLoading={isLoading || hospitalsIsLoading || doctorsIsLoading}
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination

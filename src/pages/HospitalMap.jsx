@@ -4,7 +4,6 @@ import {
   GoogleMap,
   InfoWindow,
   Marker,
-  useLoadScript,
   Autocomplete,
 } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
@@ -14,23 +13,16 @@ const mapContainerStyle = {
   height: "50vh",
 };
 
-const libraries = ["places"];
-
 const HospitalMap = ({ marker, onMapClick, hospitalData }) => {
-    const { t ,} = useTranslation();
-  
+  const { t } = useTranslation();
+
   const [center, setCenter] = useState({
-    lat: 32.8872, 
+    lat: 32.8872,
     lng: 13.1913,
   });
   const [selectedMarker, setSelectedMarker] = useState(marker);
   const [showInfoWindow, setShowInfoWindow] = useState(false);
   const [autocomplete, setAutocomplete] = useState(null);
-
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
 
   useEffect(() => {
     if (hospitalData && hospitalData.lat && hospitalData.long) {
@@ -73,21 +65,13 @@ const HospitalMap = ({ marker, onMapClick, hospitalData }) => {
     }
   };
 
-  if (loadError) {
-    return <div>Error loading Google Maps</div>;
-  }
-
-  if (!isLoaded) {
-    return <div>Loading map...</div>;
-  }
-
   return (
     <div className="relative">
       <div className="absolute top-4 end-4 z-10 w-1/3">
         <Autocomplete
           onLoad={(auto) => setAutocomplete(auto)}
           onPlaceChanged={onPlaceChanged}
-          restrictions={{ country: "LY" }} 
+          restrictions={{ country: "LY" }}
         >
           <input
             type="text"
