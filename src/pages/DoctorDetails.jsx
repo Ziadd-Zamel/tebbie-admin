@@ -25,7 +25,6 @@ const DoctorDetails = () => {
 
   const {
     data: doctorData,
-    error,
     isError,
     isLoading,
   } = useQuery({
@@ -114,7 +113,7 @@ const DoctorDetails = () => {
                     : "bg-red-100 text-red-600"
                 }`}
               >
-                {is_visitor === "yes" ? t("visitor") : t("notVisitor")}
+                {is_visitor === "yes" ? t("visitor") : t("notvisitor")}
               </span>
               <span
                 className={`px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
@@ -123,7 +122,7 @@ const DoctorDetails = () => {
                     : "bg-red-100 text-red-600"
                 }`}
               >
-                {isAbleToCancel === "yes" ? t("special") : t("notSpecial")}
+                {isAbleToCancel === "yes" ? t("special") : t("not-special")}
                 <FaAward />
               </span>
             </div>

@@ -38,43 +38,40 @@ const Dashboard = () => {
       if (hospitalsIsLoading || usersIsLoading || DoctorsIsLoading || HomeVisitIsLoading) return <Loader />;
   return (
     <>
-      <section className="container mx-auto p-4">
+      <section className="container mx-auto ">
         <div dir={direction} className="w-full flex flex-col gap-4 ">
-          <div>
             <TodaySales />
-          </div>
+            <ReviewsReport HomeVisitData={HomeVisitData} DoctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+
           <div
-            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <HospitalsReport hospitalsData={hospitalsData} />
             </div>
-            <div className="col-span-1 xl:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <StateAndCitiesReport />
             </div>
           </div>
-          <div className=" bg-white  rounded-[20px] shadow-sm">
-            <ReviewsReport HomeVisitData={HomeVisitData} DoctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
-          </div>
 
           <div
-            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <CancelledReport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
             </div>
-            <div className="col-span-1 xl:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <HomeVisitReporteport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
             </div>
           </div>
 
           <div
-            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <UsersReport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
             </div>
-            <div className="col-span-1 xl:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm ">
               <DoctorReport hospitalsData={HomeVisitData} doctorsData={DoctorsData}  HospitalsData={hospitalsData} />
             </div>
           </div>

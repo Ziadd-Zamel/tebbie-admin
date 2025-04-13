@@ -32,7 +32,7 @@ const TodaySales = () => {
   if (!StatisticsData) return <ErrorMessage />;
   return (
     <>
-      <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4 my-6">
+      <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4 my-6 p-4">
         {/* Hospitals */}
         <div className="p-6 bg-white border-[2px] shadow-sm border-[#EDF2F7] rounded-[20px]">
           <div className="flex justify-between">
