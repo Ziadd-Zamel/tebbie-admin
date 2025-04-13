@@ -59,10 +59,10 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
             </td>
           </tr>
         ) : currentStates.length > 0 ? (
-          currentStates.map((Review) => (
+          currentStates.map((Review ,index) => (
             <>
               <tr
-                key={Review.user_id}
+                key={index}
                 className="border-b border-gray-200 hover:bg-gray-100"
               >
                 <td className="py-2 px-6 text-center">{Review.user_name}</td>
@@ -94,18 +94,20 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
                 <tr>
                   <td colSpan="4" className="py-4 px-6 bg-gray-50">
                     <div className="space-y-4">
-                      {Review.reviews.map((review) => (
+                      {Review.reviews.map((review ,index) => (
                         <div
-                          key={review.user_id}
-                          className="flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
+                          key={index}
+                          className="flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow-sm font-semibold"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               {renderStars(review.rating)}
                             </div>
-                            <span className="text-sm text-gray-500">
+                              <div className="flex items-center justify-end">
+                            <span className="text-sm bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] p-2 text-white rounded-xl font-semibold">
                               {formatDateTime(review.created_at)}
                             </span>
+                          </div>
                           </div>
                           <p className="mt-2 text-gray-700">{review.comment}</p>
                           {review.name && (

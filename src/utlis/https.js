@@ -2080,7 +2080,7 @@ export const newEmployee = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message);
+      throw result; // Throw the full result object instead of just the message
     }
 
     return result.data;
@@ -2672,5 +2672,66 @@ export const getReviewsReport = async ({ token, user_id, type, reviewable_id }) 
     return data.data || [];
   } catch (error) {
     throw new Error(`Error in getReviewsReport: ${error.message}`);
+  }
+};
+export const getCancelledReport = async ({ token, user_id, doctor_id, hospital_id ,from_date ,to_date }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/get-cancelled-booking-report`;
+    const params = [];
+    if (user_id) {
+      params.push(`user_id=${user_id}`);
+    }
+    if (doctor_id) {
+      params.push(`doctor_id=${doctor_id}`);
+    }
+    if (hospital_id) {
+      params.push(`hospital_id=${hospital_id}`);
+    }
+    
+   
+    if (from_date) {
+      params.push(`from_date=${from_date}`);
+    }
+    if (to_date) {
+      params.push(`to_date=${to_date}`);
+    }
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch reviews report: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getReviewsReport: ${error.message}`);
+  }
+};
+export const getGeneralStatistics = async () => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-general-statistics`,
+      {
+        method: "GET",
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
   }
 };

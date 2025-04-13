@@ -143,7 +143,6 @@ const ReviewsReport = () => {
 
     return filtered;
   }, [ReviewData, searchTerm, selectedUser, selectedReviewableId]);
-  console.log(filteredData);
 
   const indexOfLastState = currentPage * statesPerPage;
   const indexOfFirstState = indexOfLastState - statesPerPage;

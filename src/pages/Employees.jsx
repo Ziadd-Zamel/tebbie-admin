@@ -46,7 +46,6 @@ const Employees = () => {
   const { mutate: handleDelete } = useMutation({
     mutationFn: ({ id }) => deleteEmployee({ id, token }),
     onMutate: async ({ id }) => {
-      toast.info(t("deletingEmployee"));
       await queryClient.cancelQueries(["employeesData", token]);
       const previousEmployees = queryClient.getQueryData([
         "employeesData",

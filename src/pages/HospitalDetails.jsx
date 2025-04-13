@@ -78,7 +78,7 @@ const HospitalDetails = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         dir={isArabic ? "rtl" : "ltr"}
-        className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100"
+        className="bg-white rounded-2xl  overflow-hidden border border-gray-100"
       >
         {/* Header */}
         <div className="relative bg-gradient-to-br from-[#33A9C7] to-[#3AAB95] p-8">

@@ -2,10 +2,10 @@ import TodaySales from "../components/DashboardComponents/TodaySales";
 import { useTranslation } from "react-i18next";
 import StateAndCitiesReport from "../components/DashboardComponents/StateAndCitiesReport";
 import ReviewsReport from "../components/DashboardComponents/ReviewsReport";
+import CancelledReport from "../components/DashboardComponents/CancelledReport";
 const Dashboard = () => {
   const { i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
-
 
   const reverseSmallGridCols =
     direction === "rtl"
@@ -15,26 +15,24 @@ const Dashboard = () => {
   return (
     <>
       <section className="container mx-auto lg:p-3 md:p-3 p-4">
-        <div dir={direction} className="w-full ">
-          <div >
-              <TodaySales />
+        <div dir={direction} className="w-full flex flex-col gap-4 ">
+          <div>
+            <TodaySales />
           </div>
-
           <div className=" bg-white  rounded-[20px] shadow-sm">
-          <ReviewsReport/>
+            <CancelledReport />
           </div>
-          
+          <div className=" bg-white  rounded-[20px] shadow-sm">
+            <ReviewsReport />
+          </div>
           <div
             className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
           >
             <div className="col-span-1 md:col-span-3 bg-white  rounded-[20px] shadow-sm">
-            <StateAndCitiesReport/>
+              <StateAndCitiesReport />
             </div>
-
-            <div className="col-span-1 md:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
-            </div>
+            <div className="col-span-1 md:col-span-3 bg-white p-4 rounded-[20px] shadow-sm"></div>
           </div>
-       
         </div>
       </section>
     </>
