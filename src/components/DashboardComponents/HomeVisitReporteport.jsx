@@ -2,11 +2,14 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
-import { getDocotrReport } from "../../utlis/https";
+import {
+
+  getHomeVisitReport,
+} from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaHome } from "react-icons/fa";
 import DocotrReportTable from "./DocotrReportTable";
 
 const useDebounce = (value, delay) => {
@@ -25,14 +28,16 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-// eslint-disable-next-line react/prop-types
-const DoctorReport = ({ hospitalsData, doctorsData }) => {
+const HomeVisitReporteport = ({  hospitalsData,
+  usersData,
+  doctorsData,}) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
   const [filters, setFilters] = useState({
     searchTerm: "",
     selectedHospital: null,
+    selectedUser: null,
     selectedDoctor: null,
     fromDate: "",
     toDate: "",
@@ -48,21 +53,23 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
   }, [debouncedSearchTerm]);
 
   const {
-    data: doctorData = [],
+    data: reviewData = [],
     isLoading,
     error,
   } = useQuery({
     queryKey: [
-      "doctors-Report",
+      "home-visit-Report",
       token,
+      filters.selectedUser,
       filters.selectedDoctor,
       filters.selectedHospital,
       filters.fromDate,
       filters.toDate,
     ],
     queryFn: () =>
-      getDocotrReport({
+        getHomeVisitReport({
         token,
+        user_id: filters.selectedUser,
         doctor_id: filters.selectedDoctor,
         hospital_id: filters.selectedHospital,
         from_date: filters.fromDate,
@@ -71,35 +78,47 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
     enabled: !!token,
   });
 
+  // Fetch auxiliary data (users, hospitals, doctors)
+
+
+
+
+
+  const userOptions = useMemo(
+    () => usersData.map((user) => ({ value: user.id, label: user.name })),
+    [usersData]
+  );
+
   const doctorOptions = useMemo(
     () =>
-      doctorsData?.map((doctor) => ({ value: doctor.id, label: doctor.name })),
+      doctorsData.map((doctor) => ({ value: doctor.id, label: doctor.name })),
     [doctorsData]
   );
 
   const hospitalOptions = useMemo(
     () =>
-      hospitalsData?.map((hospital) => ({
+      hospitalsData.map((hospital) => ({
         value: hospital.id,
         label: hospital.name,
       })),
     [hospitalsData]
   );
 
+  // Memoize filtered data
   const filteredData = useMemo(() => {
-    if (!Array.isArray(doctorData)) return [];
+    if (!Array.isArray(reviewData)) return [];
 
-    return doctorData.filter((review) => {
+    return reviewData.filter((review) => {
       const matchesSearch =
         !filters.searchTerm ||
-        review.doctor_name
+        review.service_name
           ?.toLowerCase()
           .includes(filters.searchTerm.toLowerCase());
       const matchesUser =
         !filters.selectedUser || review.user_id === filters.selectedUser;
       return matchesSearch && matchesUser;
     });
-  }, [doctorData, filters.searchTerm, filters.selectedUser]);
+  }, [reviewData, filters.searchTerm, filters.selectedUser]);
 
   const totalPages = Math.ceil(filteredData.length / statesPerPage) || 1;
   const currentStates = useMemo(
@@ -138,8 +157,8 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <FaUserDoctor size={30} className="text-[#3CAB8B]" />
-        {t("doctorReport")}
+        <FaHome   size={30} className="text-[#3CAB8B]" />
+        {t("homevisitReport")}
       </p>
       <input
         type="text"
@@ -149,7 +168,17 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div className="flex xl:flex-row flex-col gap-4">
-        <div className="xl:w-1/2 w-full">
+        <div className="xl:w-1/3 w-full">
+          <OneSelectDropdown
+            options={userOptions}
+            onChange={(value) => handleFilterChange("selectedUser", value)}
+            selectedValues={filters.selectedUser ? [filters.selectedUser] : []}
+            placeholder={t("selectUser")}
+            searchPlaceholder={t("search")}
+            fallbackMessage={t("noUsersFound")}
+          />
+        </div>
+        <div className="xl:w-1/3 w-full">
           <OneSelectDropdown
             options={doctorOptions}
             onChange={(value) => handleFilterChange("selectedDoctor", value)}
@@ -161,7 +190,7 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
             fallbackMessage={t("noUsersFound")}
           />
         </div>
-        <div className="xl:w-1/2 w-full">
+        <div className="xl:w-1/3 w-full">
           <OneSelectDropdown
             options={hospitalOptions}
             onChange={(value) => handleFilterChange("selectedHospital", value)}
@@ -207,9 +236,11 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
         </div>
       </div>
       <DocotrReportTable
-        translation="doctor"
+            translation="users"
         currentStates={currentStates}
-        isLoading={isLoading}
+        isLoading={
+          isLoading 
+        }
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination
@@ -225,4 +256,4 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
   );
 };
 
-export default DoctorReport;
+export default HomeVisitReporteport;

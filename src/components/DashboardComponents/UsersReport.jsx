@@ -1,12 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
-import {
-  getAllDoctors,
-  getAllHospitals,
-  getAllUsers,
-  getUsersReport,
-} from "../../utlis/https";
+import { getUsersReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
@@ -29,7 +25,7 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const UsersReport = () => {
+const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -66,7 +62,7 @@ const UsersReport = () => {
       filters.toDate,
     ],
     queryFn: () =>
-        getUsersReport({
+      getUsersReport({
         token,
         user_id: filters.selectedUser,
         doctor_id: filters.selectedDoctor,
@@ -78,20 +74,6 @@ const UsersReport = () => {
   });
 
   // Fetch auxiliary data (users, hospitals, doctors)
-  const { data: usersData = [], isLoading: usersIsLoading } = useQuery({
-    queryKey: ["users-Data"],
-    queryFn: getAllUsers,
-  });
-
-  const { data: hospitalsData = [], isLoading: hospitalsIsLoading } = useQuery({
-    queryKey: ["Hospitals-Data"],
-    queryFn: getAllHospitals,
-  });
-
-  const { data: doctorsData = [], isLoading: doctorsIsLoading } = useQuery({
-    queryKey: ["Doctors-Data"],
-    queryFn: getAllDoctors,
-  });
 
   const userOptions = useMemo(
     () => usersData.map((user) => ({ value: user.id, label: user.name })),
@@ -166,7 +148,7 @@ const UsersReport = () => {
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <FaUsers  size={30} className="text-[#3CAB8B]" />
+        <FaUsers size={30} className="text-[#3CAB8B]" />
         {t("usersReport")}
       </p>
       <input
@@ -245,11 +227,9 @@ const UsersReport = () => {
         </div>
       </div>
       <DocotrReportTable
-            translation="users"
+        translation="users"
         currentStates={currentStates}
-        isLoading={
-          isLoading || usersIsLoading || hospitalsIsLoading || doctorsIsLoading
-        }
+        isLoading={isLoading}
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination

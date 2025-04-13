@@ -6,15 +6,36 @@ import CancelledReport from "../components/DashboardComponents/CancelledReport";
 import DoctorReport from "../components/DashboardComponents/DoctorReport";
 import HospitalsReport from "../components/DashboardComponents/HospitalsReport";
 import UsersReport from "../components/DashboardComponents/UsersReport";
+import HomeVisitReporteport from "../components/DashboardComponents/HomeVisitReporteport";
+import { useQuery } from "@tanstack/react-query";
+import { getAllHospitals ,getAllUsers ,getAllDoctors ,getAllHomeVisit } from "../utlis/https";
+import Loader from "./Loader";
 const Dashboard = () => {
   const { i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
+  const { data: hospitalsData = [], isLoading: hospitalsIsLoading } = useQuery({
+    queryKey: ["Hospitals-Data"],
+    queryFn: getAllHospitals,
+  });
+
+  const { data: usersData, isLoading: usersIsLoading } = useQuery({
+    queryKey: ["users-Data"],
+    queryFn: () => getAllUsers(),
+  });
+  const { data: DoctorsData, isLoading: DoctorsIsLoading } = useQuery({
+    queryKey: ["Doctors-Data"],
+    queryFn: () => getAllDoctors(),
+  });
+  const { data: HomeVisitData, isLoading: HomeVisitIsLoading } = useQuery({
+    queryKey: ["HomeVisit-Data"],
+    queryFn: () => getAllHomeVisit(),
+  });
 
   const reverseSmallGridCols =
     direction === "rtl"
-      ? "lg:grid-cols-6 lg:flex-row-reverse"
-      : "lg:grid-cols-6";
-
+      ? "xl:grid-cols-6 xl:flex-row-reverse"
+      : "xl:grid-cols-6";
+      if (hospitalsIsLoading || usersIsLoading || DoctorsIsLoading || HomeVisitIsLoading) return <Loader />;
   return (
     <>
       <section className="container mx-auto p-4">
@@ -23,27 +44,38 @@ const Dashboard = () => {
             <TodaySales />
           </div>
           <div
-            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}>
-            <div className="col-span-1 lg:col-span-3 bg-white  rounded-[20px] shadow-sm">
-              <HospitalsReport />
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
+          >
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
+              <HospitalsReport hospitalsData={hospitalsData} />
             </div>
-            <div className="col-span-1 lg:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
-              <UsersReport/>
-            </div>
-          </div>
-          <div className=" bg-white  rounded-[20px] shadow-sm">
-            <CancelledReport />
-          </div>
-          <div className=" bg-white  rounded-[20px] shadow-sm">
-            <ReviewsReport />
-          </div>
-          <div
-            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}>
-            <div className="col-span-1 lg:col-span-3 bg-white  rounded-[20px] shadow-sm">
+            <div className="col-span-1 xl:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
               <StateAndCitiesReport />
             </div>
-            <div className="col-span-1 lg:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
-              <DoctorReport/>
+          </div>
+          <div className=" bg-white  rounded-[20px] shadow-sm">
+            <ReviewsReport HomeVisitData={HomeVisitData} DoctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+          </div>
+
+          <div
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
+          >
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
+              <CancelledReport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+            </div>
+            <div className="col-span-1 xl:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
+              <HomeVisitReporteport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+            </div>
+          </div>
+
+          <div
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
+          >
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
+              <UsersReport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+            </div>
+            <div className="col-span-1 xl:col-span-3 bg-white p-4 rounded-[20px] shadow-sm">
+              <DoctorReport hospitalsData={HomeVisitData} doctorsData={DoctorsData}  HospitalsData={hospitalsData} />
             </div>
           </div>
         </div>

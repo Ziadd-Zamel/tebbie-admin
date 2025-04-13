@@ -1,20 +1,20 @@
+/* eslint-disable react/prop-types */
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
-import {
-  getAllDoctors,
-  getAllHomeVisit,
-  getAllHospitals,
-  getAllUsers,
-  getReviewsReport,
-} from "../../utlis/https";
+import { getReviewsReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import { MdRateReview } from "react-icons/md";
 import OneSelectDropdown from "../OneSelectDropdown";
 import ReviewsReportTable from "./ReviewsReportTable";
 
-const ReviewsReport = () => {
+const ReviewsReport = ({
+  HospitalsData,
+  usersData,
+  DoctorsData,
+  HomeVisitData,
+}) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -47,24 +47,6 @@ const ReviewsReport = () => {
     enabled: !!token,
   });
 
-  const { data: usersData, isLoading: usersIsLoading } = useQuery({
-    queryKey: ["users-Data"],
-    queryFn: () => getAllUsers(),
-  });
-
-  const { data: HospitalsData, isLoading: HospitalsIsLoading } = useQuery({
-    queryKey: ["Hospitals-Data"],
-    queryFn: () => getAllHospitals(),
-  });
-  const { data: DoctorsData, isLoading: DoctorsIsLoading } = useQuery({
-    queryKey: ["Doctors-Data"],
-    queryFn: () => getAllDoctors(),
-  });
-  const { data: HomeVisitData, isLoading: HomeVisitIsLoading } = useQuery({
-    queryKey: ["HomeVisit-Data"],
-    queryFn: () => getAllHomeVisit(),
-  });
-
   // خيارات المستخدمين
   const userOptions = useMemo(() => {
     if (!usersData) return [];
@@ -91,7 +73,7 @@ const ReviewsReport = () => {
         return t("selectReviewableId");
     }
   };
-  
+
   const reviewableIdOptions = useMemo(() => {
     if (!selectedType) return [];
     switch (selectedType) {
@@ -219,13 +201,7 @@ const ReviewsReport = () => {
 
       <ReviewsReportTable
         currentStates={currentStates || {}}
-        isLoading={
-          isLoading ||
-          usersIsLoading ||
-          HospitalsIsLoading ||
-          DoctorsIsLoading ||
-          HomeVisitIsLoading
-        }
+        isLoading={isLoading}
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination

@@ -74,6 +74,7 @@ const resources = {
       hospitalDeleted: "hospital has been deleted successfully ",
       successfully_added: "successfully added",
       homevisit: "Home visit",
+      homevisitReport: "Home Visit Report",
       visit_time: "visit time",
       hospitalimages: "hospital Images",
       AddHospital: "Add hospital",
@@ -241,9 +242,8 @@ const resources = {
       clearFilter: "reset",
       doctorReport : "Doctors Report",
       hospitalReport:"Hospitals Report",
-      usersReport:"Users Report"
-
-
+      usersReport:"Users Report",
+      selectHomeVisit:"select home visit"
     },
   },
   ar: {
@@ -320,6 +320,7 @@ const resources = {
       hospitalDeleted: "تم ازالة المستشفى بنجاح",
       successfully_added: "تم الاضافة بنجاح",
       homevisit: "الزيارة المنزلية",
+      homevisitReport: " تقرير الزيارات المنزلية",
       visit_time: "وقت الزياره",
       hospitalimages: "صور المستشفى",
       AddHospital: "اضافة مستشفى",
@@ -351,7 +352,7 @@ const resources = {
       HospitalName: "اسم المستشفى",
       TotalHospitals: "اجمالى عدد المستشفيات",
       FilterByStatus: "التصفية حسب الحالة",
-      Na: "Na",
+      Na: "لا يوجد",
       trash: "المحذوفات",
       Total: "الاجمالى",
       areYouSureDeleteHospital: "هل أنت متأكد من حذف المستشفى ",
@@ -463,7 +464,7 @@ const resources = {
       GDOP: "توزيع المرضى جغرافيا",
       selectUser: "حدد المستخدم",
       ReviewsReport: "تقرير التقييمات",
-      user_name: "اسم الستحدم",
+      user_name: "اسم المستخدم",
       total_reviews: "اجمالى التقيمات",
       reviews: "التقيمات",
       avg_rating: "متوسط التقيمات",
@@ -484,7 +485,8 @@ const resources = {
       clearFilter:"إعادة تعيين ",
       doctorReport : "تقرير الاطباء",
       hospitalReport:"تقرير المستشفيات",
-      usersReport:"تقرير المستخدمين"
+      usersReport:"تقرير المستخدمين",
+      selectHomeVisit:"حدد الزيارة المنزلية"
 
 
       

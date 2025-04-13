@@ -30,8 +30,6 @@ const StateAndCitiesReport = () => {
     queryFn: () => getStateAndCitiesReport({ token }),
   });
 
-  
-
   const filteredData = useMemo(() => {
     if (!StateAndCitiesData) return [];
     return StateAndCitiesData?.filter((state) =>

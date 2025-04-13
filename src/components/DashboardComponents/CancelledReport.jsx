@@ -1,12 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
-import {
-  getAllDoctors,
-  getAllHospitals,
-  getAllUsers,
-  getCancelledReport,
-} from "../../utlis/https";
+import { getCancelledReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
@@ -29,7 +25,7 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const CancelledReport = () => {
+const CancelledReport = ({ hospitalsData, usersData, doctorsData }) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -75,22 +71,6 @@ const CancelledReport = () => {
         to_date: filters.toDate,
       }),
     enabled: !!token,
-  });
-
-  // Fetch auxiliary data (users, hospitals, doctors)
-  const { data: usersData = [], isLoading: usersIsLoading } = useQuery({
-    queryKey: ["users-Data"],
-    queryFn: getAllUsers,
-  });
-
-  const { data: hospitalsData = [], isLoading: hospitalsIsLoading } = useQuery({
-    queryKey: ["Hospitals-Data"],
-    queryFn: getAllHospitals,
-  });
-
-  const { data: doctorsData = [], isLoading: doctorsIsLoading } = useQuery({
-    queryKey: ["Doctors-Data"],
-    queryFn: getAllDoctors,
   });
 
   const userOptions = useMemo(
@@ -246,9 +226,7 @@ const CancelledReport = () => {
       </div>
       <CancelledReportTable
         currentStates={currentStates}
-        isLoading={
-          isLoading || usersIsLoading || hospitalsIsLoading || doctorsIsLoading
-        }
+        isLoading={isLoading}
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination

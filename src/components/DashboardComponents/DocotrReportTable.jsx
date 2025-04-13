@@ -32,7 +32,7 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
                   data?.user_name ||
                   data?.service_name}
               </td>
-              <td className="py-2 px-6 text-center">{data?.total_count}</td>
+              <td className="py-2 px-6 text-center">{data?.total_count || data?.total_bookings || t("Na")}</td>
             </tr>
           ))
         ) : (

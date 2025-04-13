@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
 import {
-  getAllHospitals,
   getHospitalsReport,
 } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,7 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const HospitalsReport = () => {
+const HospitalsReport = ({hospitalsData}) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -69,16 +69,13 @@ const HospitalsReport = () => {
     enabled: !!token,
   });
 
-  const { data: hospitalsData = [], isLoading: hospitalsIsLoading } = useQuery({
-    queryKey: ["Hospitals-Data"],
-    queryFn: getAllHospitals,
-  });
+
 
 
 
   const hospitalOptions = useMemo(
     () =>
-      hospitalsData.map((hospital) => ({
+      hospitalsData?.map((hospital) => ({
         value: hospital.id,
         label: hospital.name,
       })),
@@ -139,16 +136,16 @@ const HospitalsReport = () => {
         <CiHospital1  size={30} className="text-[#3CAB8B]" />
         {t("hospitalReport")}
       </p>
+    
+      <div className="flex xl:flex-row flex-col gap-4">
       <input
         type="text"
         placeholder={t("search")}
         value={rawSearchTerm}
         onChange={(e) => setRawSearchTerm(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="md:w-1/2 w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <div className="flex xl:flex-row flex-col gap-4">
-
-        <div className="w-full">
+        <div className="md:w-1/2 w-full">
           <OneSelectDropdown
             options={hospitalOptions}
             onChange={(value) => handleFilterChange("selectedHospital", value)}
@@ -196,7 +193,7 @@ const HospitalsReport = () => {
       <DocotrReportTable
       translation="hospital"
         currentStates={currentStates}
-        isLoading={isLoading || hospitalsIsLoading }
+        isLoading={isLoading  }
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination
