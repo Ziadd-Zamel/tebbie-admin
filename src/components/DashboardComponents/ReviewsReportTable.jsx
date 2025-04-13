@@ -102,20 +102,22 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
                             key={index}
                             className="flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow-sm font-semibold"
                           >
-                            <h2 className="mt-2 text-gray-700 text-2xl font-semibold">
-                              {t("user_name")} : {Review.user_name}
-                            </h2>
-
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                {renderStars(review.rating)}
-                              </div>
-
                               <div className="flex items-center justify-end">
                                 <span className="text-sm bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] p-2 text-white rounded-xl font-semibold">
                                   {formatDateTime(review.created_at)}
                                 </span>
                               </div>
+
+                            <h2 className="mt-2 text-gray-700 text-2xl font-semibold my-2">
+                              {t("user_name")} : {Review.user_name}
+                            </h2>
+                          
+                            <div className="flex items-center justify-between my-2">
+                              <div className="flex items-center gap-2">
+                                {renderStars(review.rating)}
+                              </div>
+
+                            
                             </div>
                             <p className="mt-2 text-gray-700">
                               {review.comment}
