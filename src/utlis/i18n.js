@@ -239,7 +239,11 @@ const resources = {
       fromDate: "from date",
       toDate: "to date",
       clearFilter: "reset",
-      doctorReport : "doctors report"
+      doctorReport : "Doctors Report",
+      hospitalReport:"Hospitals Report",
+      usersReport:"Users Report"
+
+
     },
   },
   ar: {
@@ -478,7 +482,10 @@ const resources = {
       fromDate: "من تاريخ",
       toDate: "إلى تاريخ",
       clearFilter:"إعادة تعيين ",
-      doctorReport : "تقارير الاطباء"
+      doctorReport : "تقرير الاطباء",
+      hospitalReport:"تقرير المستشفيات",
+      usersReport:"تقرير المستخدمين"
+
 
       
     },

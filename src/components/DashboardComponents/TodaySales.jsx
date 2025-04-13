@@ -50,7 +50,7 @@ const TodaySales = () => {
         <div className="p-6 bg-white border-[2px] shadow-sm border-[#EDF2F7] rounded-[20px]">
           <div className="flex justify-between">
             <div>
-              <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">{t("bookings")}</p>
+              <p className="font-bold text-[#718096] text-lg md:text-2xl mb-5">{t("total_bookings")}</p>
               <span className="font-bold text-3xl">{StatisticsData?.bookings_count || 0}</span>
             </div>
             <div className="size-12 rounded-full bg-gradient-to-bl from-[#4ECDC4] to-[#A3E4E1] flex justify-center items-center">

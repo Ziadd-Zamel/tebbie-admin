@@ -2,14 +2,13 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
 import {
-  getAllDoctors,
   getAllHospitals,
-  getDocotrReport,
+  getHospitalsReport,
 } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
-import { FaUserDoctor } from "react-icons/fa6";
+import { CiHospital1 } from "react-icons/ci";
 import DocotrReportTable from "./DocotrReportTable";
 
 const useDebounce = (value, delay) => {
@@ -28,14 +27,13 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const DoctorReport = () => {
+const HospitalsReport = () => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
   const [filters, setFilters] = useState({
     searchTerm: "",
     selectedHospital: null,
-    selectedDoctor: null,
     fromDate: "",
     toDate: "",
   });
@@ -57,15 +55,13 @@ const DoctorReport = () => {
     queryKey: [
       "doctors-Report",
       token,
-      filters.selectedDoctor,
       filters.selectedHospital,
       filters.fromDate,
       filters.toDate,
     ],
     queryFn: () =>
-      getDocotrReport({
+      getHospitalsReport({
         token,
-        doctor_id: filters.selectedDoctor,
         hospital_id: filters.selectedHospital,
         from_date: filters.fromDate,
         to_date: filters.toDate,
@@ -78,16 +74,7 @@ const DoctorReport = () => {
     queryFn: getAllHospitals,
   });
 
-  const { data: doctorsData = [], isLoading: doctorsIsLoading } = useQuery({
-    queryKey: ["Doctors-Data"],
-    queryFn: getAllDoctors,
-  });
 
-  const doctorOptions = useMemo(
-    () =>
-      doctorsData.map((doctor) => ({ value: doctor.id, label: doctor.name })),
-    [doctorsData]
-  );
 
   const hospitalOptions = useMemo(
     () =>
@@ -104,7 +91,7 @@ const DoctorReport = () => {
     return doctorData.filter((review) => {
       const matchesSearch =
         !filters.searchTerm ||
-        review.doctor_name
+        review.hospital_name
           ?.toLowerCase()
           .includes(filters.searchTerm.toLowerCase());
       const matchesUser =
@@ -137,7 +124,6 @@ const DoctorReport = () => {
       searchTerm: "",
       selectedHospital: null,
       selectedUser: null,
-      selectedDoctor: null,
       fromDate: "",
       toDate: "",
     });
@@ -150,8 +136,8 @@ const DoctorReport = () => {
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <FaUserDoctor size={30} className="text-[#3CAB8B]" />
-        {t("doctorReport")}
+        <CiHospital1  size={30} className="text-[#3CAB8B]" />
+        {t("hospitalReport")}
       </p>
       <input
         type="text"
@@ -161,19 +147,8 @@ const DoctorReport = () => {
         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <div className="flex xl:flex-row flex-col gap-4">
-        <div className="xl:w-1/2 w-full">
-          <OneSelectDropdown
-            options={doctorOptions}
-            onChange={(value) => handleFilterChange("selectedDoctor", value)}
-            selectedValues={
-              filters.selectedDoctor ? [filters.selectedDoctor] : []
-            }
-            placeholder={t("select_doctor")}
-            searchPlaceholder={t("search")}
-            fallbackMessage={t("noUsersFound")}
-          />
-        </div>
-        <div className="xl:w-1/2 w-full">
+
+        <div className="w-full">
           <OneSelectDropdown
             options={hospitalOptions}
             onChange={(value) => handleFilterChange("selectedHospital", value)}
@@ -219,9 +194,9 @@ const DoctorReport = () => {
         </div>
       </div>
       <DocotrReportTable
-            translation="doctor"
+      translation="hospital"
         currentStates={currentStates}
-        isLoading={isLoading || hospitalsIsLoading || doctorsIsLoading}
+        isLoading={isLoading || hospitalsIsLoading }
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination
@@ -237,4 +212,4 @@ const DoctorReport = () => {
   );
 };
 
-export default DoctorReport;
+export default HospitalsReport;

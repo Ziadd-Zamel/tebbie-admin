@@ -2760,7 +2760,7 @@ export const getDocotrReport= async ({ token,  doctor_id, hospital_id ,from_date
 };
 export const getHospitalsReport= async ({ token, hospital_id ,from_date ,to_date }) => {
   try {
-    let url = `${API_URL}/dashboard/v1/get-doctor-report`;
+    let url = `${API_URL}/dashboard/v1/get-hospital-report`;
     const params = [];
    
   
@@ -2811,5 +2811,49 @@ export const getGeneralStatistics = async () => {
     }
   } catch (error) {
     throw error;
+  }
+};
+export const getUsersReport = async ({ token, user_id, doctor_id, hospital_id ,from_date ,to_date }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/get-user-report`;
+    const params = [];
+    if (user_id) {
+      params.push(`user_id=${user_id}`);
+    }
+    if (doctor_id) {
+      params.push(`doctor_id=${doctor_id}`);
+    }
+    if (hospital_id) {
+      params.push(`hospital_id=${hospital_id}`);
+    }
+    
+   
+    if (from_date) {
+      params.push(`from_date=${from_date}`);
+    }
+    if (to_date) {
+      params.push(`to_date=${to_date}`);
+    }
+    if (params.length > 0) {
+      url += `?${params.join('&')}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch reviews report: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getReviewsReport: ${error.message}`);
   }
 };
