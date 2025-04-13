@@ -243,7 +243,16 @@ const resources = {
       doctorReport : "Doctors Report",
       hospitalReport:"Hospitals Report",
       usersReport:"Users Report",
-      selectHomeVisit:"select home visit"
+      selectHomeVisit:"select home visit",
+      showAll: "Show All",
+      next30Days: "Next 30 Days",
+      next60Days: "Next 60 Days",
+      next90Days: "Next 90 Days",
+      cardNumber: "Card Number",
+      expireDate: "Expire Date",
+      searchByCardNumber: "Enter card number...",
+      noCardsFound: "No cards match the search.",
+
     },
   },
   ar: {
@@ -486,7 +495,17 @@ const resources = {
       doctorReport : "تقرير الاطباء",
       hospitalReport:"تقرير المستشفيات",
       usersReport:"تقرير المستخدمين",
-      selectHomeVisit:"حدد الزيارة المنزلية"
+      selectHomeVisit:"حدد الزيارة المنزلية",
+      showAll: "عرض الكل",
+      next30Days: "الأيام القادمة (30 يومًا)",
+      next60Days: "الأيام القادمة (60 يومًا)",
+      next90Days: "الأيام القادمة (90 يومًا)",
+      cardNumber: "رقم البطاقة",
+      expireDate: "تاريخ الانتهاء",
+      searchByCardNumber: "أدخل رقم البطاقة...",
+      noCardsFound: "لا توجد بطاقات تطابق البحث.",
+
+
 
 
       

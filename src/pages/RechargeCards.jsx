@@ -84,11 +84,11 @@ const RechargeCards = () => {
   };
 
   return (
-    <section dir={direction} className="container mx-auto p-6 w-full">
-      <div className="flex justify-end gap-2 items-center">
+    <section dir={direction} className="container mx-auto lg:p-6 p-4 w-full">
+      <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
         <Link
           to={"/recharge-card/add-card"}
-          className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
+          className="px-6 py-2 hover:bg-[#048c87]  flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
         >
           {t("AddCard")}
           <IoMdAddCircle />
@@ -101,33 +101,29 @@ const RechargeCards = () => {
           <FaFileExcel />
         </button>
       </div>
-      <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center">
+      <div className="my-4 flex flex-col gap-4 md:flex-row md:items-center">
         <div>
-          <label htmlFor="dateFilter" className="block text-gray-600 mb-2">
-            اختر الفلترة:
-          </label>
+    
           <select
             id="dateFilter"
             value={selectedFilter}
             onChange={(e) => setSelectedFilter(e.target.value)}
             className="w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary "
           >
-            <option value="">عرض الكل</option>
-            <option value="30">الأيام القادمة (30 يومًا)</option>
-            <option value="60">الأيام القادمة (60 يومًا)</option>
-            <option value="90">الأيام القادمة (90 يومًا)</option>
+          <option value="">{t("showAll")}</option>
+  <option value="30">{t("next30Days")}</option>
+  <option value="60">{t("next60Days")}</option>
+  <option value="90">{t("next90Days")}</option>
           </select>
         </div>
         <div className="flex-1">
-          <label htmlFor="search" className="block text-gray-600 mb-2">
-            ابحث عن البطاقة:
-          </label>
+   
           <input
             type="text"
             id="search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="أدخل رقم البطاقة..."
+            placeholder={t("searchByCardNumber")}
             className="  w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
           />
         </div>
@@ -137,11 +133,9 @@ const RechargeCards = () => {
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-start">#</th>
-              <th className="py-3 px-6 text-left">رقم البطاقة</th>
-              <th className="py-3 px-6 text-left whitespace-nowrap">
-                تاريخ الانتهاء
-              </th>
-              <th className="py-3 px-6 text-left">السعر</th>
+              <th className="py-3 px-6 text-left">{t("cardNumber")}</th>
+    <th className="py-3 px-6 text-left">{t("expireDate")}</th>
+              <th className="py-3 px-6 text-left">{t("price")} </th>
             </tr>
           </thead>
           <tbody className="text-gray-600 md:text-lg text-md font-light">
@@ -165,7 +159,8 @@ const RechargeCards = () => {
                   colSpan="4"
                   className="text-center py-4 text-gray-500 text-lg"
                 >
-                  لا توجد بطاقات تطابق البحث .
+                       {t("noCardsFound")}
+
                 </td>
               </tr>
             )}
