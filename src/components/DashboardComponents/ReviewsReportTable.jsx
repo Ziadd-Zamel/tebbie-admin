@@ -42,7 +42,8 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
   };
 
   return (
-    <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
+    <div className="overflow-x-auto md:w-full w-[90vw]">
+      <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
       <thead>
         <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
           <th className="py-3 px-6 text-center">{t("user_name")}</th>
@@ -132,6 +133,7 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
         )}
       </tbody>
     </table>
+  </div>
   );
 };
 

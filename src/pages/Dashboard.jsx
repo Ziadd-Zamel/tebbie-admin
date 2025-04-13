@@ -15,7 +15,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <section className="container mx-auto lg:p-3 md:p-3 p-4">
+      <section className="container mx-auto p-4">
         <div dir={direction} className="w-full flex flex-col gap-4 ">
           <div>
             <TodaySales />
@@ -27,8 +27,7 @@ const Dashboard = () => {
             <ReviewsReport />
           </div>
           <div
-            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}
-          >
+            className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6`}>
             <div className="col-span-1 md:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <StateAndCitiesReport />
             </div>
