@@ -252,6 +252,7 @@ const resources = {
       expireDate: "Expire Date",
       searchByCardNumber: "Enter card number...",
       noCardsFound: "No cards match the search.",
+      errorFetchingData: "An error occurred while fetching data."
 
     },
   },
@@ -504,11 +505,10 @@ const resources = {
       expireDate: "تاريخ الانتهاء",
       searchByCardNumber: "أدخل رقم البطاقة...",
       noCardsFound: "لا توجد بطاقات تطابق البحث.",
+      errorFetchingData: "حدث خطأ أثناء جلب البيانات."
 
 
-
-
-      
+ 
     },
   },
 };

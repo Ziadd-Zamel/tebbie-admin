@@ -72,7 +72,7 @@ const HospitalDetails = () => {
   if (error) return <div className="text-red-500">{t("errorLoadingData")}</div>;
 
   return (
-    <section className="container mx-auto px-4 py-12">
+    <section className="container mx-auto  py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ const HospitalDetails = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl font-bold text-white tracking-tight"
+            className="lg:text-4xl text-3xl font-bold text-white tracking-tight"
           >
             {hospital.name}
           </motion.h2>
@@ -173,7 +173,7 @@ const HospitalDetails = () => {
             <h3 className="text-2xl font-semibold text-gray-900 my-4">
               {t("images")}
             </h3>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-4">
               {Array.isArray(hospital.media_url) &&
               hospital.media_url.length > 0 ? (
                 hospital.media_url.map((url, index) => (

@@ -26,6 +26,7 @@ const DoctorDetails = () => {
   const {
     data: doctorData,
     error,
+    isError,
     isLoading,
   } = useQuery({
     queryKey: ["doctor-details", doctorId],
@@ -59,9 +60,13 @@ const DoctorDetails = () => {
     return <Loader />;
   }
 
-  if (error) {
+  if (isError) {
     return (
-      <div className="text-red-500 text-center py-4">{t("errorFetchingData")}</div>
+      <div className="text-red-500 text-center py-4 h-[60vh] flex justify-center items-center text-2xl"> 
+      <p>
+      {t("errorFetchingData")}
+      </p>
+      </div>
     );
   }
 
