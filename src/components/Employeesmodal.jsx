@@ -10,6 +10,7 @@ import { IoCamera } from "react-icons/io5";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import MultiSelectDropdown from "./MultiSearchSelector";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
   const [imagePreview, setImagePreview] = useState(null);
@@ -25,7 +26,11 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
     queryKey: ["hospitalData", token],
     queryFn: () => getHospitals({ token }),
   });
-
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = (event) => {
+    event.preventDefault();
+    setShowPassword(!showPassword);
+  };
   const validationSchema = Yup.object({
     name: Yup.string().required(t("nameRequired")),
     email: Yup.string().email(t("invalidEmail")).required(t("emailRequired")),
@@ -89,7 +94,7 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
     const file = event.target.files[0];
     if (file) {
       setImagePreview(URL.createObjectURL(file));
-      setFieldValue("media", file); 
+      setFieldValue("media", file);
     }
   };
 
@@ -113,7 +118,6 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
           }}
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
-         
             const userData = {
               name: values.name,
               email: values.email,
@@ -208,7 +212,7 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                 />
               </div>
 
-              <div className="my-5">
+              <div className="my-5 relative">
                 <label
                   className="block almarai-semibold mb-4"
                   htmlFor="password"
@@ -221,6 +225,13 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                   placeholder={t("password")}
                   className="border border-gray-100 rounded-xl py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
                 />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute  top-1/2 end-4 transform translate-y-1/2 text-gray-500 text-xl"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
                 <ErrorMessage
                   name="password"
                   component="div"
@@ -289,7 +300,7 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                   disabled={isSubmitting || mutation.isLoading}
                   className="px-6 py-2 hover:bg-[#048c87] w-32 flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center disabled:opacity-50"
                 >
-                  {t("save")}
+                  {t("add")}
                 </button>
               </div>
             </Form>

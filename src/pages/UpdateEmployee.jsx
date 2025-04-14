@@ -18,8 +18,9 @@ import MultiSelectDropdown from "..//components/MultiSearchSelector";
 
 const UpdateEmployee = () => {
   const token = localStorage.getItem("authToken");
-  const { i18n ,t } = useTranslation();
-  const direction = i18n.language === "ar" ? "rtl" : "ltr";  const { empId } = useParams();
+  const { i18n, t } = useTranslation();
+  const direction = i18n.language === "ar" ? "rtl" : "ltr";
+  const { empId } = useParams();
   const [imagePreview, setImagePreview] = useState(null);
   const queryClient = useQueryClient();
 
@@ -33,23 +34,25 @@ const UpdateEmployee = () => {
       queryKey: ["specializations"],
       queryFn: () => getSpecializations({ token }),
     });
-    const hospitalOptions = hospitalData?.map((data) => ({
+  const hospitalOptions =
+    hospitalData?.map((data) => ({
       value: data.id,
       label: data.name,
     })) || [];
-  
-    const specializationOptions = specializations?.map((data) => ({
+
+  const specializationOptions =
+    specializations?.map((data) => ({
       value: data.id,
       label: data.name,
     })) || [];
-  
-    const handleHospitalChange = (value) => {
-      formik.setFieldValue("hospital_id", value);
-    };
-  
-    const handleSpecializationChange = (value) => {
-      formik.setFieldValue("specialization_id", value);
-    };
+
+  const handleHospitalChange = (value) => {
+    formik.setFieldValue("hospital_id", value);
+  };
+
+  const handleSpecializationChange = (value) => {
+    formik.setFieldValue("specialization_id", value);
+  };
   const {
     data: initialData,
     isLoading,
@@ -65,14 +68,15 @@ const UpdateEmployee = () => {
   };
   // Validation schema using Yup
   const validationSchema = Yup.object({
-    name: Yup.string().required("الاسم مطلوب"),
-    email: Yup.string()
-      .email("البريد الإلكتروني غير صحيح")
-      .required("البريد الإلكتروني مطلوب"),
-    phone: Yup.string().required("الهاتف مطلوب"),
-    hospital_id: Yup.string().required("المستشفى مطلوب"),
-    specialization_id: Yup.string().required("التخصص مطلوب"),
-    password: Yup.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل"),
+    name: Yup.string().required(t("nameRequired")),
+    email: Yup.string().email(t("invalidEmail")).required(t("emailRequired")),
+    phone: Yup.string()
+      .matches(/^[0-9]+$/, t("phoneMustBeNumeric"))
+      .min(10, t("phoneTooShort"))
+      .required(t("phoneRequired")),
+    hospital_id: Yup.string().required(t("hospitalRequired")),
+    specialization_id: Yup.string().required(t("specializationRequired")),
+    password: Yup.string().min(6, t("passwordTooShort")),
   });
 
   const formik = useFormik({
@@ -109,7 +113,6 @@ const UpdateEmployee = () => {
       });
       setImagePreview(initialData.media_url || null);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [empId, initialData]);
 
   const handleImageChange = (e) => {
@@ -127,14 +130,40 @@ const UpdateEmployee = () => {
 
       toast.success("تم تعديل بيانات الموظف بنجاح");
     },
-    onError: () => toast.error("حدث خطأ اثناء تعديل البيانات"),
+    onError: (error) => {
+      if (error.errors) {
+        const fieldErrors = error.errors;
+
+        const emailError = fieldErrors.email?.[0];
+        const phoneError = fieldErrors.phone?.[0];
+
+        if (emailError) {
+          toast.error(emailError);
+        }
+        if (phoneError) {
+          toast.error(phoneError);
+        }
+        if (!emailError && !phoneError) {
+          toast.error(t("employeeAddFailed", { error: error.message }));
+        }
+      } else {
+        toast.error(
+          t("employeeAddFailed", {
+            error: error.message || "Unknown error occurred",
+          })
+        );
+      }
+    },
   });
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
 
   return (
-    <section dir={direction}  className="container mx-auto p-4 w-full flex justify-center items-center">
+    <section
+      dir={direction}
+      className="container mx-auto p-4 w-full flex justify-center items-center"
+    >
       <form
         onSubmit={formik.handleSubmit}
         className="space-y-4 bg-white p-8 rounded-3xl shadow w-full max-w-xl"
@@ -225,7 +254,9 @@ const UpdateEmployee = () => {
           <MultiSelectDropdown
             options={hospitalOptions}
             onChange={handleHospitalChange}
-            selectedValues={formik.values.hospital_id ? [formik.values.hospital_id] : []}
+            selectedValues={
+              formik.values.hospital_id ? [formik.values.hospital_id] : []
+            }
             placeholder={t("select_hospital")}
             searchPlaceholder={t("search")}
             fallbackMessage={t("no_hospitals_found")}
@@ -247,17 +278,22 @@ const UpdateEmployee = () => {
             <MultiSelectDropdown
               options={specializationOptions}
               onChange={handleSpecializationChange}
-              selectedValues={formik.values.specialization_id ? [formik.values.specialization_id] : []}
+              selectedValues={
+                formik.values.specialization_id
+                  ? [formik.values.specialization_id]
+                  : []
+              }
               placeholder={t("select_specialization")}
               searchPlaceholder={t("search")}
               fallbackMessage={t("no_specializations_found")}
             />
           )}
-          {formik.touched.specialization_id && formik.errors.specialization_id && (
-            <div className="text-red-500 text-sm mt-1">
-              {formik.errors.specialization_id}
-            </div>
-          )}
+          {formik.touched.specialization_id &&
+            formik.errors.specialization_id && (
+              <div className="text-red-500 text-sm mt-1">
+                {formik.errors.specialization_id}
+              </div>
+            )}
         </div>
 
         <div className="relative">

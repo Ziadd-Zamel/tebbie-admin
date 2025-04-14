@@ -2080,7 +2080,7 @@ export const newEmployee = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw result; // Throw the full result object instead of just the message
+      throw result;
     }
 
     return result.data;
@@ -2132,7 +2132,7 @@ export const updateEmployee = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message);
+      throw result; 
     }
 
     return result.data;
