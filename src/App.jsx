@@ -49,6 +49,7 @@ import { UserProvider } from "./chatcontext/UserContext";
 import HospitalLayout from "./pages/HospitalLayout";
 import Refunds from "./pages/Refunds";
 import RefundsDetails from "./pages/RefundsDetails";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -174,7 +175,10 @@ const router = createBrowserRouter([
               { path: ":refundsId", element: <RefundsDetails /> },
             ],
           },
-
+          {
+            path: "*",
+            element: <NotFound />,
+          }
         ],
       },
     ],
