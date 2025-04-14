@@ -16,7 +16,7 @@ const CustomModal = ({ isOpen, onClose, title, children }) => {
       onClick={onClose}
     >
       <div
-        className={`bg-[#FFFFFF]  rounded-3xl max-w-2xl  w-full transform transition-transform duration-300 h-[80vh] overflow-auto scrollbar-hide  ${
+        className={`bg-[#FFFFFF]  rounded-3xl max-w-2xl  w-full transform transition-transform duration-300 max-h-[80vh] overflow-y-auto  ${
           isOpen ? "scale-100" : "scale-95"
         }`}
         onClick={(e) => e.stopPropagation()}

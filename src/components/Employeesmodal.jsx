@@ -242,7 +242,7 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                     values.hospital_id ? [values.hospital_id] : []
                   }
                   placeholder={t("selectHospital")}
-                  searchPlaceholder={t("search_hospitals")}
+                  searchPlaceholder={t("search")}
                   fallbackMessage={t("no_hospitals_found")}
                 />
                 <ErrorMessage
@@ -271,8 +271,8 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                     selectedValues={
                       values.specialization_id ? [values.specialization_id] : []
                     }
-                    placeholder={t("selectSpecialization")}
-                    searchPlaceholder={t("search_specializations")}
+                    placeholder={t("select_specialization")}
+                    searchPlaceholder={t("selectSpecialization")}
                     fallbackMessage={t("no_specializations_found")}
                   />
                 )}

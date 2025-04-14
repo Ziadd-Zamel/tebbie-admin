@@ -58,7 +58,7 @@ const resources = {
       select_doctor: "select doctor",
       select_city: "select city",
       specializations: "specializations",
-      select_specialization: "select specialization",
+     " select_specialization": "select specialization",
       viewDetailsDoc: "view Doctor detials",
       visitor: "visitor",
       notvisitor: "not a visitor",

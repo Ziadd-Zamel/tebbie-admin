@@ -1,5 +1,5 @@
 import Loader from "./Loader";
-import {  getTrashedCity, getTrashedState, restoreCity, restoreHospital, restoreState } from "../utlis/https";
+import {  getTrashedCity, restoreCity, } from "../utlis/https";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaUndo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -41,9 +41,9 @@ const TrashedCity = () => {
 
    if (!cityData?.length) {
     return (
-      <div className="text-gray-600 text-center text-xl py-4 h-full flex justify-center items-center">
+      <div className="text-gray-600 text-center text-2xl py-4 h-[60vh] flex justify-center items-center">
         <p>
-        لا توجد الولايات محذوفة لعرضها.
+        لا توجد مدن محذوفة لعرضها.
         </p>
       </div>
     );

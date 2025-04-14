@@ -41,9 +41,9 @@ const TrashedState = () => {
 
    if (!stateData?.length) {
     return (
-      <div className="text-gray-600 text-center text-xl py-4 h-full flex justify-center items-center">
+      <div className="text-gray-600 text-center py-4 text-2xl h-[60vh] flex justify-center items-center">
         <p>
-        لا توجد الولايات محذوفة لعرضها.
+        لا توجد ولاايات محذوفة لعرضها.
         </p>
       </div>
     );

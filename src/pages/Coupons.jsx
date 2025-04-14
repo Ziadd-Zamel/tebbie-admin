@@ -371,7 +371,7 @@ const Coupons = () => {
             totalPages={totalPages}
             onPageChange={(newPage) => setCurrentPage(newPage)}
           />
-          <p className="text-2xl text-gray-500 text-end">
+        <p className="lg:text-2xl text-xl text-gray-500 text-end">
             {t("Total")}: {filteredCoupons.length}
           </p>
         </div>

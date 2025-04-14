@@ -33,7 +33,7 @@ const MultiSelectDropdown = ({ doctors, selectedDoctors, handleDoctorChange ,tra
           .map((id) => doctors.find((doctor) => doctor.id === id)?.name)
           .join(", ")
       }
-      className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
+      className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full z-50"
     >
       <MenuItem disabled value="">
         {t(`${translation}`)}

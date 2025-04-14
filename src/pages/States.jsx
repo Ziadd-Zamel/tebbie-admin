@@ -24,7 +24,8 @@ const States = () => {
   const [newStateName, setNewStateName] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
   
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
   const {
     data: statesData,
@@ -126,14 +127,14 @@ const States = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <section className="container mx-auto p-6">
+    <section  dir={direction}  className="container mx-auto p-6">
       <div className="overflow-x-auto ">
         <div className="flex justify-end my-4">
           <Link
             to={"/states/trashed-state"}
             className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
           >
-            trash
+              {t("trash")}
             <IoTrashSharp />
           </Link>
         </div>
@@ -141,8 +142,8 @@ const States = () => {
         <table className="min-w-full bg-white border border-gray-200 rounded-lg">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">#</th>
-              <th className="py-3 px-6 text-left"> {t("name")}</th>
+              <th className="py-3 px-6 text-start">#</th>
+              <th className="py-3 px-6 text-start"> {t("name")}</th>
               <th className="py-3 px-6 text-center">{t("Actions")}</th>
             </tr>
           </thead>
@@ -152,10 +153,10 @@ const States = () => {
                 key={state.id}
                 className="border-b border-gray-200 hover:bg-gray-100 text-lg"
               >
-                <td className="py-3 px-6 text-left whitespace-nowrap">
+                <td className="py-3 px-6 text-start whitespace-nowrap">
                   {state.id}
                 </td>
-                <td className="py-3 px-6 text-left">
+                <td className="py-3 px-6 text-start">
                   {editableId === state.id ? (
                     <input
                       type="text"
@@ -168,7 +169,7 @@ const States = () => {
                   )}
                 </td>
                 <td className="py-3 px-6 text-center">
-                  <div className="flex justify-center items-center space-x-4">
+                  <div className="flex justify-center items-center gap-4">
                     {editableId === state.id ? (
                       <button
                         className="text-green-500 hover:text-green-700 focus:outline-none"
@@ -195,8 +196,8 @@ const States = () => {
               </tr>
             ))}
             <tr className="hover:bg-gray-100 text-lg">
-              <td className="py-3 px-6 text-left whitespace-nowrap">New</td>
-              <td className="py-3 px-6 text-left">
+              <td className="py-3 px-6 text-start whitespace-nowrap">{t("new")}</td>
+              <td className="py-3 px-6 text-start">
                 <input
                   type="text"
                   placeholder="Enter new state name"
@@ -217,13 +218,13 @@ const States = () => {
           </tbody>
         </table>
       </div>
-           <div className="flex justify-between items-end mt-4">
+           <div className="flex justify-between items-center mt-4">
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
                   onPageChange={handlePageChange}
                 />
-                <p className="text-2xl text-gray-500 text-end">
+                <p className="text-2xl text-gray-500 text-start">
                   {t("Total")} : {statesData.length}
                 </p>
               </div>

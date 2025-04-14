@@ -63,7 +63,7 @@ const Sliders = () => {
 
   return (
     <section className="container mx-auto py-8">
-      <div className="mx-10 flex justify-start items-center">
+      <div className=" flex md:justify-start justify-center items-center">
         <Link
           to={"/sliders/add-slider"}
           className="flex justify-center items-center text-xl gap-2 bg-primary hover:bg-[#5CB2AF] text-white py-2 px-4 rounded-lg w-44 my-4"

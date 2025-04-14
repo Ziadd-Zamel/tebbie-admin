@@ -103,13 +103,13 @@ export const therestofSidebarLinks = [
   return (
     <aside
   dir={direction}
-  className={`font-almarai almarai-medium bg-[#FFFFFF] text-black p-4  lg:flex hidden flex-col justify-between transition-all duration-300 top-0 
-  ${direction === "rtl" ? "right-0" : "left-0"} 
+  className={`font-almarai almarai-medium bg-[#FFFFFF] text-black p-4  lg:flex hidden flex-col transition-all duration-300 top-0 
+  ${direction === "rtl" ? "start-0" : "end-0"} 
   ${isCollapsed ? "w-24" : "w-64"}
 `}
 >
   {/* الجزء العلوي */}
-  <div className="flex flex-col flex-1 ">
+  <div className="flex flex-col  ">
     <div className="space-y-2">
       <div className="flex items-center justify-center m-4 py-2 gap-2 w-full">
         <Link to="/">
@@ -194,9 +194,7 @@ export const therestofSidebarLinks = [
     </div>
   </div>
 
-  <div className="flex justify-end">
         <LogoutDialog isCollapsed={isCollapsed} />
-      </div>
 </aside>
 
   );

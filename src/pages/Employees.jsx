@@ -122,6 +122,7 @@ const Employees = () => {
     );
 
   return (
+   <>
     <section dir={direction} className="container mx-auto py-8">
       <div className="bg-white rounded-3xl md:p-8 p-4 w-full min-h-screen">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
@@ -269,14 +270,16 @@ const Employees = () => {
         </DialogActions>
       </Dialog>
 
-      {isModalOpen && (
+    
+    </section>
+    {isModalOpen && (
         <Employeesmodal
           isModalOpen={isModalOpen}
           setIsModalOpen={setIsModalOpen}
           token={token}
         />
       )}
-    </section>
+   </>
   );
 };
 

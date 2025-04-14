@@ -184,11 +184,16 @@ const RefundsDetails = () => {
             )}
           </tbody>
         </table>
+ <div className="flex justify-between items-end mt-4">
         <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
         />
+        <p className="md:text-2xl text-xl text-gray-500 text-end">
+          {t("Total")}: {refundsData.length}
+        </p>
+      </div>
       </div>
 
       <Dialog
