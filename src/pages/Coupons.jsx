@@ -187,7 +187,7 @@ const Coupons = () => {
 
   return (
     <section dir={direction} className="container mx-auto py-8">
-      <div className="rounded-3xl md:p-8 p-4 bg-white overflow-auto min-h-screen">
+      <div className="rounded-3xl md:p-8 p-4 m-4 bg-white overflow-auto min-h-screen">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
           <input
             type="text"

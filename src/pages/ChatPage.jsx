@@ -161,7 +161,7 @@ const ChatPage = () => {
   return (
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
-        <div className="flex">
+        <div className="flex m-4">
 
           {usersData &&         <UserList users={usersData} selectedUser={selectedUser} onSelectUser={handleUserSelect} />
         }

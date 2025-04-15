@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Loader from "../pages/Loader";
-import ErrorMessage from "../pages/ErrorMessage";
 import { getNotification } from "../utlis/https";
 import { useUser } from "../chatcontext/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -12,12 +11,12 @@ const NotificationDropdown = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const token = localStorage.getItem("authToken");
-  const { setSelectedUser } = useUser(); 
+  const { setSelectedUser } = useUser();
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const {
-    data: notifications,
+    data: notifications = [], // Default to empty array to avoid undefined
     isLoading,
     error,
   } = useQuery({
@@ -29,14 +28,15 @@ const NotificationDropdown = () => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
   const getNotificationDate = (createdAt, language) => {
     const today = new Date();
     const notificationDate = new Date(createdAt);
-  
+
     const diffInTime =
       today.setHours(0, 0, 0, 0) - notificationDate.setHours(0, 0, 0, 0);
     const diffInDays = diffInTime / (1000 * 3600 * 24);
-  
+
     const locale = language === "ar" ? "ar-EG" : "en-US";
 
     if (diffInDays === 0) {
@@ -55,6 +55,7 @@ const NotificationDropdown = () => {
       return notificationDate.toLocaleDateString(locale);
     }
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -67,12 +68,11 @@ const NotificationDropdown = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   const handleNotificationClick = (userId) => {
     setSelectedUser(userId);
-    navigate("/chat"); 
+    navigate("/chat");
   };
-
-  if (error) return <ErrorMessage />;
 
   return (
     <div ref={dropdownRef} dir={direction} className="relative ml-20 z-50">
@@ -85,15 +85,24 @@ const NotificationDropdown = () => {
       {isOpen && (
         <div className="absolute top-full end-0 mt-2 w-[370px] bg-white shadow-lg rounded-xl overflow-hidden z-50 h-96 overflow-y-auto">
           <h1 className="p-6">{t("notification")}</h1>
-          <ul className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200">
             {isLoading ? (
-              <Loader />
+              <div className="flex justify-center items-center h-full">
+                <Loader />
+              </div>
+            ) : error ? (
+              <div className="p-6 text-center text-red-500">
+                {t("errorMessage") || "Failed to load notifications"}
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="p-6 text-center text-gray-500">
+                {t("noNotifications") || "No notifications available"}
+              </div>
             ) : (
               notifications.map((notification) => (
-                <li
+                <div
                   key={notification.id}
                   onClick={() => handleNotificationClick(notification.user_id)}
-
                   className="px-4 py-6 relative hover:bg-Secondary cursor-pointer"
                 >
                   <div className="flex items-center space-x-4 px-4">
@@ -111,12 +120,15 @@ const NotificationDropdown = () => {
                     </div>
                   </div>
                   <span className="absolute top-2 end-2 text-sm text-gray-500">
-                  {getNotificationDate(notification.created_at, i18n.language)}
+                    {getNotificationDate(
+                      notification.created_at,
+                      i18n.language
+                    )}
                   </span>
-                </li>
+                </div>
               ))
             )}
-          </ul>
+          </div>
         </div>
       )}
       <span className="absolute top-2 right-2 w-3 h-3 rounded-full bg-[#EB5757]"></span>

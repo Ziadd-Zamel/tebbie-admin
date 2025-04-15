@@ -154,7 +154,7 @@ const ReviewsReport = ({
   if (error) return <ErrorMessage message={error.message} />;
 
   return (
-    <div className="p-4 flex flex-col gap-4 font-sans bg-white  rounded-[20px] shadow-sm">
+    <div className="p-4 m-4 flex flex-col gap-4 font-sans bg-white  rounded-[20px] shadow-sm">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
         <MdRateReview size={30} className="text-[#3CAB8B]" />
         {t("ReviewsReport")}

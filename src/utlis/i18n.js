@@ -252,7 +252,9 @@ const resources = {
       expireDate: "Expire Date",
       searchByCardNumber: "Enter card number...",
       noCardsFound: "No cards match the search.",
-      errorFetchingData: "An error occurred while fetching data."
+      errorFetchingData: "An error occurred while fetching data.",
+  "errorMessage": "Failed to load notifications",
+  "noNotifications": "No notifications available"
 
     },
   },
@@ -505,7 +507,9 @@ const resources = {
       expireDate: "تاريخ الانتهاء",
       searchByCardNumber: "أدخل رقم البطاقة...",
       noCardsFound: "لا توجد بطاقات تطابق البحث.",
-      errorFetchingData: "حدث خطأ أثناء جلب البيانات."
+      errorFetchingData: "حدث خطأ أثناء جلب البيانات.",
+      "errorMessage": "فشل في تحميل الإشعارات",
+  "noNotifications": "لا توجد إشعارات متاحة"
 
 
  

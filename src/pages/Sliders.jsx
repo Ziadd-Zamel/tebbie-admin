@@ -63,7 +63,7 @@ const Sliders = () => {
 
   return (
     <section className="container mx-auto py-8">
-      <div className=" flex md:justify-start justify-center items-center">
+      <div className=" flex md:justify-start justify-center items-center m-4">
         <Link
           to={"/sliders/add-slider"}
           className="flex justify-center items-center text-xl gap-2 bg-primary hover:bg-[#5CB2AF] text-white py-2 px-4 rounded-lg w-44 my-4"
@@ -72,7 +72,7 @@ const Sliders = () => {
           <IoMdAdd size={30} />
         </Link>
       </div>
-      <div className="flex items-center flex-wrap sm:justify-start justify-center  gap-6 w-full">
+      <div className="flex items-center flex-wrap sm:justify-start justify-center  gap-6 w-full m-4">
         {sliderData.length > 0 ? (
           <>
             {sliderData.map((slider) => (
