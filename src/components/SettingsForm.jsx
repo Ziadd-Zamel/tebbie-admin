@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addSettings, updateSetting } from "../utlis/https";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
@@ -11,7 +11,7 @@ const SettingsForm = ({ initialData = {}, mode = "add" }) => {
   const token = localStorage.getItem("authToken");
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
-
+const navigate = useNavigate()
   const [formState, setFormState] = useState({
     points_for_register: initialData.points_for_register || "",
     points_for_review: initialData.points_for_review || "",
@@ -41,6 +41,7 @@ const SettingsForm = ({ initialData = {}, mode = "add" }) => {
         : updateSetting({ ...data, token });
     },
     onSuccess: () => {
+      navigate("/settings")
       mode === "add"
         ? toast.success(t("settingsAdded"))
         : toast.success(t("settingsUpdated"));

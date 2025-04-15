@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { FaCamera } from 'react-icons/fa';
@@ -13,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import Loader from '../pages/Loader';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import MultiSelectDropdown from './MultiSelectDropdown';
 
 const DoctorSchema = Yup.object().shape({
@@ -32,7 +33,7 @@ const DoctorForm = ({ initialData, mode = 'add', isLoading, error }) => {
   const { doctorId } = useParams();
   const [imagePreview, setImagePreview] = useState(null);
   const direction = i18n.language === 'ar' ? 'rtl' : 'ltr';
-
+  const navigate = useNavigate()
   // Queries
   const { data: specializations, isLoading: specializationsLoading } = useQuery({
     queryKey: ['specializations'],
@@ -52,6 +53,7 @@ const DoctorForm = ({ initialData, mode = 'add', isLoading, error }) => {
         : updateDoctor(data, token);
     },
     onSuccess: () => {
+      navigate("/doctors")
       mode === 'add'
         ? toast.success(t('successfully_added'))
         : toast.success(t('successfully_updated'));

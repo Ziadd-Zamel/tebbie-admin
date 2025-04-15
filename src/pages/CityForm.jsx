@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { updateCity, addCity, getstates } from "../utlis/https";
 import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
@@ -11,7 +12,9 @@ const CityForm = ({ initialData, mode = "add", isLoading, error }) => {
   const { t } = useTranslation();
   const { cityId } = useParams();
   const token = localStorage.getItem("authToken");
+  const navigate = useNavigate();
 
+  // eslint-disable-next-line no-unused-vars
   const { data: states, isLoading: stateIsLoading } = useQuery({
     queryKey: ["states"],
     queryFn: () => getstates({ token }),
@@ -43,10 +46,12 @@ const CityForm = ({ initialData, mode = "add", isLoading, error }) => {
       return mode === "add" ? addCity(data, token) : updateCity(data, token);
     },
     onSuccess: () => {
+      navigate("/cities")
       mode === "add"
         ? toast.success(t("successfully_added"))
         : toast.success(t("successfully_updated"));
     },
+    // eslint-disable-next-line no-unused-vars
     onError: (error) => {
       toast.error(t("submission_failed"))
     },

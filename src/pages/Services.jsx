@@ -98,6 +98,8 @@ const Services = () => {
 
   return (
     <section dir={direction} className="container mx-auto p-6 rounded-3xl">
+      
+      <div className="bg-white rounded-3xl md:p-8 p-4 w-full min-h-screen">  
       <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
         <input
           type="text"
@@ -116,7 +118,6 @@ const Services = () => {
           </Link>
         </div>
       </div>
-
       <div className="overflow-x-auto md:w-full w-[90vw]">
         <table className="min-w-full bg-white rounded-lg border border-gray-200">
           <thead>
@@ -128,44 +129,52 @@ const Services = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-lg font-light">
-            {currentServices.map((service, index) => (
-              <tr
-                key={service.id}
-                className="border-b border-gray-200 hover:bg-gray-100"
-              >
-                <td className="py-3 px-6 text-center whitespace-nowrap">
-                  {indexOfFirstService + index + 1}
-                </td>
-                <td className="py-3 px-6 text-center">{service.name}</td>
-                <td className="py-3 px-6 text-center">
-                  {service.type === "1"
-                    ? t("doctor")
-                    : service.type === "2"
-                    ? t("patient")
-                    : service.type === "3"
-                    ? t("physicalTherapy")
-                    : t("others")}
-                </td>
-                <td className="py-3 px-6 text-center">
-                  {service.type !== "4" && (
-                    <div className="flex justify-center items-center gap-4">
-                      <button
-                        className="text-red-500 hover:text-red-700 focus:outline-none"
-                        onClick={() => handleDeleteClick(service.id)}
-                      >
-                        <AiFillDelete size={28} />
-                      </button>
-                      <Link
-                        to={`/services/${service.id}`}
-                        className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                      >
-                        <AiFillEdit size={28} />
-                      </Link>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
+          {currentServices.length === 0 ? (
+  <tr>
+    <td colSpan="7" className="text-center py-4">
+      {t("noData")}
+    </td>
+  </tr>
+) : (
+  currentServices.map((service, index) => (
+    <tr
+      key={service.id}
+      className="border-b border-gray-200 hover:bg-gray-100"
+    >
+      <td className="py-3 px-6 text-center whitespace-nowrap">
+        {indexOfFirstService + index + 1}
+      </td>
+      <td className="py-3 px-6 text-center">{service.name}</td>
+      <td className="py-3 px-6 text-center">
+        {service.type === "1"
+          ? t("doctor")
+          : service.type === "2"
+          ? t("patient")
+          : service.type === "3"
+          ? t("physicalTherapy")
+          : t("others")}
+      </td>
+      <td className="py-3 px-6 text-center">
+        {service.type !== "4" && (
+          <div className="flex justify-center items-center gap-4">
+            <button
+              className="text-red-500 hover:text-red-700 focus:outline-none"
+              onClick={() => handleDeleteClick(service.id)}
+            >
+              <AiFillDelete size={28} />
+            </button>
+            <Link
+              to={`/services/${service.id}`}
+              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+            >
+              <AiFillEdit size={28} />
+            </Link>
+          </div>
+        )}
+      </td>
+    </tr>
+  ))
+)}
           </tbody>
         </table>
       </div>
@@ -182,6 +191,8 @@ const Services = () => {
         </p>
       </div>
 
+</div>
+   
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={openDialog}

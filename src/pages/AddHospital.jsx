@@ -15,6 +15,7 @@ import { useState, useCallback } from "react";
 import HospitalMap from "./HospitalMap";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { IoMdAdd, IoIosCloseCircle } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const token = localStorage.getItem("authToken");
 
@@ -23,6 +24,7 @@ const AddHospital = () => {
   const isArabic = i18n.language === "ar";
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+const navigate = useNavigate()
 
   const togglePassword = (event) => {
     event.preventDefault();
@@ -103,8 +105,8 @@ const AddHospital = () => {
     mutationFn: (userData) => newHospital({ token, ...userData }),
     onSuccess: () => {
       setErrorMessage("");
-
       toast.success("تم اضافة المستشفى بنجاح");
+      navigate("/hospitals")
     },
     onError: (error) => {
       toast.error("حدث خطأ أثناء اضافة بيانات المستشفى");
@@ -158,6 +160,9 @@ const AddHospital = () => {
           <div className="pt-8 lg:pt-12 pb-8 mb-4 lg:flex flex-col  items-center">
             <div className="lg:flex w-full">
               <div className="px-3 my-6 md:mb-0 w-full">
+                <div>
+                  
+                </div>
                 <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="name"
@@ -421,13 +426,16 @@ const AddHospital = () => {
                 </div>
               </div>
             </div>
-            <div className="px-3 my-6 md:mb-0 w-full">
+            <div className="px-3 my-6 md:mb-0 w-full relative">
+          
               <label
-                className="block text-md almarai-semibold mb-4"
+                className=" text-md almarai-semibold mb-4 flex gap-2"
                 htmlFor="description"
               >
+                <span className="text-red-500">*</span> 
                 {t("description")}
               </label>
+              
               <textarea
                 type="text"
                 name="description"

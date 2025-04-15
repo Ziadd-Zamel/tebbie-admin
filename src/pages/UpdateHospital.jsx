@@ -494,12 +494,14 @@ const UpdateHospital = () => {
               </div>
             </div>
             <div className="px-3 my-6 md:mb-0 w-full">
-              <label
-                className="block text-md almarai-semibold mb-4"
+            <label
+                className=" text-md almarai-semibold mb-4 flex gap-2"
                 htmlFor="description"
               >
+                <span className="text-red-500">*</span> 
                 {t("description")}
               </label>
+              
               <textarea
                 type="text"
                 name="description"

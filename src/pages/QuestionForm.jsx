@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { updateQuestions, addQuestion } from "../utlis/https";
 import Loader from "./Loader";
 import { toast } from "react-toastify";
@@ -10,7 +12,7 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
   const { t } = useTranslation();
   const { questionId } = useParams();
   const token = localStorage.getItem("authToken");
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     answer: "",
     question: "",
@@ -39,6 +41,7 @@ const QuestionForm = ({ initialData, mode = "add", isLoading, error }) => {
         : updateQuestions(data, token);
     },
        onSuccess: () => {
+        navigate("/common-questions")
       mode === "add"
         ? toast.success(t("successfully_added"))
         : toast.success(t("successfully_updated"));

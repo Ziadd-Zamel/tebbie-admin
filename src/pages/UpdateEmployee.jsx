@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getHospitals,
   getSpecializations,
@@ -23,7 +23,7 @@ const UpdateEmployee = () => {
   const { empId } = useParams();
   const [imagePreview, setImagePreview] = useState(null);
   const queryClient = useQueryClient();
-
+const navigate= useNavigate()
   const { data: hospitalData } = useQuery({
     queryKey: ["hospitals"],
     queryFn: () => getHospitals({ token }),
@@ -127,7 +127,7 @@ const UpdateEmployee = () => {
     mutationFn: (data) => updateEmployee({ ...data, token }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee"] });
-
+navigate("/employees")
       toast.success("تم تعديل بيانات الموظف بنجاح");
     },
     onError: (error) => {

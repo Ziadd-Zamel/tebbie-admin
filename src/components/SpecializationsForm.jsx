@@ -1,6 +1,6 @@
 import  { useState, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   newSpecializations,
   getHospitals,
@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 // eslint-disable-next-line react/prop-types
 const SpecializationsForm = ({ initialData = {}, mode = "add" }) => {
   const { spId } = useParams();
+  const navigate = useNavigate()
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
   const { data: hospitalData } = useQuery({
@@ -67,6 +68,7 @@ const SpecializationsForm = ({ initialData = {}, mode = "add" }) => {
         : updateSpecializations({ ...data, token });
     },
 onSuccess: () => {
+  navigate("/specializations")
       mode === "add"
         ? toast.success(t("successfully_added"))
         : toast.success(t("successfully_updated"));

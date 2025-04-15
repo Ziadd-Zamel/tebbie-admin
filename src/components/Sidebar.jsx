@@ -15,7 +15,6 @@ import {
 
 import { useTranslation } from "react-i18next";
 import { pageTranslations } from "../utlis/translations";
-import { FaChartSimple } from "react-icons/fa6";
 import { CiHospital1 } from "react-icons/ci";
 import { PiImagesSquareBold } from "react-icons/pi";
 import { FaQuestion } from "react-icons/fa";
@@ -32,7 +31,6 @@ export const sidebarLinks = [
   { path: "/hospitals", label: "hospitals", icon: <CiHospital1 size={22} /> },
    {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
   { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
-  // { path: "/financial", label: "financial", icon: <FaChartSimple size={22} /> },
   { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
   { path: "/specializations", label: "specializations", icon: <FaClinicMedical size={22} /> },
   { path: "/request-Form", label: "requests", icon: <BsCardText   size={22} /> },

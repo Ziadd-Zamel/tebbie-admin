@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { postServices, updateService } from "../utlis/https";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ErrorMessage from "../pages/ErrorMessage";
 import Loader from "../pages/Loader";
 import { useEffect, useState } from "react";
@@ -41,7 +41,7 @@ const ServicesForm = ({ initialData, mode = "add", isLoading, error }) => {
     { id: 2, name: t("nursing")},
     { id: 3, name: t("physiotherapy") },
   ];
-
+const navigate = useNavigate()
   const mutation = useMutation({
     mutationFn: (data) => {
       return mode === "add"
@@ -49,6 +49,7 @@ const ServicesForm = ({ initialData, mode = "add", isLoading, error }) => {
         : updateService(data, token);
     },
     onSuccess: () => {
+      navigate("/services")
       mode === "add"
         ? toast.success(t("successfully_added"))
         : toast.success(t("successfully_updated"));
@@ -80,7 +81,7 @@ const ServicesForm = ({ initialData, mode = "add", isLoading, error }) => {
     <section className="container mx-auto p-4 w-full">
       <form
         onSubmit={handleSubmit}
-        className="w-full rounded-md bg-white h-[40vh] p-6 shadow-lg flex flex-col justify-center items-center"
+        className="w-full rounded-2xl bg-white h-[40vh] p-6 shadow-lg flex flex-col justify-center items-center"
       >
         <div className="px-3 my-4 md:mb-0">
           <input

@@ -74,7 +74,7 @@ export const pageTranslations = {
       "/area/select-area":"تحديد منطقة",
       "/hospitals": "المستشفيات",
       "/hospitals/:HospitalId":"تفاصيل المستشفي",
-      "/doctors":"الدكاترة",
+      "/doctors":"الأطباء",
       "/doctors/:doctorId": "تفاصيل الدكتور",
       "/doctors/add-doctor":"اضافة دكتور",
       "/sliders":"الاعلانات",

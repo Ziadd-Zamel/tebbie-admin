@@ -255,7 +255,9 @@ const resources = {
       errorFetchingData: "An error occurred while fetching data.",
   "errorMessage": "Failed to load notifications",
   "noNotifications": "No notifications available",
-  "count":"count"
+  "count":"count",
+  "noTrashedDoctors":"trashed doctors found."
+
 
 
     },
@@ -512,7 +514,8 @@ const resources = {
       errorFetchingData: "حدث خطأ أثناء جلب البيانات.",
       "errorMessage": "فشل في تحميل الإشعارات",
   "noNotifications": "لا توجد إشعارات متاحة",
-  "count":"العدد"
+  "count":"العدد",
+  "noTrashedDoctors":"لم يتم العثور على أطباء محذوفين"
 
 
  
