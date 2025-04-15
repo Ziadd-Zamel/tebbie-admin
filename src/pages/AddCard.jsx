@@ -3,6 +3,7 @@ import { addRechargeCards } from "../utlis/https";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddCard = () => {
   const token = localStorage.getItem("authToken");
@@ -10,13 +11,12 @@ const AddCard = () => {
     count: "",
     expire_date: "",
     price: "",
-  })
+  });
   const [message, setMessage] = useState("");
-
-
-    const { t ,i18n } = useTranslation();
-    const direction = i18n.language === "ar" ? "rtl" : "ltr";
-  const { mutate } = useMutation({
+const navigate = useNavigate()
+  const { t, i18n } = useTranslation();
+  const direction = i18n.language === "ar" ? "rtl" : "ltr";
+  const { mutate, isPending } = useMutation({
     mutationFn: () =>
       addRechargeCards({
         count: formData.count,
@@ -24,16 +24,14 @@ const AddCard = () => {
         price: formData.price,
         token,
       }),
-    onSuccess: (data) => {
-       toast.success(t("successfully_added") ) 
-       setMessage("");
-
+    onSuccess: () => {
+      toast.success(t("successfully_added"));
+      navigate("/recharge-card")
+      setMessage("");
     },
     onError: (error) => {
-      toast.error("حدث خطأ أثناء إضافة البطاقة.") 
+      toast.error("حدث خطأ أثناء إضافة البطاقة.");
       setMessage(error.message || "حدث خطأ أثناء إضافة البطاقة.");
-
-
     },
   });
   const handleChange = (e) => {
@@ -46,24 +44,18 @@ const AddCard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-
-
-    mutate({
-      count,
-      expire_date,
-      price,
-      token,
-    });
+    mutate();
   };
 
   return (
     <section dir={direction} className="container mx-auto p-6">
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto h-[80vh] flex flex-col justify-center">
-
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 max-w-xl mx-auto min-h-[50vh] h-auto flex flex-col justify-center  bg-white p-6 rounded-2xl"
+      >
         <div>
           <label htmlFor="count" className="block text-gray-600 mb-2">
-            العدد
+            {t("count")}
           </label>
           <input
             type="text"
@@ -77,7 +69,7 @@ const AddCard = () => {
 
         <div>
           <label htmlFor="expire_date" className="block text-gray-600 mb-2">
-            تاريخ الانتهاء 
+            {t("expireDate")}
           </label>
           <input
             type="date"
@@ -85,14 +77,14 @@ const AddCard = () => {
             value={formData.expire_date}
             onChange={handleChange}
             required
-            placeholder="MM/DD/YYYY" 
+            placeholder="MM/DD/YYYY"
             className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary"
           />
         </div>
 
         <div>
           <label htmlFor="price" className="block text-gray-600 mb-2">
-            السعر
+            {t("price")}
           </label>
           <input
             type="number"
@@ -104,13 +96,20 @@ const AddCard = () => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="px-6 py-3 hover:bg-[#048c87] w-auto flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
-        >
-          إضافة البطاقة
-        </button>
-          {message && (
+        <div className="w-full flex justify-end">
+          <button
+            type="submit"
+            disabled={isPending}
+            className={`px-6 py-3 w-auto min-w-32 flex justify-center items-center text-white gap-2 text-lg rounded-[8px] focus:outline-none text-center ${
+              isPending
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] hover:bg-[#048c87]"
+            }`}
+          >
+            {isPending ? t("adding") : t("add")}
+          </button>
+        </div>
+        {message && (
           <div
             className={`mt-4 p-4 rounded-md text-center ${
               message.includes("نجاح") ? "text-green-500" : "text-red-500"

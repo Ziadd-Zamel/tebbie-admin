@@ -39,7 +39,7 @@ const AddSlider = () => {
       toast.success("Slider added successfully!");
       navigate("/sliders");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to add slider. Please try again.");
     },
   });
