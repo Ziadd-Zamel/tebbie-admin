@@ -217,7 +217,7 @@ const DoctorForm = ({ initialData, mode = 'add', isLoading, error }) => {
               </div>
 
               <div className="px-3 my-6 md:mb-0 w-full">
-                <label className="block text-md almarai-semibold mb-4" htmlFor="job_title">{t('jobtitle')}</label>
+              <label className="block text-md almarai-semibold mb-4" htmlFor="job_title"> <span className="text-red-500">*</span> {t('jobtitle')}</label>
                 <Field
                   type="text"
                   name="job_title"
@@ -231,7 +231,8 @@ const DoctorForm = ({ initialData, mode = 'add', isLoading, error }) => {
 
             <div className="lg:flex w-full justify-center">
               <div className="px-3 my-6 md:mb-0 w-full">
-                <label className="block text-md almarai-semibold mb-4" htmlFor="specialization_id">{t('specializations')}</label>
+              <label className="block text-md almarai-semibold mb-4"htmlFor="specialization_id"> <span className="text-red-500">*</span>{t('specializations')}</label>
+
                 {specializationsLoading ? (
                   <div className="text-gray-500">Loading...</div>
                 ) : (
