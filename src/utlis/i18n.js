@@ -257,7 +257,8 @@ const resources = {
       noNotifications: "No notifications available",
       count: "count",
       noTrashedDoctors: "trashed doctors found.",
-      AddAgent:"Add Customer Service"
+      AddAgent:"Add Customer Service",
+      "password_confirmation":"password confirmation",
 
     },
   },
@@ -515,7 +516,9 @@ const resources = {
       noNotifications: "لا توجد إشعارات متاحة",
       count: "العدد",
       noTrashedDoctors: "لم يتم العثور على أطباء محذوفين",
-      AddAgent:"إضافة خدمة العملاء"
+      AddAgent:"إضافة خدمة العملاء",
+      "password_confirmation":"تأكيد كلمة المرور",
+
     },
   },
 };

@@ -147,8 +147,8 @@ const router = createBrowserRouter([
             path: "customer-service",
             children: [
               { index: true, element: <CustomerService /> },
-              { path: ":cityId", element: <UpdateCustomerService /> },
-              { path: "add-city", element: <AddCustomerService /> },
+              { path: ":customerId", element: <UpdateCustomerService /> },
+              { path: "add-customer-service", element: <AddCustomerService /> },
             ],
           },
           { path: "profile", element: <Profile /> },

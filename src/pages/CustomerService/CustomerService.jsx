@@ -79,7 +79,7 @@ const CustomerService = () => {
       <div className="rounded-3xl md:p-8 p-4 md:m-4 m-0 min-h-screen overflow-auto bg-white">
         <div className="flex justify-between md:flex-row flex-col gap-2 my-4">
           <Link
-            to={"/agents/add-agent"}
+            to={"/customer-service/add-customer-service"}
             className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
           >
             <FaUserTie />

@@ -731,7 +731,6 @@ export const getTrashedSpecializations = async ({ token }) => {
   }
 };
 
-
 //states
 export const getstates = async ({ token }) => {
   try {
@@ -1064,7 +1063,6 @@ export const getTrashedCity = async ({ token }) => {
   }
 };
 
-
 //sliders
 export const getSliders = async ({ token }) => {
   try {
@@ -1195,8 +1193,25 @@ export const addSlider = async ({
   }
 };
 
+//xrays
+export const getXrays = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/x-rays`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 //common questions
 
 export const getQuestions = async ({ token }) => {
@@ -1323,7 +1338,6 @@ export const addQuestion = async ({ question, answer, token }) => {
     throw error;
   }
 };
-
 //recharge card
 export const getRechargeCards = async ({ token }) => {
   try {
@@ -1437,6 +1451,7 @@ export const addSettings = async ({
     throw error;
   }
 };
+
 export const getSetting = async ({ token, id }) => {
   try {
     const response = await fetch(
@@ -1490,6 +1505,7 @@ export const updateSetting = async ({ id, token, ...data }) => {
     throw error;
   }
 };
+
 // Coupons API Calls
 
 export const getCoupons = async ({ token }) => {
@@ -1547,6 +1563,7 @@ export const UpdateCoupon = async ({
     throw error;
   }
 };
+
 export const newCoupon = async ({ token, code, type, amount }) => {
   const formdata = new FormData();
 
@@ -1578,6 +1595,7 @@ export const newCoupon = async ({ token, code, type, amount }) => {
     throw error;
   }
 };
+
 export const deleteCoupon = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/coupons/${id}`, {
@@ -1591,6 +1609,401 @@ export const deleteCoupon = async ({ id, token }) => {
       return data.data;
     }
   } catch (error) {
+    throw error;
+  }
+};
+//labs
+export const getLabs = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/labs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getTrashedLabs = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/trashed/labs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getSpecificLab = async ({ token, id }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const newLab = async ({
+  token,
+  name,
+  email,
+  bio,
+  description,
+  password,
+  active,
+  lat,
+  long,
+  city_id,
+  state_id,
+  media = [],
+  doctor_ids = [],
+  specialization_id = [],
+}) => {
+  const formdata = new FormData();
+
+  formdata.append("name", name);
+  formdata.append("email", email);
+  formdata.append("bio", bio);
+  formdata.append("description", description);
+  formdata.append("password", password);
+  formdata.append("active", active ? "1" : "0");
+  formdata.append("lat", lat);
+  formdata.append("long", long);
+  formdata.append("city_id", city_id);
+  formdata.append("state_id", state_id);
+
+  media.forEach((file) => {
+    formdata.append("media[]", file);
+  });
+
+  doctor_ids.forEach((id) => {
+    formdata.append("doctor_ids[]", id);
+  });
+
+  // Append specialization IDs
+  specialization_id.forEach((id) => {
+    formdata.append("specialization_id[]", id);
+  });
+
+  try {
+    // Make the request
+    const response = await fetch(`${API_URL}/dashboard/v1/labs`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    // Handle errors
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while adding a new Hospital"
+      );
+    }
+
+    // Return the response data
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const updateLab = async ({
+  id,
+  token,
+  name,
+  email,
+  bio,
+  description,
+  password,
+  active,
+  lat,
+  long,
+  city_id,
+  state_id,
+  media = [],
+  doctor_ids = [],
+  specialization_id = [],
+}) => {
+  const formdata = new FormData();
+
+  formdata.append("name", name);
+  formdata.append("email", email);
+  formdata.append("bio", bio);
+  formdata.append("description", description);
+  formdata.append("password", password);
+  formdata.append("active", active ? "1" : "0");
+  formdata.append("lat", lat);
+  formdata.append("long", long);
+  formdata.append("city_id", city_id);
+  formdata.append("state_id", state_id);
+
+  media.forEach((file) => {
+    formdata.append("media[]", file);
+  });
+
+  doctor_ids.forEach((id) => {
+    formdata.append("doctor_ids[]", id);
+  });
+
+  specialization_id.forEach((id) => {
+    formdata.append("specialization_id[]", id);
+  });
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while updating  the Hospital"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const deleteLab = async ({ id, token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while deleting the Hospital"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const restoreLab = async ({ id, token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/labs/${id}/restore`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while restoring the Hospital"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+// Lab Types
+export const getLabTypes = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/lab-types`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getSpecificLabType = async ({ token, id }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const newLabType = async ({
+  token,
+  name,
+  description,
+  active,
+  media = [],
+}) => {
+  const formdata = new FormData();
+
+  formdata.append("name", name);
+  formdata.append("description", description);
+  formdata.append("media", media);
+  formdata.append("active", active ? "1" : "0");
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/lab-types`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while adding a new Lab type"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const updateLabType = async ({
+  id,
+  token,
+  name,
+  description,
+  media,
+  _method = "PATCH",
+}) => {
+  const formdata = new FormData();
+
+  formdata.append("name", name);
+  formdata.append("description", description);
+  formdata.append("media", media);
+  formdata.append("_method", _method);
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while updating the Lab type"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const deleteLabType = async ({ id, token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/lab-types/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while deleting the Lab type"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const restoreLabType = async ({ id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/lab-types/${id}/restore`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while restoring the Lab type"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
     throw error;
   }
 };
@@ -1676,6 +2089,7 @@ export const newEmployee = async ({
     throw error;
   }
 };
+
 export const updateEmployee = async ({
   id,
   token,
@@ -1775,6 +2189,7 @@ export const restoreEmployee = async ({ id, token }) => {
     throw error;
   }
 };
+
 
 //services
 export const getServices = async ({ token }) => {
@@ -2413,6 +2828,7 @@ export const getHomeVisitReport = async ({
 };
 
 //customer service
+//customer service
 export const getAllCustomerService = async ({ token, }) => {
   try {
     const response = await fetch(
@@ -2434,6 +2850,124 @@ export const getAllCustomerService = async ({ token, }) => {
     throw error;
   }
 };
+export const updateCustomerService = async ({
+  token,
+  name,
+  phone,
+  email,
+  is_active,
+  password,
+  password_confirmation,
+  _method = "PATCH",
+  id
+
+}) => {
+  const formdata = new FormData();
+  formdata.append("name", name);
+  formdata.append("email", email);
+  formdata.append("phone", phone);
+  formdata.append("is_active", is_active);
+
+  if(password)
+  {
+    formdata.append("password", password);
+  }
+  if(password_confirmation){
+    formdata.append("password_confirmation", password_confirmation);
+  }
+  formdata.append("_method", _method);
+
+  try {
+    const response = await fetch(`${API_URL}/customer-services/${id}`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      if (Array.isArray(result.errors)) {
+        console.error("Validation Errors:", result.errors);
+        throw new Error(result.errors.join(", "));
+      } else {
+        throw new Error(
+          result.message || "An error occurred while adding the doctor"
+        );
+      }
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const addCustomerService = async ({
+  token,
+  name,
+  phone,
+  email,
+  is_active,
+  password,
+  password_confirmation
+}) => {
+  const formdata = new FormData();
+  formdata.append("name", name);
+  formdata.append("email", email);
+  formdata.append("phone", phone);
+  formdata.append("is_active", is_active);
+  formdata.append("password", password);
+  formdata.append("password_confirmation", password_confirmation);
+  try {
+    const response = await fetch(`${API_URL}/customer-services`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      if (Array.isArray(result.errors)) {
+        console.error("Validation Errors:", result.errors);
+        throw new Error(result.errors.join(", "));
+      } else {
+        throw new Error(
+          result.message || "An error occurred while adding the doctor"
+        );
+      }
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+export const getCustomerService = async ({ token, id }) => {
+  try {
+    const response = await fetch(`${API_URL}/customer-services/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 //chat
 export const getMessages = async ({ token, id }) => {
   try {

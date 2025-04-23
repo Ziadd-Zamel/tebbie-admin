@@ -1,10 +1,16 @@
+import { useTranslation } from "react-i18next";
+import CustomerServiseForm from "../../components/CustomerServiseForm";
 
 const AddCustomerService = () => {
-  return (
-    <section>
-      
-    </section>
-  )
-}
+  const { i18n } = useTranslation();
 
-export default AddCustomerService
+  const direction = i18n.language === "ar" ? "rtl" : "ltr";
+
+  return (
+    <section dir={direction}>
+      <CustomerServiseForm mode="add" isLoading={false} />
+    </section>
+  );
+};
+
+export default AddCustomerService;

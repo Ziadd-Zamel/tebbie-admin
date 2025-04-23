@@ -48,6 +48,11 @@ export const pageTranslations = {
       "/refunds":"refunds",
       "/refunds/:refundsId":"refunds details",
       "/customer-service":"customer-service",
+      "/customer-service/:customerId":"update customer service",
+      "/customer-service/add-customer-service":"add customer service",
+
+
+      
 
       default: "Unknown Page",
     },
@@ -100,10 +105,8 @@ export const pageTranslations = {
       "/refunds/:refundsId":"تفاصيل المبالغ المستردة",
       "/doctorName":"اسم الدكتور",
       "/customer-service":"خدمة العملاء",
-
-
-
-
+      "/customer-service/:customerId":"تعديل خدمة العملاء",
+      "/customer-service/add-customer-service":"اضافة خدمة عملاء",
 
       default: "الصفحة غير معروفة",
     },

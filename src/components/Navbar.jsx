@@ -45,6 +45,13 @@ const Navbar = () => {
     if (pathname.startsWith("/settings/")) {
       return pageTranslations[language]["/settings/:settingId"];
     }
+    if (pathname.startsWith("/customer-service/add-customer-service")) {
+      return pageTranslations[language]["/customer-service/add-customer-service"];
+    }
+    if (pathname.startsWith("/customer-service/")) {
+      return pageTranslations[language]["/customer-service/:customerId"];
+    }
+  
     return (
       pageTranslations[language][pathname] || pageTranslations[language].default
     );
