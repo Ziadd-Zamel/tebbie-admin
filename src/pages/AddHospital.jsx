@@ -9,7 +9,7 @@ import {
 } from "../utlis/https";
 import { toast } from "react-toastify";
 
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
 
 import { useState, useCallback } from "react";
 import HospitalMap from "./HospitalMap";
@@ -24,7 +24,7 @@ const AddHospital = () => {
   const isArabic = i18n.language === "ar";
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const togglePassword = (event) => {
     event.preventDefault();
@@ -106,7 +106,7 @@ const navigate = useNavigate()
     onSuccess: () => {
       setErrorMessage("");
       toast.success("تم اضافة المستشفى بنجاح");
-      navigate("/hospitals")
+      navigate("/hospitals");
     },
     onError: (error) => {
       toast.error("حدث خطأ أثناء اضافة بيانات المستشفى");
@@ -160,14 +160,11 @@ const navigate = useNavigate()
           <div className="pt-8 lg:pt-12 pb-8 mb-4 lg:flex flex-col  items-center">
             <div className="lg:flex w-full">
               <div className="px-3 my-6 md:mb-0 w-full">
-                <div>
-                  
-                </div>
                 <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="name"
                 >
-               <span className="text-red-500">*</span> {t("name")}
+                  <span className="text-red-500">*</span> {t("name")}
                 </label>
                 <input
                   type="text"
@@ -184,7 +181,7 @@ const navigate = useNavigate()
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="email"
                 >
-               <span className="text-red-500">*</span>  {t("email")}
+                  <span className="text-red-500">*</span> {t("email")}
                 </label>
                 <input
                   type="text"
@@ -267,7 +264,7 @@ const navigate = useNavigate()
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                  translation={"التخصصات"}
+                    translation={"التخصصات"}
                     doctors={specializationsData}
                     selectedDoctors={hospitalData.specialization_id}
                     handleDoctorChange={handleSpecializationChange}
@@ -285,7 +282,7 @@ const navigate = useNavigate()
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                  translation={t("doctors")}
+                    translation={t("doctors")}
                     doctors={doctors}
                     selectedDoctors={hospitalData.doctor_ids}
                     handleDoctorChange={handleDoctorChange}
@@ -346,6 +343,30 @@ const navigate = useNavigate()
                 )}
               </div>
             </div>
+
+            <div className="text-xl font-semibold  w-full flex items-center gap-3 ">
+              <label>
+                <span className="text-red-500">*</span> {t("active")}
+              </label>
+              <input
+                className="InputPrimary"
+                type="checkbox"
+                onChange={(e) =>
+                  setHospitalData({
+                    ...hospitalData,
+                    active: e.target.checked ? "1" : "0",
+                  })
+                }
+              />
+            </div>
+            <div className="w-full bg-gray-200 h-[1px] my-4"></div>
+            <div className="flex gap-2 !justify-start items-center my-4">
+              <div className="size-12 rounded-full bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] flex justify-center items-center shrink-0">
+                <FaHome className="text-white" size={25} />
+              </div>
+              <h2 className="text-2xl font-semibold">{t("homevisit")}</h2>
+            </div>
+            
             <div className="lg:flex mb-6 w-full">
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
@@ -398,19 +419,6 @@ const navigate = useNavigate()
               </div>
 
               <div className="flex justify-center my-3  items-center  w-full">
-                <div className="text-xl font-semibold  w-full flex items-center gap-3">
-                  <label> <span className="text-red-500">*</span>  {t("active")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        active: e.target.checked ? "1" : "0",
-                      })
-                    }
-                  />
-                </div>
                 <div className="text-xl font-semibold  w-full  flex items-center gap-3">
                   <label> {t("homevisit")}</label>
                   <input
@@ -426,16 +434,17 @@ const navigate = useNavigate()
                 </div>
               </div>
             </div>
+            <div className="w-full bg-gray-200 h-[1px] my-4"></div>
+
             <div className="px-3 my-6 md:mb-0 w-full relative">
-          
               <label
                 className=" text-md almarai-semibold mb-4 flex gap-2"
                 htmlFor="description"
               >
-                <span className="text-red-500">*</span> 
+                <span className="text-red-500">*</span>
                 {t("description")}
               </label>
-              
+
               <textarea
                 type="text"
                 name="description"
@@ -461,7 +470,6 @@ const navigate = useNavigate()
                           img instanceof File ? URL.createObjectURL(img) : img
                         }
                         alt={`Image ${index + 1}`}
-                        
                         className="rounded object-fill w-auto h-40"
                       />
                       <button

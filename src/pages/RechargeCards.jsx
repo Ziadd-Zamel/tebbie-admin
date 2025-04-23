@@ -69,7 +69,7 @@ const RechargeCards = () => {
   };
 
   const handleExport = () => {
-    const exportData = cardData.map((card) => ({
+    const exportData = cardData?.recharge_cards.map((card) => ({
       "Card Number": card.card_number,
       "Expire Date": card.expire_date,
       Price: card.price,

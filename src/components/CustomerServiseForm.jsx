@@ -23,10 +23,9 @@ const DoctorSchema = Yup.object().shape({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "password_requirements" 
     )
-    .required("password_required"),
+,
   password_confirmation: Yup.string()
     .oneOf([Yup.ref("password"), null], "passwords_must_match")
-    .required("password_confirmation_required"),
 });
 const CustomerServiseForm = ({
   initialData,
@@ -167,6 +166,7 @@ const CustomerServiseForm = ({
               </div>
             </div>
 
+          
             <div className="lg:flex w-full justify-center">
               <div className="px-3 my-6 md:mb-0 w-full relative">
                 <label
@@ -220,8 +220,8 @@ const CustomerServiseForm = ({
                 />
               </div>
             </div>
-            {/* Checkboxes */}
-            <div className="flex gap-2">
+              {/* Checkboxes */}
+              <div className="flex gap-2">
               <div className="text-2xl font-medium gap-2 flex justify-start items-center my-4 px-4">
                 <label>{t("active")}</label>
                 <Field

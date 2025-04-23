@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useState } from "react";
 import { Link, NavLink} from "react-router-dom";
 import { IoMdPeople } from "react-icons/io";

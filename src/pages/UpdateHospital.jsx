@@ -418,20 +418,20 @@ const UpdateHospital = () => {
               </div>
             </div>
             <div className="text-xl font-semibold  w-full flex items-center gap-3 my-4">
-                  <span className="text-red-500">*</span>{" "}
-                  <label>{t("active")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    checked={hospitalData.active === "1"}
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        active: e.target.checked ? "1" : "0",
-                      })
-                    }
-                  />
-                </div>
+              <span className="text-red-500">*</span>{" "}
+              <label>{t("active")}</label>
+              <input
+                className="InputPrimary"
+                type="checkbox"
+                checked={hospitalData.active === "1"}
+                onChange={(e) =>
+                  setHospitalData({
+                    ...hospitalData,
+                    active: e.target.checked ? "1" : "0",
+                  })
+                }
+              />
+            </div>
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
             <div className="flex gap-2 justify-center items-center my-4">
               <div className="size-12 rounded-full bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] flex justify-center items-center shrink-0">
@@ -464,7 +464,7 @@ const UpdateHospital = () => {
                 // inputProps={{ max: hospitalData.start_visit_from }}
               />
             </div>
-            
+
             <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full ">
               <div className="  w-full">
                 <label
@@ -484,8 +484,6 @@ const UpdateHospital = () => {
               </div>
 
               <div className="flex justify-center my-3  items-center  w-full">
-        
-
                 <div className="text-xl font-semibold  w-full  flex items-center gap-3">
                   <label> {t("homevisit")}</label>
                   <input

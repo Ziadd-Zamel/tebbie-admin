@@ -41,7 +41,7 @@ const ChatPage = () => {
   });
   useEffect(() => {
     if (usersData?.length && !selectedUser) {
-      const reversedUsers = usersData.slice()
+      const reversedUsers = usersData.slice();
       setSelectedUser(reversedUsers[0].id);
     }
   }, [usersData, selectedUser]);
@@ -124,7 +124,9 @@ const ChatPage = () => {
       <div className="h-[70vh] flex flex-col justify-center items-center text-red-500">
         <p>حدث خطأ أثناء تحميل الرسائل. يرجى المحاولة لاحقًا.</p>
         <button
-          onClick={() => queryClient.invalidateQueries(["messages", selectedUser])}
+          onClick={() =>
+            queryClient.invalidateQueries(["messages", selectedUser])
+          }
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
         >
           إعادة المحاولة
@@ -132,7 +134,6 @@ const ChatPage = () => {
       </div>
     );
   }
-  
 
   const handleSendClick = () => {
     if (messageText.trim()) {
@@ -162,9 +163,13 @@ const ChatPage = () => {
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
         <div className="flex m-4">
-
-          {usersData &&         <UserList users={usersData} selectedUser={selectedUser} onSelectUser={handleUserSelect} />
-        }
+          {usersData && (
+            <UserList
+              users={usersData}
+              selectedUser={selectedUser}
+              onSelectUser={handleUserSelect}
+            />
+          )}
           <div className="w-3/4 relative p-8">
             <div
               ref={chatContainerRef}
@@ -263,7 +268,7 @@ const ChatPage = () => {
                 >
                   <IoIosSend size={30} color="white" />
                   <h3 className="text-white text-sm font-semibold leading-4 px-2">
-                  {t("Send")}
+                    {t("Send")}
                   </h3>
                 </button>
               </div>

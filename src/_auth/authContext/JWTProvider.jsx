@@ -3,6 +3,8 @@ import { createContext, useState } from "react";
 import { useContext } from "react";
 const API_URL = import.meta.env.VITE_APP_API_URL;
 export const LOGIN_URL = `${API_URL}/dashboard/v1/admin/login`;
+export const CustomerService_login = `${API_URL}/customer-services/login`;
+
 export const LOGOUT_URL = `${API_URL}/dashboard/v1/admin/logout`;
 export const REGISTER_URL = `${API_URL}/register`;
 export const FORGOT_PASSWORD_URL = `${API_URL}/dashboard/v1/admin/forgot-password`;
@@ -42,6 +44,36 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+  const CustomerServicelogin = async (email, password) => {
+    try {
+      const response = await fetch(CustomerService_login, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json(); 
+
+      if (!response.ok) {
+        const error = new Error(data.message || "خطأ في تسجيل الدخول");
+        error.status = response.status;
+        throw error;
+      }
+      if (data.data) {
+        localStorage.setItem("authToken", data.data);
+     
+      }else {
+        throw new Error(data.message || "خطأ في تسجيل الدخول");
+      }
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      throw error;
+    }
+  };
+
   const otpforgotPassword = async (email, otp) => {
     try {
       const response = await fetch(OTP_FORGOT_PASSWORD, {
@@ -96,6 +128,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         setLoading,
         login,
+        CustomerServicelogin,
         logout,
         otpforgotPassword,
       }}

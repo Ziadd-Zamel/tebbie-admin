@@ -196,6 +196,22 @@ const router = createBrowserRouter([
     element: <GuestMiddleware />,
     children: [{ index: true, element: <Login /> }],
   },
+  {
+    path: "/",
+    element: <AuthMiddleware />,
+    children: [
+      {
+        path: "",
+        children: [
+          { path: "chat", element: <ChatPage /> },
+          {
+            path: "*",
+            element: <NotFound />,
+          },
+        ],
+      },
+    ],
+  },
 ]);
 
 function App() {
