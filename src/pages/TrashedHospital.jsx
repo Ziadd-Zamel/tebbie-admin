@@ -144,9 +144,11 @@ const TrashedHospital = () => {
                   <td className="p-4 text-center whitespace-nowrap">
                     {hospital.name}
                   </td>
-                  <td className="p-4 text-center whitespace-nowrap">
-                    {hospital.description || t("none")}
+                  <td className="p-4 ">
+                    {(hospital.description?.slice(0, 50) || t("none")) +
+                      (hospital.description?.length > 50 ? "..." : "")}
                   </td>
+
                   <td className="p-4 text-center whitespace-nowrap">
                     {hospital.address || t("none")}
                   </td>

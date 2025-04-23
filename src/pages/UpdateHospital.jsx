@@ -16,7 +16,7 @@ import { ErrorMessage } from "formik";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { IoMdAdd, IoIosCloseCircle } from "react-icons/io";
 import { toast } from "react-toastify";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
 import { TextField } from "@mui/material";
 
 const token = localStorage.getItem("authToken");
@@ -236,7 +236,6 @@ const UpdateHospital = () => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="name"
                 >
-                  
                   <span className="text-red-500">*</span> {t("name")}
                 </label>
                 <input
@@ -255,7 +254,7 @@ const UpdateHospital = () => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="email"
                 >
-                 <span className="text-red-500">*</span>  {t("email")}
+                  <span className="text-red-500">*</span> {t("email")}
                 </label>
                 <input
                   type="text"
@@ -310,7 +309,7 @@ const UpdateHospital = () => {
                   htmlFor="imgs"
                   className="block text-md almarai-semibold mb-4"
                 >
-                <span className="text-red-500">*</span>   {t("password")}
+                  <span className="text-red-500">*</span> {t("password")}
                 </label>
                 <input
                   placeholder="********"
@@ -329,8 +328,8 @@ const UpdateHospital = () => {
               </div>
             </div>
             <div className="lg:flex mb-6 w-full">
-            <div className="px-3 my-6 md:mb-0 w-full lg:w-1/2">
-            <label
+              <div className="px-3 my-6 md:mb-0 w-full lg:w-1/2">
+                <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="specializations"
                 >
@@ -340,7 +339,7 @@ const UpdateHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                  translation="specializations"
+                    translation="specializations"
                     doctors={specializationsData}
                     selectedDoctors={hospitalData.specialization_id}
                     handleDoctorChange={handleSpecializationChange}
@@ -358,7 +357,7 @@ const UpdateHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                  translation="doctors"
+                    translation="doctors"
                     doctors={doctors}
                     selectedDoctors={hospitalData.doctor_ids}
                     handleDoctorChange={handleDoctorChange}
@@ -418,9 +417,30 @@ const UpdateHospital = () => {
                 )}
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row gap-4 mb-6 w-full">
-        
+            <div className="text-xl font-semibold  w-full flex items-center gap-3 my-4">
+                  <span className="text-red-500">*</span>{" "}
+                  <label>{t("active")}</label>
+                  <input
+                    className="InputPrimary"
+                    type="checkbox"
+                    checked={hospitalData.active === "1"}
+                    onChange={(e) =>
+                      setHospitalData({
+                        ...hospitalData,
+                        active: e.target.checked ? "1" : "0",
+                      })
+                    }
+                  />
+                </div>
+            <div className="w-full bg-gray-200 h-[1px] my-4"></div>
+            <div className="flex gap-2 justify-center items-center my-4">
+              <div className="size-12 rounded-full bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] flex justify-center items-center shrink-0">
+                <FaHome className="text-white" size={25} />
+              </div>
+              <h2 className="text-2xl font-semibold">{t("homevisit")}</h2>
+            </div>
 
+            <div className="flex flex-col lg:flex-row gap-4 mb-6 w-full">
               <TextField
                 label="Start Visit From"
                 type="time"
@@ -432,7 +452,7 @@ const UpdateHospital = () => {
                 className="bg-[#F7F8FA] rounded-lg"
                 // inputProps={{ min: hospitalData.end_visit_at }}
               />
-                    <TextField
+              <TextField
                 label="End Visit At"
                 type="time"
                 value={hospitalData.end_visit_at}
@@ -444,6 +464,7 @@ const UpdateHospital = () => {
                 // inputProps={{ max: hospitalData.start_visit_from }}
               />
             </div>
+            
             <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full ">
               <div className="  w-full">
                 <label
@@ -463,20 +484,8 @@ const UpdateHospital = () => {
               </div>
 
               <div className="flex justify-center my-3  items-center  w-full">
-                <div className="text-xl font-semibold  w-full flex items-center gap-3">
-                <span className="text-red-500">*</span>  <label>{t("active")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    checked={hospitalData.active === "1"}
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        active: e.target.checked ? "1" : "0",
-                      })
-                    }
-                  />
-                </div>
+        
+
                 <div className="text-xl font-semibold  w-full  flex items-center gap-3">
                   <label> {t("homevisit")}</label>
                   <input
@@ -493,15 +502,17 @@ const UpdateHospital = () => {
                 </div>
               </div>
             </div>
+            <div className="w-full bg-gray-200 h-[1px] my-4"></div>
+
             <div className="px-3 my-6 md:mb-0 w-full">
-            <label
+              <label
                 className=" text-md almarai-semibold mb-4 flex gap-2"
                 htmlFor="description"
               >
-                <span className="text-red-500">*</span> 
+                <span className="text-red-500">*</span>
                 {t("description")}
               </label>
-              
+
               <textarea
                 type="text"
                 name="description"
