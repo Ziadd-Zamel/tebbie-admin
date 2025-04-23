@@ -8,6 +8,8 @@ import Loader from "../pages/Loader";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const DoctorSchema = Yup.object().shape({
   name: Yup.string().required("name_required"),
@@ -15,6 +17,16 @@ const DoctorSchema = Yup.object().shape({
   phone: Yup.string().required("phone_required"),
   is_active: Yup.string(),
   isAbleToCancel: Yup.string(),
+  password: Yup.string()
+    .min(8, "password_too_short") 
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "password_requirements" 
+    )
+    .required("password_required"),
+  password_confirmation: Yup.string()
+    .oneOf([Yup.ref("password"), null], "passwords_must_match")
+    .required("password_confirmation_required"),
 });
 const CustomerServiseForm = ({
   initialData,
@@ -27,7 +39,11 @@ const CustomerServiseForm = ({
   const { customerId } = useParams();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = (event) => {
+    event.preventDefault();
+    setShowPassword(!showPassword);
+  };
   // Mutation
   const mutation = useMutation({
     mutationFn: (data) => {
@@ -42,7 +58,7 @@ const CustomerServiseForm = ({
         : toast.success(t("successfully_updated"));
     },
     onError: (error) => {
-      toast.error(`${error} حدث خطأ فى تعديل بيانات خدمة العملاء`);
+      toast.error(`${error} حدث خطأ `);
     },
   });
 
@@ -102,12 +118,10 @@ const CustomerServiseForm = ({
                   className="!text-red-700 my-2"
                   render={(msg) => t(msg)}
                 />
-                
               </div>
             </div>
 
             <div className="lg:flex w-full justify-center">
-
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
                   className="block text-md almarai-semibold mb-4"
@@ -151,27 +165,10 @@ const CustomerServiseForm = ({
                   render={(msg) => t(msg)}
                 />
               </div>
-
             </div>
 
-            {/* Checkboxes */}
-            <div className="flex gap-2">
-              <div className="text-2xl font-medium gap-2 flex justify-start items-center my-4 px-4">
-                <label>{t("active")}</label>
-                <Field
-                  type="checkbox"
-                  name="is_active"
-                  className="InputPrimary"
-                  checked={values.is_active === 1}
-                  onChange={(e) =>
-                    setFieldValue("is_active", e.target.checked ? 1 : 0)
-                  }
-                />
-              </div>
-            </div>
-     <div className="lg:flex w-full justify-center">
-
-              <div className="px-3 my-6 md:mb-0 w-full">
+            <div className="lg:flex w-full justify-center">
+              <div className="px-3 my-6 md:mb-0 w-full relative">
                 <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="password"
@@ -185,6 +182,13 @@ const CustomerServiseForm = ({
                   placeholder={t("password")}
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full my-2"
                 />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute  top-1/2 end-5 transform translate-y-1/2 text-gray-500 text-xl"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
                 <ErrorMessage
                   name="password"
                   component="div"
@@ -198,7 +202,8 @@ const CustomerServiseForm = ({
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="password_confirmation"
                 >
-                  <span className="text-red-500">*</span> {t("password_confirmation")}
+                  <span className="text-red-500">*</span>
+                  {t("password_confirmation")}
                 </label>
                 <Field
                   type="text"
@@ -214,7 +219,21 @@ const CustomerServiseForm = ({
                   render={(msg) => t(msg)}
                 />
               </div>
-              
+            </div>
+            {/* Checkboxes */}
+            <div className="flex gap-2">
+              <div className="text-2xl font-medium gap-2 flex justify-start items-center my-4 px-4">
+                <label>{t("active")}</label>
+                <Field
+                  type="checkbox"
+                  name="is_active"
+                  className="InputPrimary"
+                  checked={values.is_active === 1}
+                  onChange={(e) =>
+                    setFieldValue("is_active", e.target.checked ? 1 : 0)
+                  }
+                />
+              </div>
             </div>
             {/* Submit Button */}
             <div className="flex justify-end items-end w-full my-4">

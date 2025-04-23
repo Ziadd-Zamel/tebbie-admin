@@ -259,6 +259,11 @@ const resources = {
       noTrashedDoctors: "trashed doctors found.",
       AddAgent:"Add Customer Service",
       "password_confirmation":"password confirmation",
+      "password_required": "Password is required",
+  "password_too_short": "Password must be at least 8 characters long",
+  "password_requirements": "Password must contain at least one lowercase letter, one uppercase letter, and one number",
+  "password_confirmation_required": "Password confirmation is required",
+  "passwords_must_match": "Passwords must match",
 
     },
   },
@@ -518,6 +523,11 @@ const resources = {
       noTrashedDoctors: "لم يتم العثور على أطباء محذوفين",
       AddAgent:"إضافة خدمة العملاء",
       "password_confirmation":"تأكيد كلمة المرور",
+      "password_required": "كلمة المرور مطلوبة",
+  "password_too_short": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+  "password_requirements": "يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل، وحرف كبير واحد، ورقم واحد",
+  "password_confirmation_required": "تأكيد كلمة المرور مطلوب",
+  "passwords_must_match": "يجب أن تتطابق كلمتا المرور",
 
     },
   },
