@@ -12,6 +12,7 @@ import {
   FaMapMarkerAlt,
   FaRegMoneyBillAlt
 } from "react-icons/fa";
+import { AiFillCustomerService } from "react-icons/ai";
 
 import { useTranslation } from "react-i18next";
 import { pageTranslations } from "../utlis/translations";
@@ -29,43 +30,45 @@ import LogoutDialog from "./LogoutDialog";
 export const sidebarLinks = [
   { path: "/", label: "dashboard", icon: <FaRegClock size={22} /> },
   { path: "/hospitals", label: "hospitals", icon: <CiHospital1 size={22} /> },
-   {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
-  { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
-  { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
   { path: "/specializations", label: "specializations", icon: <FaClinicMedical size={22} /> },
+  { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
+  { path: "/employees", label: "employees", icon: <IoMdPeople size={22} /> },
+  { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
   { path: "/request-Form", label: "requests", icon: <BsCardText   size={22} /> },
-  { path: "/refunds", label: "refunds", icon: <FaRegMoneyBillAlt   size={22} /> },
 ];
 
 export const therestofSidebarLinks = [
+  { path: "/refunds", label: "refunds", icon: <FaRegMoneyBillAlt   size={22} /> },
+  { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
+  { path: "/coupons", label: "Coupons", icon: <RiCoupon2Fill  size={22} /> },
   {
     path: "/settings",
     label: "settings",
     icon: <IoSettingsSharp size={22} />,
+  },  {
+    path: "/customer-service",
+    label: "customer service",
+    icon: <AiFillCustomerService  size={22} />,
   },
-  { path: "/employees", label: "employees", icon: <IoMdPeople size={22} /> },
-  { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
-
-
-  {
-    path: "/sliders",
-    label: "sliders",
-    icon: <PiImagesSquareBold size={22} />,
-  },
-  { path: "/coupons", label: "Coupons", icon: <RiCoupon2Fill  size={22} /> },
-
+  
   {
     path: "/common-questions",
     label: "common questions",
     icon: <FaQuestion size={22} />,
   },
-  { path: "/cities", label: "cities", icon: <MdLocationCity size={22} /> },
-
+  {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
+  {
+    path: "/sliders",
+    label: "sliders",
+    icon: <PiImagesSquareBold size={22} />,
+  },
   {
     path: "/states",
     label: "states",
     icon: <FaMapMarkerAlt size={22} />,
   },
+  { path: "/cities", label: "cities", icon: <MdLocationCity size={22} /> },
+
   
 ];
 

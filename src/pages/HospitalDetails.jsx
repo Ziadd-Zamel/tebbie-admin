@@ -102,7 +102,7 @@ const HospitalDetails = () => {
             transition={{ delay: 0.3 }}
             className="lg:col-span-2 space-y-6"
           >
-            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100">
+            <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 ">
               <InfoItem label="address" displayLabel={t("address")} value={hospital.address} />
               <InfoItem label="description" displayLabel={t("description")} value={hospital.description} />
               <InfoItem label="bio" displayLabel={t("bio")} value={hospital.bio} />
@@ -289,15 +289,15 @@ const InfoItem = ({ label, displayLabel, value }) => {
   const getIcon = (label) => {
     switch(label.toLowerCase()) {
       case 'address':
-        return <FaMapMarkerAlt className="text-[#33A9C7] me-2" />;
+        return <FaMapMarkerAlt className="text-[#33A9C7] me-2 shrink-0" />;
       case 'description':
-        return <FaFileAlt className="text-[#33A9C7] me-2" />;
+        return <FaFileAlt className="text-[#33A9C7] me-2 shrink-0" />;
       case 'bio':
-        return <FaUserMd className="text-[#33A9C7] me-2" />;
+        return <FaUserMd className="text-[#33A9C7] me-2 shrink-0" />;
       case 'email':
-        return <FaEnvelope className="text-[#33A9C7] me-2" />;
+        return <FaEnvelope className="text-[#33A9C7] me-2 shrink-0" />;
       case 'status':
-        return <FaCheckCircle className="text-[#33A9C7] me-2" />;
+        return <FaCheckCircle className="text-[#33A9C7] me-2 shrink-0" />;
       default:
         return null;
     }
@@ -308,13 +308,13 @@ const InfoItem = ({ label, displayLabel, value }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="text-gray-600 py-4 border-b border-gray-100 last:border-0 text-xl flex items-center"
+      className="text-gray-600 py-4 border-b border-gray-100 last:border-0 text-xl flex items-start"
     >
-      <span className="flex items-center">
+      <span className="flex items-center shrink-0">
         {getIcon(label)}
         <strong className="text-gray-800 font-semibold"> {displayLabel} : </strong>
       </span>
-      <span className="break-words ml-2">{value}</span>
+      <span className="break-words ml-2"> {value} </span>
     </motion.p>
   );
 };

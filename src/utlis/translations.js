@@ -46,10 +46,8 @@ export const pageTranslations = {
       "/request-Form":"Request Form",
       "/services":"services",
       "/refunds":"refunds",
-      "/refunds/:refundsId":"refunds details"
-      
-,
-
+      "/refunds/:refundsId":"refunds details",
+      "/customer-service":"customer-service",
 
       default: "Unknown Page",
     },
@@ -100,8 +98,8 @@ export const pageTranslations = {
       "/services":"الخدمات",
       "/refunds":"المبالغ المستردة",
       "/refunds/:refundsId":"تفاصيل المبالغ المستردة",
-      "/doctorName":"اسم ال",
-
+      "/doctorName":"اسم الدكتور",
+      "/customer-service":"خدمة العملاء",
 
 
 

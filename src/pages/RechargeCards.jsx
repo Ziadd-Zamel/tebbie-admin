@@ -168,14 +168,14 @@ const RechargeCards = () => {
         </table>
       </div>
 
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end p-4">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-        <p className="text-2xl text-gray-500 text-end">
-          {t("total")} : {filteredCards.length}
+        <p className="md:text-2xl text-xl text-gray-500 text-end">
+        {t("total")} : {filteredCards.length}
         </p>
       </div>
     </section>

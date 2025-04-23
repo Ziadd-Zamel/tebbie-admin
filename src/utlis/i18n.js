@@ -58,7 +58,7 @@ const resources = {
       select_doctor: "select doctor",
       select_city: "select city",
       specializations: "specializations",
-     " select_specialization": "select specialization",
+      " select_specialization": "select specialization",
       viewDetailsDoc: "view Doctor detials",
       visitor: "visitor",
       notvisitor: "not a visitor",
@@ -240,10 +240,10 @@ const resources = {
       fromDate: "from date",
       toDate: "to date",
       clearFilter: "reset",
-      doctorReport : "Doctors Report",
-      hospitalReport:"Hospitals Report",
-      usersReport:"Users Report",
-      selectHomeVisit:"select home visit",
+      doctorReport: "Doctors Report",
+      hospitalReport: "Hospitals Report",
+      usersReport: "Users Report",
+      selectHomeVisit: "select home visit",
       showAll: "Show All",
       next30Days: "Next 30 Days",
       next60Days: "Next 60 Days",
@@ -253,12 +253,11 @@ const resources = {
       searchByCardNumber: "Enter card number...",
       noCardsFound: "No cards match the search.",
       errorFetchingData: "An error occurred while fetching data.",
-  "errorMessage": "Failed to load notifications",
-  "noNotifications": "No notifications available",
-  "count":"count",
-  "noTrashedDoctors":"trashed doctors found."
-
-
+      errorMessage: "Failed to load notifications",
+      noNotifications: "No notifications available",
+      count: "count",
+      noTrashedDoctors: "trashed doctors found.",
+      AddAgent:"Add Customer Service"
 
     },
   },
@@ -498,11 +497,11 @@ const resources = {
       unknown: "غير معروف",
       fromDate: "من تاريخ",
       toDate: "إلى تاريخ",
-      clearFilter:"إعادة تعيين ",
-      doctorReport : "تقرير الاطباء",
-      hospitalReport:"تقرير المستشفيات",
-      usersReport:"تقرير المستخدمين",
-      selectHomeVisit:"حدد الزيارة المنزلية",
+      clearFilter: "إعادة تعيين ",
+      doctorReport: "تقرير الاطباء",
+      hospitalReport: "تقرير المستشفيات",
+      usersReport: "تقرير المستخدمين",
+      selectHomeVisit: "حدد الزيارة المنزلية",
       showAll: "عرض الكل",
       next30Days: "الأيام القادمة (30 يومًا)",
       next60Days: "الأيام القادمة (60 يومًا)",
@@ -512,13 +511,11 @@ const resources = {
       searchByCardNumber: "أدخل رقم البطاقة...",
       noCardsFound: "لا توجد بطاقات تطابق البحث.",
       errorFetchingData: "حدث خطأ أثناء جلب البيانات.",
-      "errorMessage": "فشل في تحميل الإشعارات",
-  "noNotifications": "لا توجد إشعارات متاحة",
-  "count":"العدد",
-  "noTrashedDoctors":"لم يتم العثور على أطباء محذوفين"
-
-
- 
+      errorMessage: "فشل في تحميل الإشعارات",
+      noNotifications: "لا توجد إشعارات متاحة",
+      count: "العدد",
+      noTrashedDoctors: "لم يتم العثور على أطباء محذوفين",
+      AddAgent:"إضافة خدمة العملاء"
     },
   },
 };

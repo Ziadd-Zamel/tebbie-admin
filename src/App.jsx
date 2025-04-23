@@ -50,6 +50,9 @@ import HospitalLayout from "./pages/HospitalLayout";
 import Refunds from "./pages/Refunds";
 import RefundsDetails from "./pages/RefundsDetails";
 import NotFound from "./pages/NotFound";
+import CustomerService from "./pages/CustomerService/CustomerService";
+import UpdateCustomerService from "./pages/CustomerService/UpdateCustomerService";
+import AddCustomerService from "./pages/CustomerService/AddCustomerService";
 
 const queryClient = new QueryClient();
 
@@ -113,7 +116,7 @@ const router = createBrowserRouter([
               { path: "add", element: <AddSpecial /> },
             ],
           },
-          
+
           { path: "coupons", element: <Coupons /> },
           { path: "financial", element: <Financial /> },
           {
@@ -138,6 +141,14 @@ const router = createBrowserRouter([
               { path: ":cityId", element: <UpdateCity /> },
               { path: "add-city", element: <AddCity /> },
               { path: "trashed-cities", element: <TrashedCity /> },
+            ],
+          },
+          {
+            path: "customer-service",
+            children: [
+              { index: true, element: <CustomerService /> },
+              { path: ":cityId", element: <UpdateCustomerService /> },
+              { path: "add-city", element: <AddCustomerService /> },
             ],
           },
           { path: "profile", element: <Profile /> },
@@ -175,7 +186,7 @@ const router = createBrowserRouter([
           {
             path: "*",
             element: <NotFound />,
-          }
+          },
         ],
       },
     ],
@@ -191,9 +202,9 @@ function App() {
   return (
     <main>
       <QueryClientProvider client={queryClient}>
-          <UserProvider>
-            <RouterProvider router={router} />
-          </UserProvider>
+        <UserProvider>
+          <RouterProvider router={router} />
+        </UserProvider>
       </QueryClientProvider>
     </main>
   );
