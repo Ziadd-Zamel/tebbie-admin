@@ -13,6 +13,8 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
   const token = localStorage.getItem("authToken");
+  console.log("Token is: " + JSON.stringify(token));
+
   const queryClient = useQueryClient();
   const chatContainerRef = useRef(null);
   const { t, i18n } = useTranslation();
@@ -28,6 +30,7 @@ const ChatPage = () => {
       console.error("Error marking messages as read:", error);
     },
   });
+
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
     queryClient.invalidateQueries(["messages"]);
@@ -35,16 +38,18 @@ const ChatPage = () => {
     markMessageAsRead({ user_id: userId, token });
   };
   const { data: usersData, isLoading: usersIsLoading } = useQuery({
-    queryKey: ["users-data"],
+    queryKey: ["users-list"],
     queryFn: () => getUsers({ token }),
     enabled: !!token,
   });
+  console.log(token);
   useEffect(() => {
     if (usersData?.length && !selectedUser) {
       const reversedUsers = usersData.slice();
       setSelectedUser(reversedUsers[0].id);
     }
   }, [usersData, selectedUser]);
+
   const {
     data: initialMessages,
     isLoading,
@@ -134,7 +139,6 @@ const ChatPage = () => {
       </div>
     );
   }
-
   const handleSendClick = () => {
     if (messageText.trim()) {
       sendMessage(
@@ -159,6 +163,8 @@ const ChatPage = () => {
       );
     }
   };
+  console.log(usersData);
+
   return (
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
@@ -176,8 +182,8 @@ const ChatPage = () => {
               className="flex-grow  h-[80vh] overflow-auto"
             >
               <div className="grid pb-11">
-                {messages?.length > 0 ? (
-                  messages?.map((message) => (
+                {initialMessages?.length > 0 ? (
+                  initialMessages?.map((message) => (
                     <div
                       key={message.id}
                       className={`flex gap-2.5 mb-4 ${
@@ -213,7 +219,7 @@ const ChatPage = () => {
                           }`}
                         >
                           <h5 className="md:text-md text-sm font-normal leading-snug">
-                            {message.message}
+                            {message.content}
                           </h5>
                         </div>
                         <div
@@ -224,12 +230,12 @@ const ChatPage = () => {
                           } items-center`}
                         >
                           <h6 className="text-gray-500 md:text-sm text-xs font-normal leading-4 py-1">
-                            {message.message_date &&
-                            !isNaN(new Date(message.message_date))
+                            {message.created_at &&
+                            !isNaN(new Date(message.created_at))
                               ? new Intl.DateTimeFormat("ar-eg", {
                                   hour: "2-digit",
                                   minute: "2-digit",
-                                }).format(new Date(message.message_date))
+                                }).format(new Date(message.created_at))
                               : "N/A"}
                           </h6>
                         </div>

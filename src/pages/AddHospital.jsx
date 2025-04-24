@@ -110,9 +110,10 @@ const AddHospital = () => {
     },
     onError: (error) => {
       toast.error("حدث خطأ أثناء اضافة بيانات المستشفى");
-      const message = Array.isArray(error?.errors)
-        ? error.errors.map((err, index) => `${index + 1}. ${err}`).join(", ")
-        : "حدث خطأ غير معروف";
+      const message = error?.errors
+      ? error.errors.map((err, index) => `${index + 1}. ${err}`).join("\n")
+      : "حدث خطأ غير معروف";
+
       console.error("Validation Errors:", error.errors);
       setErrorMessage(message);
       toast.error(message);
@@ -216,7 +217,8 @@ const AddHospital = () => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="bio"
                 >
-                  {t("bio")}
+                                   <span className="text-red-500">*</span>  {t("bio")}
+                                 
                 </label>
                 <input
                   type="text"
@@ -234,11 +236,12 @@ const AddHospital = () => {
                   htmlFor="password"
                   className="block text-md almarai-semibold mb-4"
                 >
-                  {t("password")}
+                 <span className="text-red-500">*</span> {t("password")}
                 </label>
                 <input
                   placeholder="********"
                   name="password"
+                  required
                   onChange={handleChange}
                   type={showPassword ? "text" : "password"}
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
@@ -304,7 +307,6 @@ const AddHospital = () => {
                   <select
                     name="city_id"
                     onChange={handleChange}
-                    required
                     className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                   >
                     <option value="">Select City</option>
@@ -329,7 +331,7 @@ const AddHospital = () => {
                   <select
                     name="state_id"
                     id="state_id"
-                    required
+                    
                     onChange={handleChange}
                     className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                   >

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 
 import { IoPersonCircle } from "react-icons/io5";
 
@@ -6,26 +7,27 @@ const UserList = ({ users, selectedUser, onSelectUser }) => {
     return (
        <div className="w-1/4 h-[80vh] overflow-auto">
                <ul className="user-list space-y-8 text-xl text-black">
-                 {users
-                   ?.slice()
-                   .map((user) => (
+                 {users?.map((user) => (
                      <li
-                       key={user.id}
+                       key={user.chat_id}
                        className={`md:text-sm text-xs flex justify-between gap-2 cursor-pointer truncate w-auto rounded-2xl shadow-sm bg-secondary md:h-12 h-10 md:p-4 p-2 max-w-64 items-center ${
-                         selectedUser === user.id ? "bg-primary text-white" : ""
+                         selectedUser === user.chat_id ? "bg-primary text-white" : ""
                        } `}
-                       onClick={() => onSelectUser(user.id)}
+                       onClick={() => onSelectUser(user.chat_id)}
                      >
                        <div className="flex justify-center items-center gap-3">
-                         <IoPersonCircle
+                        {users.image ? (<img src={users.image} className="shrink-0 size-8 rounded-full" />):(
+                           <IoPersonCircle
                            size={30}
                            className={`shrink-0 ${
-                             selectedUser === user.id
+                             selectedUser === user.chat_id
                                ? "bg-primary text-white"
                                : "text-primary"
                            }`}
                          />
-                         <span>{user.name}</span>
+                        )}
+                        
+                         <span>{user.user.name}</span>
                        </div>
    
                        {user.has_new_messages === 1 && (

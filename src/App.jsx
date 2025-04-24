@@ -53,6 +53,7 @@ import NotFound from "./pages/NotFound";
 import CustomerService from "./pages/CustomerService/CustomerService";
 import UpdateCustomerService from "./pages/CustomerService/UpdateCustomerService";
 import AddCustomerService from "./pages/CustomerService/AddCustomerService";
+import { ChatOnlyMiddleware } from "./middlewares/ChatOnlyMiddleware";
 
 const queryClient = new QueryClient();
 
@@ -76,8 +77,6 @@ const router = createBrowserRouter([
               { path: "trashed-doctors", element: <TrashedDoctor /> },
             ],
           },
-          { path: "chat", element: <ChatPage /> },
-
           {
             path: "hospitals",
             element: <HospitalLayout />,
@@ -193,17 +192,17 @@ const router = createBrowserRouter([
   },
   {
     path: "auth/login",
-    element: <GuestMiddleware />,
+    element: <GuestMiddleware  />,
     children: [{ index: true, element: <Login /> }],
   },
   {
-    path: "/",
-    element: <AuthMiddleware />,
+    path: "/chat",
+    element: <ChatOnlyMiddleware />,
     children: [
       {
         path: "",
         children: [
-          { path: "chat", element: <ChatPage /> },
+          { path: "", element: <ChatPage /> },
           {
             path: "*",
             element: <NotFound />,

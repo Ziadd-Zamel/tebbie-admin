@@ -328,8 +328,15 @@ export const newHospital = async ({
   formdata.append("active", active ? "1" : "0");
   formdata.append("lat", lat);
   formdata.append("long", long);
-  formdata.append("city_id", city_id);
-  formdata.append("state_id", state_id);
+  if(city_id)
+  {
+    formdata.append("city_id", city_id);
+
+  }
+  if(state_id){
+    formdata.append("state_id", state_id);
+
+  }
 
   media.forEach((file) => {
     formdata.append("media[]", file);
@@ -338,10 +345,11 @@ export const newHospital = async ({
   doctor_ids.forEach((id) => {
     formdata.append("doctor_ids[]", id);
   });
-
-  specialization_id.forEach((id) => {
-    formdata.append("specialization_id[]", id);
-  });
+  if (specialization_id) {
+    specialization_id.forEach((id) => {
+      formdata.append("specialization_id[]", id);
+    });
+  }
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/hospitals`, {
@@ -2190,7 +2198,6 @@ export const restoreEmployee = async ({ id, token }) => {
   }
 };
 
-
 //services
 export const getServices = async ({ token }) => {
   try {
@@ -2829,18 +2836,15 @@ export const getHomeVisitReport = async ({
 
 //customer service
 //customer service
-export const getAllCustomerService = async ({ token, }) => {
+export const getAllCustomerService = async ({ token }) => {
   try {
-    const response = await fetch(
-      `${API_URL}/customer-services`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/customer-services`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -2859,8 +2863,7 @@ export const updateCustomerService = async ({
   password,
   password_confirmation,
   _method = "PATCH",
-  id
-
+  id,
 }) => {
   const formdata = new FormData();
   formdata.append("name", name);
@@ -2868,11 +2871,10 @@ export const updateCustomerService = async ({
   formdata.append("phone", phone);
   formdata.append("is_active", is_active);
 
-  if(password)
-  {
+  if (password) {
     formdata.append("password", password);
   }
-  if(password_confirmation){
+  if (password_confirmation) {
     formdata.append("password_confirmation", password_confirmation);
   }
   formdata.append("_method", _method);
@@ -2912,7 +2914,7 @@ export const addCustomerService = async ({
   email,
   is_active,
   password,
-  password_confirmation
+  password_confirmation,
 }) => {
   const formdata = new FormData();
   formdata.append("name", name);
@@ -2971,16 +2973,13 @@ export const getCustomerService = async ({ token, id }) => {
 //chat
 export const getMessages = async ({ token, id }) => {
   try {
-    const response = await fetch(
-      `${API_URL}/dashboard/v1/admin/messages-user/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/get-chat-messages/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -3021,8 +3020,8 @@ export const postMessage = async ({ user_id, message, token }) => {
 };
 export const getUsers = async ({ token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/get-users`, {
-      method: "GET",
+    const response = await fetch(`${API_URL}/customer-get-chats`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

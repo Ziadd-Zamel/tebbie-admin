@@ -9,8 +9,8 @@ import { Tabs, Tab, Box } from "@mui/material";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const [tabValue, setTabValue] = useState(0); 
-  const { login ,CustomerServicelogin} = useAuthContext();
+  const [tabValue, setTabValue] = useState(0);
+  const { login, CustomerServicelogin } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -44,13 +44,17 @@ const Login = () => {
         if (!CustomerServicelogin) {
           throw new Error("JWTProvider is required for this form.");
         }
-        await CustomerServicelogin(values.email, values.password, "customer_service");
+        await CustomerServicelogin(
+          values.email,
+          values.password,
+          "customer_service"
+        );
         if (values.remember) {
           localStorage.setItem("email", values.email);
         } else {
           localStorage.removeItem("email");
         }
-        navigate(from, { replace: true });
+        navigate("/chat");
       } catch (error) {
         console.log(error);
         if (error.message === "Failed to fetch") {
@@ -111,7 +115,8 @@ const Login = () => {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
-    setShowPassword(false); 
+    localStorage.setItem("role",newValue)
+    setShowPassword(false);
   };
 
   const renderForm = (formik) => (

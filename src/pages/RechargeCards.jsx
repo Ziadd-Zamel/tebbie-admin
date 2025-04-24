@@ -41,7 +41,7 @@ const RechargeCards = () => {
   next30Days.setDate(today.getDate() + 30);
   next60Days.setDate(today.getDate() + 60);
   next90Days.setDate(today.getDate() + 90);
-  const filteredCards = cardData?.recharge_cards.filter((card) => {
+  const filteredCards = cardData?.filter((card) => {
     const cardDate = new Date(card.expire_date);
     const matchesSearch = card.card_number
       .toLowerCase()
@@ -69,7 +69,7 @@ const RechargeCards = () => {
   };
 
   const handleExport = () => {
-    const exportData = cardData?.recharge_cards.map((card) => ({
+    const exportData = cardData?.map((card) => ({
       "Card Number": card.card_number,
       "Expire Date": card.expire_date,
       Price: card.price,
