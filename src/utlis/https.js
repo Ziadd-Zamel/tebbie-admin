@@ -1347,9 +1347,15 @@ export const addQuestion = async ({ question, answer, token }) => {
   }
 };
 //recharge card
-export const getRechargeCards = async ({ token }) => {
+export const getRechargeCards = async ({ token, page = 1, is_valid, expire_date, card_number }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/recharge`, {
+    const params = new URLSearchParams({ page });
+
+    if (is_valid !== undefined) params.append("is_valid", is_valid);
+    if (expire_date) params.append("expire_date", expire_date);
+    if (card_number) params.append("card_number", card_number);
+
+    const response = await fetch(`${API_URL}/dashboard/v1/recharge?${params.toString()}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -1359,12 +1365,13 @@ export const getRechargeCards = async ({ token }) => {
 
     if (response.ok) {
       const data = await response.json();
-      return data.data;
+      return data;
     }
   } catch (error) {
     throw error;
   }
 };
+
 export const addRechargeCards = async ({
   count,
   expire_date,

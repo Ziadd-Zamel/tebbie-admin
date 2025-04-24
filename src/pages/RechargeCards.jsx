@@ -3,19 +3,39 @@ import { getRechargeCards } from "../utlis/https";
 import ErrorMessage from "./ErrorMessage";
 import Loader from "./Loader";
 import { IoCardOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { FaFileExcel } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import Pagination from "../components/Pagination";
+
+// Custom debounce hook
+const useDebounce = (value, delay) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
 const RechargeCards = () => {
   const token = localStorage.getItem("authToken");
-  const [selectedFilter, setSelectedFilter] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isValid, setIsValid] = useState(undefined); // undefined, 1, or 0
+  const [expireDate, setExpireDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const debouncedSearchTerm = useDebounce(searchTerm, 500); // 500ms debounce delay
+  const itemsPerPage = 100;
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
@@ -24,52 +44,26 @@ const RechargeCards = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["recharge-card", token],
-    queryFn: () => getRechargeCards({ token }),
+    queryKey: [
+      "recharge-card",
+      token,
+      currentPage,
+      debouncedSearchTerm,
+      isValid,
+      expireDate,
+    ],
+    queryFn: () =>
+      getRechargeCards({
+        token,
+        page: currentPage,
+        card_number: debouncedSearchTerm,
+        is_valid: isValid,
+        expire_date: expireDate,
+      }),
   });
-
-  if (isLoading) {
-    return <Loader />;
-  }
-  if (error) {
-    return <ErrorMessage />;
-  }
-  const today = new Date();
-  const next30Days = new Date();
-  const next60Days = new Date();
-  const next90Days = new Date();
-  next30Days.setDate(today.getDate() + 30);
-  next60Days.setDate(today.getDate() + 60);
-  next90Days.setDate(today.getDate() + 90);
-  const filteredCards = cardData?.filter((card) => {
-    const cardDate = new Date(card.expire_date);
-    const matchesSearch = card.card_number
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-
-    if (selectedFilter === "30") {
-      return cardDate >= today && cardDate <= next30Days && matchesSearch;
-    } else if (selectedFilter === "60") {
-      return cardDate > next30Days && cardDate <= next60Days && matchesSearch;
-    } else if (selectedFilter === "90") {
-      return cardDate > next60Days && cardDate <= next90Days && matchesSearch;
-    }
-    return matchesSearch;
-  });
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentPageCards = filteredCards.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
-  const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   const handleExport = () => {
-    const exportData = cardData?.map((card) => ({
+    const exportData = cardData?.data.map((card) => ({
       "Card Number": card.card_number,
       "Expire Date": card.expire_date,
       Price: card.price,
@@ -83,12 +77,34 @@ const RechargeCards = () => {
     XLSX.writeFile(workbook, "RechargeCards.xlsx");
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on search
+  };
+
+  const handleIsValidChange = (e) => {
+    const value = e.target.value;
+    setIsValid(value === "" ? undefined : Number(value)); // Convert to undefined, 1, or 0
+    setCurrentPage(1); // Reset to page 1 on filter change
+  };
+
+  const handleExpireDateChange = (e) => {
+    setExpireDate(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on filter change
+  };
+
+  if (error) {
+    return <ErrorMessage />;
+  }
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
   return (
     <section dir={direction} className="container mx-auto lg:p-6 p-4 w-full">
       <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
         <Link
           to={"/recharge-card/add-card"}
-          className="px-6 py-2 hover:bg-[#048c87]  flex justify-center items-center text-white  gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg  rounded-[8px] focus:outline-none  text-center"
+          className="px-6 py-2 hover:bg-[#048c87] flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
         >
           {t("AddCard")}
           <IoMdAddCircle />
@@ -102,67 +118,94 @@ const RechargeCards = () => {
         </button>
       </div>
       <div className="my-4 flex flex-col gap-4 md:flex-row md:items-center">
-        <div>
-    
-          <select
-            id="dateFilter"
-            value={selectedFilter}
-            onChange={(e) => setSelectedFilter(e.target.value)}
-            className="w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary "
-          >
-          <option value="">{t("showAll")}</option>
-  <option value="30">{t("next30Days")}</option>
-  <option value="60">{t("next60Days")}</option>
-  <option value="90">{t("next90Days")}</option>
-          </select>
-        </div>
         <div className="flex-1">
-   
           <input
             type="text"
             id="search"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             placeholder={t("searchByCardNumber")}
-            className="  w-full p-2 border  border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
+        <div className="flex-1">
+          <select
+            id="isValid"
+            value={isValid === undefined ? "" : isValid}
+            onChange={handleIsValidChange}
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          >
+            <option value="">{t("allCards")}</option>
+            <option value="1">{t("validCards")}</option>
+            <option value="0">{t("invalidCards")}</option>
+          </select>
+        </div>
+        <div className="flex-1">
+          <input
+            type="date"
+            id="expireDate"
+            value={expireDate}
+            onChange={handleExpireDateChange}
+            placeholder={t("selectExpireDate")}
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
           />
         </div>
       </div>
-      <div className="overflow-x-auto md:w-full w-[90vw]">
+      <div className="overflow-x-auto md:w-full w-[90vw] h-[70vh] overflow-auto">
         <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
           <thead>
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-start">#</th>
               <th className="py-3 px-6 text-left">{t("cardNumber")}</th>
-    <th className="py-3 px-6 text-left">{t("expireDate")}</th>
-              <th className="py-3 px-6 text-left">{t("price")} </th>
+              <th className="py-3 px-6 text-left">{t("validation")}</th>
+              <th className="py-3 px-6 text-left">{t("expireDate")}</th>
+              <th className="py-3 px-6 text-left">{t("price")}</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 md:text-lg text-md font-light">
-            {currentPageCards?.map((card, index) => (
-              <tr
-                key={card.id}
-                className="border-b border-gray-200 hover:bg-gray-100"
-              >
-                <td className="py-3 px-6 text-left flex items-center gap-3">
-                  {index + 1 + startIndex}
-                  <IoCardOutline size={30} className="text-gray-500" />
+            {isLoading ? (
+              <tr>
+                <td colSpan="4" className="text-center py-4">
+                  <Loader />
                 </td>
-                <td className="py-3 px-6 text-left">{card.card_number}</td>
-                <td className="py-3 px-6 text-left">{card.expire_date}</td>
-                <td className="py-3 px-6 text-left">{card.price}</td>
               </tr>
-            ))}
-            {filteredCards?.length === 0 && (
+            ) : cardData?.data?.length === 0 ? (
               <tr>
                 <td
                   colSpan="4"
                   className="text-center py-4 text-gray-500 text-lg"
                 >
-                       {t("noCardsFound")}
-
+                  {t("noCardsFound")}
                 </td>
               </tr>
+            ) : (
+              cardData?.data?.map((card, index) => (
+                <tr
+                  key={card.id}
+                  className="border-b border-gray-200 hover:bg-gray-100"
+                >
+                  <td className="py-3 px-6 text-left flex items-center gap-3">
+                    {index + 1 + startIndex}
+                    <IoCardOutline size={30} className="text-gray-500" />
+                  </td>
+                  <td className="py-3 px-6 text-left">{card.card_number}</td>
+                  <td className="py-3 px-6 text-left">
+                    <span
+                      className={`font-semibold text-white rounded-full py-1 text-sm px-2 ${
+                        card.is_valid === 1
+                          ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white"
+                          : "bg-red-600"
+                      }`}
+                    >
+                      {card.is_valid === 1 ? t("valid") : t("invalid")}
+                    </span>
+                  </td>
+                  <td className="py-3 px-6 text-left whitespace-nowrap">
+                    {card.expire_date}
+                  </td>
+                  <td className="py-3 px-6 text-left">{card.price}</td>
+                </tr>
+              ))
             )}
           </tbody>
         </table>
@@ -171,11 +214,11 @@ const RechargeCards = () => {
       <div className="flex justify-between items-end p-4">
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+          totalPages={cardData?.pagination.total_pages || 1}
+          onPageChange={setCurrentPage}
         />
         <p className="md:text-2xl text-xl text-gray-500 text-end">
-        {t("total")} : {filteredCards.length}
+          {t("total")} : {cardData?.pagination.total || 0}
         </p>
       </div>
     </section>
