@@ -63,7 +63,7 @@ const Navbar = () => {
   return (
     <nav
       dir={direction}
-      className="bg-[#FFFFFF] font-almarai md:h-[90px] h-auto my-5 lg:flex w-full"
+      className="bg-[#FFFFFF] font-almarai md:h-[90px] h-auto my-5 lg:flex w-full px-4"
     >
       <div className="container py-4 mx-auto justify-between items-center hidden lg:flex">
         <div

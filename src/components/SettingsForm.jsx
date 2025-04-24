@@ -73,10 +73,10 @@ const navigate = useNavigate()
   };
 
   return (
-    <section dir={direction} className="container mx-auto p-4 w-full flex justify-center items-center h-[80vh]">
+    <section dir={direction} className="container mx-auto p-4 w-full flex justify-center items-center 2xl:h-[80vh] h-full">
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-8 rounded flex flex-col justify-center shadow w-full h-[50vh] max-w-3xl"
+        className="space-y-4 bg-white p-8 my-8 rounded flex flex-col justify-center shadow w-full 2xl:h-[50vh] h-full max-w-3xl"
       >
         <div>
           <label className="block mb-1 font-medium">{t("pointsForRegister")}</label>
