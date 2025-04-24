@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
       }
       if (data.data) {
         localStorage.setItem("authToken", data.data.token);
-     
+        localStorage.setItem("wss_token", data.data.customer_service.wss_token);
       }else {
         throw new Error(data.message || "خطأ في تسجيل الدخول");
       }

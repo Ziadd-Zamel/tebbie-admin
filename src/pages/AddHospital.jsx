@@ -60,7 +60,7 @@ const AddHospital = () => {
     specialization_id: "",
     media: [],
     old_media: [],
-    active: false,
+    active: 0,
     lat: "",
     long: "",
     start_visit_from: "",
@@ -348,7 +348,7 @@ const AddHospital = () => {
 
             <div className="text-xl font-semibold  w-full flex items-center gap-3 ">
               <label>
-                <span className="text-red-500">*</span> {t("active")}
+           {t("active")}
               </label>
               <input
                 className="InputPrimary"
@@ -368,7 +368,21 @@ const AddHospital = () => {
               </div>
               <h2 className="text-2xl font-semibold">{t("homevisit")}</h2>
             </div>
-            
+            <div className="flex justify-center my-3  items-center  w-full">
+                <div className="text-xl font-semibold  w-full  flex items-center gap-3">
+                  <label> {t("homevisit")}</label>
+                  <input
+                    className="InputPrimary"
+                    type="checkbox"
+                    onChange={(e) =>
+                      setHospitalData({
+                        ...hospitalData,
+                        open_visits: e.target.checked ? "1" : "0",
+                      })
+                    }
+                  />
+                </div>
+              </div>
             <div className="lg:flex mb-6 w-full">
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
@@ -420,21 +434,7 @@ const AddHospital = () => {
                 />
               </div>
 
-              <div className="flex justify-center my-3  items-center  w-full">
-                <div className="text-xl font-semibold  w-full  flex items-center gap-3">
-                  <label> {t("homevisit")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        open_visits: e.target.checked ? "1" : "0",
-                      })
-                    }
-                  />
-                </div>
-              </div>
+            
             </div>
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
 
