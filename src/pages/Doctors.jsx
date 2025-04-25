@@ -48,13 +48,12 @@ const Doctors = () => {
 
   return (
     <section dir={direction} className="container max-auto md:px-4 px-2 ">
-       
-              <div className="flex md:justify-between justify-center items-center md:flex-row flex-col gap-2 my-4">
+      <div className="flex md:justify-between justify-center items-center md:flex-row flex-col gap-2 my-4">
         <div className="flex justify-end items-end gap-2">
           <Link
             to={"/doctors/add-doctor"}
             className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
-            >
+          >
             {t("add-doctor")}
             <IoPersonAddSharp />
           </Link>
@@ -63,7 +62,7 @@ const Doctors = () => {
           <Link
             to={"/doctors/trashed-doctors"}
             className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
-            >
+          >
             {t("recyclebin")}
             <IoTrashSharp />
           </Link>
@@ -75,7 +74,7 @@ const Doctors = () => {
           currentDoctors.map((doctor) => (
             <div
               key={doctor.id}
-              className="bg-white h-60 md:w-[320px] w-[300px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
+              className="bg-white h-60 2xl:w-[320px] w-[300px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
             >
               <div className="flex">
                 <div className="w-1/3">

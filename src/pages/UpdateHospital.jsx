@@ -418,7 +418,6 @@ const UpdateHospital = () => {
               </div>
             </div>
             <div className="text-xl font-semibold  w-full flex items-center gap-3 my-4">
-              <span className="text-red-500">*</span>{" "}
               <label>{t("active")}</label>
               <input
                 className="InputPrimary"
@@ -433,13 +432,28 @@ const UpdateHospital = () => {
               />
             </div>
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
-            <div className="flex gap-2 justify-center items-center my-4">
-              <div className="size-12 rounded-full bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] flex justify-center items-center shrink-0">
+            <div className="flex gap-2 justify-center items-center py-6 w-full">
+              <div className="size-12 rounded-full bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] flex justify-center items-center shrink-0 ">
                 <FaHome className="text-white" size={25} />
               </div>
               <h2 className="text-2xl font-semibold">{t("homevisit")}</h2>
             </div>
-
+            <div className="flex justify-center my-3  items-center  w-full">
+                <div className="text-xl font-semibold  w-full  flex items-center gap-3">
+                  <label> {t("homevisit")}</label>
+                  <input
+                    className="InputPrimary"
+                    type="checkbox"
+                    checked={hospitalData.open_visits === 1}
+                    onChange={(e) =>
+                      setHospitalData({
+                        ...hospitalData,
+                        open_visits: e.target.checked ? 1 : 0,
+                      })
+                    }
+                  />
+                </div>
+              </div>
             <div className="flex flex-col lg:flex-row gap-4 mb-6 w-full">
               <TextField
                 label="Start Visit From"
@@ -483,22 +497,7 @@ const UpdateHospital = () => {
                 />
               </div>
 
-              <div className="flex justify-center my-3  items-center  w-full">
-                <div className="text-xl font-semibold  w-full  flex items-center gap-3">
-                  <label> {t("homevisit")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    checked={hospitalData.open_visits === 1}
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        open_visits: e.target.checked ? 1 : 0,
-                      })
-                    }
-                  />
-                </div>
-              </div>
+ 
             </div>
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
 

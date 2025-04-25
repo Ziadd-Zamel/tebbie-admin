@@ -123,7 +123,7 @@ const Employees = () => {
 
   return (
    <>
-    <section dir={direction} className="container mx-auto py-8">
+    <section dir={direction} className="container mx-auto py-8 w-full">
       <div className="bg-white rounded-3xl md:p-8 p-4 w-full min-h-screen">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
           <input
@@ -144,7 +144,7 @@ const Employees = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto md:w-full w-[90vw]">
+        <div className="overflow-x-auto lg:w-full w-[90vw]">
           <table className="min-w-full bg-white rounded-lg border border-gray-200">
             <thead>
               <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
@@ -188,7 +188,7 @@ const Employees = () => {
                     <td className="py-3 px-6 text-center">
                       {employee.phone || t("noPhone")}
                     </td>
-                    <td className="py-3 px-6 text-center">
+                    <td className="py-3 px-6 text-center whitespace-nowrap">
                       {employee.hospital?.name || t("noHospital")}
                     </td>
                     <td className="py-3 px-6 text-center whitespace-nowrap">

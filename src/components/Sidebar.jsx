@@ -5,6 +5,7 @@ import { IoMdPeople } from "react-icons/io";
 import { mainLogo } from "../assets";
 import { FaRegClock } from "react-icons/fa6";
 import { FaUserDoctor } from "react-icons/fa6";
+// eslint-disable-next-line no-unused-vars
 import { IoIosChatbubbles } from "react-icons/io";
 import {
   FaArrowCircleLeft,
@@ -57,7 +58,7 @@ export const therestofSidebarLinks = [
     label: "common questions",
     icon: <FaQuestion size={22} />,
   },
-  {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
+  // {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
   {
     path: "/sliders",
     label: "sliders",

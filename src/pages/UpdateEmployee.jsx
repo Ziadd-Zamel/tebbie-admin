@@ -298,7 +298,7 @@ navigate("/employees")
 
         <div className="relative">
           <label className="block text-md almarai-semibold mb-4 text-start">
-            <span className="text-red-500">*</span> {t("password")}
+            {t("password")}
           </label>
           <input
             type={showPassword ? "text" : "password"}

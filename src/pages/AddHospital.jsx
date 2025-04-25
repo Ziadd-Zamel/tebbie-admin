@@ -111,8 +111,8 @@ const AddHospital = () => {
     onError: (error) => {
       toast.error("حدث خطأ أثناء اضافة بيانات المستشفى");
       const message = error?.errors
-      ? error.errors.map((err, index) => `${index + 1}. ${err}`).join("\n")
-      : "حدث خطأ غير معروف";
+        ? error.errors.map((err, index) => `${index + 1}. ${err}`).join("\n")
+        : "حدث خطأ غير معروف";
 
       console.error("Validation Errors:", error.errors);
       setErrorMessage(message);
@@ -217,8 +217,7 @@ const AddHospital = () => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="bio"
                 >
-                                   <span className="text-red-500">*</span>  {t("bio")}
-                                 
+                  <span className="text-red-500">*</span> {t("bio")}
                 </label>
                 <input
                   type="text"
@@ -236,7 +235,7 @@ const AddHospital = () => {
                   htmlFor="password"
                   className="block text-md almarai-semibold mb-4"
                 >
-                 <span className="text-red-500">*</span> {t("password")}
+                  <span className="text-red-500">*</span> {t("password")}
                 </label>
                 <input
                   placeholder="********"
@@ -331,7 +330,6 @@ const AddHospital = () => {
                   <select
                     name="state_id"
                     id="state_id"
-                    
                     onChange={handleChange}
                     className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                   >
@@ -347,9 +345,7 @@ const AddHospital = () => {
             </div>
 
             <div className="text-xl font-semibold  w-full flex items-center gap-3 ">
-              <label>
-           {t("active")}
-              </label>
+              <label>{t("active")}</label>
               <input
                 className="InputPrimary"
                 type="checkbox"
@@ -369,20 +365,20 @@ const AddHospital = () => {
               <h2 className="text-2xl font-semibold">{t("homevisit")}</h2>
             </div>
             <div className="flex justify-center my-3  items-center  w-full">
-                <div className="text-xl font-semibold  w-full  flex items-center gap-3">
-                  <label> {t("homevisit")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        open_visits: e.target.checked ? "1" : "0",
-                      })
-                    }
-                  />
-                </div>
+              <div className="text-xl font-semibold  w-full  flex items-center gap-3">
+                <label> {t("homevisit")}</label>
+                <input
+                  className="InputPrimary"
+                  type="checkbox"
+                  onChange={(e) =>
+                    setHospitalData({
+                      ...hospitalData,
+                      open_visits: e.target.checked ? "1" : "0",
+                    })
+                  }
+                />
               </div>
+            </div>
             <div className="lg:flex mb-6 w-full">
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
@@ -433,8 +429,6 @@ const AddHospital = () => {
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                 />
               </div>
-
-            
             </div>
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
 

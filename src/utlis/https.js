@@ -328,14 +328,11 @@ export const newHospital = async ({
   formdata.append("active", active ? "1" : "0");
   formdata.append("lat", lat);
   formdata.append("long", long);
-  if(city_id)
-  {
+  if (city_id) {
     formdata.append("city_id", city_id);
-
   }
-  if(state_id){
+  if (state_id) {
     formdata.append("state_id", state_id);
-
   }
 
   media.forEach((file) => {
@@ -620,7 +617,6 @@ export const newSpecializations = async ({
     throw error;
   }
 };
-
 export const updateSpecializations = async ({
   id,
   token,
@@ -1347,7 +1343,13 @@ export const addQuestion = async ({ question, answer, token }) => {
   }
 };
 //recharge card
-export const getRechargeCards = async ({ token, page = 1, is_valid, expire_date, card_number }) => {
+export const getRechargeCards = async ({
+  token,
+  page = 1,
+  is_valid,
+  expire_date,
+  card_number,
+}) => {
   try {
     const params = new URLSearchParams({ page });
 
@@ -1355,13 +1357,16 @@ export const getRechargeCards = async ({ token, page = 1, is_valid, expire_date,
     if (expire_date) params.append("expire_date", expire_date);
     if (card_number) params.append("card_number", card_number);
 
-    const response = await fetch(`${API_URL}/dashboard/v1/recharge?${params.toString()}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/recharge?${params.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -1371,7 +1376,6 @@ export const getRechargeCards = async ({ token, page = 1, is_valid, expire_date,
     throw error;
   }
 };
-
 export const addRechargeCards = async ({
   count,
   expire_date,
@@ -1520,9 +1524,7 @@ export const updateSetting = async ({ id, token, ...data }) => {
     throw error;
   }
 };
-
 // Coupons API Calls
-
 export const getCoupons = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/coupons`, {
@@ -1578,7 +1580,6 @@ export const UpdateCoupon = async ({
     throw error;
   }
 };
-
 export const newCoupon = async ({ token, code, type, amount }) => {
   const formdata = new FormData();
 
@@ -1610,7 +1611,6 @@ export const newCoupon = async ({ token, code, type, amount }) => {
     throw error;
   }
 };
-
 export const deleteCoupon = async ({ id, token }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/coupons/${id}`, {
@@ -2076,7 +2076,9 @@ export const newEmployee = async ({
   formdata.append("name", name);
   formdata.append("email", email);
   formdata.append("phone", phone);
-  formdata.append("password", password);
+  if (password) {
+    formdata.append("password", password);
+  }
   formdata.append("hospital_id", hospital_id);
   formdata.append("specialization_id", specialization_id);
   formdata.append("active", active ? "1" : "0");
@@ -3083,6 +3085,24 @@ export const markAsRead = async ({ token, name }) => {
     return result.data;
   } catch (error) {
     console.error("Error:", error);
+    throw error;
+  }
+};
+export const getHospitalsByspecialization = async ({ token ,id=1 }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/get-hospitals-by-specialization/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data?.data;
+    }
+  } catch (error) {
     throw error;
   }
 };

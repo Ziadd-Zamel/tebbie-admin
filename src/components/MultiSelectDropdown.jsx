@@ -38,10 +38,10 @@ const MultiSelectDropdown = ({ doctors, selectedDoctors, handleDoctorChange ,tra
       <MenuItem disabled value="">
         {t(`${translation}`)}
       </MenuItem>
-      {doctors.map((doctor) => (
-        <MenuItem key={doctor.id} value={doctor.id}>
+      {doctors?.map((doctor) => (
+        <MenuItem key={doctor?.id} value={doctor?.id}>
           <Checkbox checked={selected.includes(doctor.id)} /> 
-          <ListItemText primary={doctor.name} />
+          <ListItemText primary={doctor?.name} />
         </MenuItem>
       ))}
     </Select>

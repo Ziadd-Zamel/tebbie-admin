@@ -268,10 +268,17 @@ const resources = {
       allCards: "all Cards",
       validCards: "valid cards",
       invalidCards: "invalid Cards",
-      valid:"valid",
-      invalid:"In valid",
-      validatity:"validatity"
-
+      valid: "valid",
+      invalid: "In valid",
+      validatity: "validatity",
+      choose_hospitals_required: "At least one hospital must be selected",
+      please_fill_required_fields: "please fill required fields",
+      sending: "sending...",
+      missing_coordinates: "Hospital coordinates are not available.",
+      invalid_coordinates: "Hospital coordinates are invalid.",
+      loading_map: "Loading map...",
+      select_specialization_first: "Select a specialization first",
+      physicalTherapy:"physical Therapy"
     },
   },
   ar: {
@@ -539,9 +546,18 @@ const resources = {
       allCards: "كل الكروت",
       validCards: "الكروت الصالحة",
       invalidCards: "الكروت الغير الصالحة",
-      valid:"صالح",
-      invalid:"غير صالح",
-      validatity:"الصلاحية"
+      valid: "صالح",
+      invalid: "غير صالح",
+      validatity: "الصلاحية",
+      choose_hospitals_required: "يجب اختيار مستشفى واحده على الأقل",
+      please_fill_required_fields: "يرجى ملء الحقول المطلوبة",
+      sending: "جارٍ الإرسال...",
+      missing_coordinates: "إحداثيات المستشفى غير متوفرة.",
+      invalid_coordinates: "إحداثيات المستشفى غير صالحة.",
+      loading_map: "جاري تحميل الخريطة..",
+      select_specialization_first: "اختر التخصص أولاً",
+      physicalTherapy:"علاج طبيعى"
+
     },
   },
 };

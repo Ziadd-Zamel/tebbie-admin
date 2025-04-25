@@ -217,7 +217,7 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                   className="block almarai-semibold mb-4"
                   htmlFor="password"
                 >
-                  <span className="text-red-500">*</span> {t("password")}
+                {t("password")}
                 </label>
                 <Field
                   type="password"
