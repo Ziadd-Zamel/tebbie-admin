@@ -278,7 +278,9 @@ const resources = {
       invalid_coordinates: "Hospital coordinates are invalid.",
       loading_map: "Loading map...",
       select_specialization_first: "Select a specialization first",
-      physicalTherapy:"physical Therapy"
+      physicalTherapy:"physical Therapy",
+      submission_failed:"submission failed"
+
     },
   },
   ar: {
@@ -556,7 +558,8 @@ const resources = {
       invalid_coordinates: "إحداثيات المستشفى غير صالحة.",
       loading_map: "جاري تحميل الخريطة..",
       select_specialization_first: "اختر التخصص أولاً",
-      physicalTherapy:"علاج طبيعى"
+      physicalTherapy:"علاج طبيعى",
+      submission_failed:"حدث خطأ ما"
 
     },
   },

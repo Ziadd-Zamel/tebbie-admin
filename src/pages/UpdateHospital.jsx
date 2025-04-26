@@ -366,6 +366,31 @@ const UpdateHospital = () => {
               </div>
             </div>
             <div className="lg:flex mb-6 w-full">
+            <div className="px-3 my-6 md:mb-0 w-full">
+                <label
+                  className="block text-md almarai-semibold mb-4"
+                  htmlFor="state"
+                >
+                  {t("state")}
+                </label>
+                {stateIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="state"
+                    value={hospitalData.state_id}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
+                  >
+                    <option value="">Select State</option>
+                    {states.map((state) => (
+                      <option key={state.id} value={state.id}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
                   className="block text-md almarai-semibold mb-4"
@@ -391,31 +416,7 @@ const UpdateHospital = () => {
                   </select>
                 )}
               </div>
-              <div className="px-3 my-6 md:mb-0 w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="state"
-                >
-                  {t("state")}
-                </label>
-                {stateIsLoading ? (
-                  <div className="text-gray-500">Loading...</div>
-                ) : (
-                  <select
-                    name="state"
-                    value={hospitalData.state_id}
-                    onChange={handleChange}
-                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                  >
-                    <option value="">Select State</option>
-                    {states.map((state) => (
-                      <option key={state.id} value={state.id}>
-                        {state.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
+              
             </div>
             <div className="text-xl font-semibold  w-full flex items-center gap-3 my-4">
               <label>{t("active")}</label>
