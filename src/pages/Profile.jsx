@@ -2,7 +2,7 @@ import  { useState, useEffect } from "react";
 import { ashraf } from "../assets";
 import { useTranslation } from "react-i18next";
 import { CiEdit } from "react-icons/ci";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUser, updateUserData } from "../utlis/https";
 import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
@@ -12,6 +12,7 @@ const Profile = () => {
   const { t, i18n } = useTranslation();
   const isArabic = i18n.language === "ar";
   const token = localStorage.getItem("authToken");
+  const queryClient = useQueryClient();
 
   const {
     data: userdata,
@@ -35,6 +36,8 @@ const Profile = () => {
   const mutation = useMutation({
     mutationFn: (userData) => updateUserData({ token, ...userData }),
     onSuccess: (data) => {
+      queryClient.invalidateQueries(["userData"]);
+
       toast.success("User data updated successfully", data);
     },
     onError: (error) => {
