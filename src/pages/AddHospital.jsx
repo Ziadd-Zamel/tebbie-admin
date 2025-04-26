@@ -379,57 +379,62 @@ const AddHospital = () => {
                 />
               </div>
             </div>
-            <div className="lg:flex mb-6 w-full">
-              <div className="px-3 my-6 md:mb-0 w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="start_visit_from"
-                >
-                  start visit from
-                </label>
-                <input
-                  type="time"
-                  onChange={handleChange}
-                  id="start_visit_from"
-                  name="start_visit_from"
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                />
-              </div>
+            {hospitalData.open_visits === "1" && (
+  <>
+    <div className="lg:flex mb-6 w-full">
+      <div className="px-3 my-6 md:mb-0 w-full">
+        <label
+          className="block text-md almarai-semibold mb-4"
+          htmlFor="start_visit_from"
+        >
+          start visit from
+        </label>
+        <input
+          type="time"
+          onChange={handleChange}
+          id="start_visit_from"
+          name="start_visit_from"
+          className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+        />
+      </div>
 
-              <div className="px-3 my-6 md:mb-0 w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="email"
-                >
-                  end visit at
-                </label>
-                <input
-                  type="time"
-                  onChange={handleChange}
-                  id="end_visit_at"
-                  name="end_visit_at"
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                />
-              </div>
-            </div>
-            <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full ">
-              <div className="  w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="doctor_ids"
-                >
-                  {t("visit_time")}
-                </label>
-                <input
-                  type="text"
-                  value={hospitalData.visit_time}
-                  onChange={handleChange}
-                  id="visit_time"
-                  name="visit_time"
-                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                />
-              </div>
-            </div>
+      <div className="px-3 my-6 md:mb-0 w-full">
+        <label
+          className="block text-md almarai-semibold mb-4"
+          htmlFor="end_visit_at"
+        >
+          end visit at
+        </label>
+        <input
+          type="time"
+          onChange={handleChange}
+          id="end_visit_at"
+          name="end_visit_at"
+          className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+        />
+      </div>
+    </div>
+
+    <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full">
+      <div className="w-full">
+        <label
+          className="block text-md almarai-semibold mb-4"
+          htmlFor="visit_time"
+        >
+          {t("visit_time")}
+        </label>
+        <input
+          type="text"
+          value={hospitalData.visit_time}
+          onChange={handleChange}
+          id="visit_time"
+          name="visit_time"
+          className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+        />
+      </div>
+    </div>
+  </>
+)}
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
 
             <div className="px-3 my-6 md:mb-0 w-full relative">
