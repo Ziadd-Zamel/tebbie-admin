@@ -92,7 +92,7 @@ const Doctors = () => {
                   <p className="text-sm text-gray-500 mb-2 truncate">
                     {doctor.job_title}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 ">
                     {doctor.bio.length > 40
                       ? `${doctor.bio.substring(0, 40)}...`
                       : doctor.bio}

@@ -2,9 +2,8 @@ import { IoIosSend } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import Pusher from "pusher-js";
-import { getMessages, getUsers, markAsRead, postMessage } from "../utlis/https";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getMessages, getUsers } from "../utlis/https";
 import { useTranslation } from "react-i18next";
 import { useUser } from "../chatcontext/UserContext";
 import UserList from "../components/UserList";
@@ -13,36 +12,23 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
   const token = localStorage.getItem("authToken");
-  console.log("Token is: " + JSON.stringify(token));
-
+  const wss_token = localStorage.getItem("wss_token");
   const queryClient = useQueryClient();
   const chatContainerRef = useRef(null);
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { selectedUser, setSelectedUser } = useUser();
-
-  const { mutate: markMessageAsRead } = useMutation({
-    mutationFn: markAsRead,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["users-data"]);
-    },
-    onError: (error) => {
-      console.error("Error marking messages as read:", error);
-    },
-  });
+  const socketRef = useRef(null);
 
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
     queryClient.invalidateQueries(["messages"]);
-
-    markMessageAsRead({ user_id: userId, token });
   };
   const { data: usersData, isLoading: usersIsLoading } = useQuery({
     queryKey: ["users-list"],
     queryFn: () => getUsers({ token }),
     enabled: !!token,
   });
-  console.log(token);
   useEffect(() => {
     if (usersData?.length && !selectedUser) {
       const reversedUsers = usersData.slice();
@@ -59,66 +45,106 @@ const ChatPage = () => {
     queryFn: () => getMessages({ token, id: selectedUser }),
     enabled: !!selectedUser,
   });
-  const { mutate: sendMessage, isLoading: isSendingMessage } = useMutation({
-    mutationFn: postMessage,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["messages"]);
-      setMessageText("");
-    },
-    onError: (error) => {
-      console.error("Message sending failed:", error);
-    },
-  });
+  useEffect(() => {
+    setMessages([]);
+  }, [selectedUser]);
+  useEffect(() => {
+    if (!selectedUser || !wss_token) return;
+
+    const socketUrl = `wss://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
+    const socket = new WebSocket(socketUrl);
+    socketRef.current = socket;
+
+    socket.onopen = () => {
+      console.log("WebSocket connected ✅");
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        const newMessage = {
+          id: data.id,
+          chat_id: parseInt(data.chat_id),
+          user_id: data.chat_id,
+          type: data.type === 0 ? "text" : data.type,
+          content: data.content,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          from_me: true, // لأنك إنت الـ sender (الـ admin)
+          message_from: "admin", // لأن الرسالة من الـ admin
+          user_image: null, // مافيش صورة user
+          admin_image: "/default-admin.png", // صورة افتراضية للـ admin
+        };
+        setMessages((prevMessages) => {
+          const isDuplicate = prevMessages.some(
+            (msg) => msg.id === newMessage.id
+          );
+          return isDuplicate ? prevMessages : [...prevMessages, newMessage];
+        });
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket disconnected ❌");
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      console.log("WebSocket URL:", socket.url);
+      console.log("WebSocket readyState:", socket.readyState);
+      console.log("Error details:", error);
+    };
+  }, [selectedUser, wss_token]);
   useEffect(() => {
     if (initialMessages) {
-      const messagesArray = Object.values(initialMessages)
-        .filter((message) => message.user_id === selectedUser)
-        .reverse();
-      setMessages(messagesArray);
+      const formattedOldMessages = initialMessages.map((message) => ({
+        id: message.id,
+        chat_id: message.chat_id,
+        user_id: message.user_id,
+        type: message.type,
+        content: message.content,
+        created_at: message.created_at,
+        updated_at: message.updated_at,
+        from_me: message.from_me,
+        message_from: message.from_me ? "admin" : "user",
+        user_image: message.user_image || "/default-user.png",
+        admin_image: message.admin_image || "/default-admin.png",
+      }));
+
+      setMessages((prevMessages) => {
+        const oldMessagesIds = formattedOldMessages.map((msg) => msg.id);
+        const newUniqueMessages = prevMessages.filter(
+          (msg) => !oldMessagesIds.includes(msg.id)
+        );
+        return [...formattedOldMessages, ...newUniqueMessages].sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
+      });
     }
   }, [initialMessages, selectedUser]);
+
+  console.log(messages);
+
+  const handleSendClick = () => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      const messagePayload = {
+        msg: messageText,
+      };
+      socketRef.current.send(JSON.stringify(messagePayload));
+      setMessageText("");
+    } else {
+      console.error("WebSocket not connected. Cannot send message.");
+    }
+  };
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
-  useEffect(() => {
-    if (!selectedUser) return;
-    const pusher = new Pusher("ffe2f6ba2a1c4cca0a31", {
-      cluster: "eu",
-    });
-    const channel = pusher.subscribe(`chat.${selectedUser}`);
-
-    channel.bind("new-message", (event) => {
-      if (event && event.data) {
-        try {
-          const parsedData = JSON.parse(event.data);
-          const newMessage = {
-            id: parsedData.id,
-            user_id: parsedData.user_id,
-            message: parsedData.message,
-            message_from: parsedData.message_from,
-            created_at: parsedData.created_at,
-            updated_at: parsedData.updated_at,
-          };
-
-          setMessages((prevMessages) => {
-            const isDuplicate = prevMessages.some(
-              (msg) => msg.id === newMessage.id
-            );
-            return isDuplicate ? prevMessages : [...prevMessages, newMessage];
-          });
-        } catch (error) {
-          console.error("Error parsing new message data:", error);
-        }
-      }
-    });
-
-    return () => {
-      pusher.unsubscribe(`chat.${selectedUser}`);
-    };
-  }, [selectedUser]);
 
   if (isLoading || usersIsLoading) {
     return <Loader />;
@@ -139,31 +165,6 @@ const ChatPage = () => {
       </div>
     );
   }
-  const handleSendClick = () => {
-    if (messageText.trim()) {
-      sendMessage(
-        { user_id: selectedUser, message: messageText, token },
-        {
-          onSuccess: (response) => {
-            const newMessage = {
-              id: response.data.id,
-              user_id: selectedUser,
-              user_name: response.data.user_name,
-              message: messageText,
-              timestamp: new Date().toISOString(),
-            };
-            const pusher = new Pusher("ffe2f6ba2a1c4cca0a31", {
-              cluster: "eu",
-            });
-            const channel = pusher.subscribe(`chat.${selectedUser}`);
-            channel.trigger("new-message", newMessage);
-            setMessageText("");
-          },
-        }
-      );
-    }
-  };
-  console.log(usersData);
 
   return (
     <section dir={direction}>
@@ -182,17 +183,15 @@ const ChatPage = () => {
               className="flex-grow  h-[80vh] overflow-auto"
             >
               <div className="grid pb-11">
-                {initialMessages?.length > 0 ? (
-                  initialMessages?.map((message) => (
+                {messages?.length > 0 ? (
+                  messages?.map((message) => (
                     <div
                       key={message.id}
                       className={`flex gap-2.5 mb-4 ${
-                        message.message_from === "user"
-                          ? "justify-end "
-                          : "justify-start"
+                        message.from_me ? "justify-start" : "justify-end"
                       }`}
                     >
-                      {message.message_from === "admin" && (
+                      {message.from_me === "admin" && (
                         <img
                           className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
                           src={message?.admin_image}
@@ -202,20 +201,16 @@ const ChatPage = () => {
                       <div className="grid">
                         <h5
                           className={`text-md font-semibold leading-snug pb-1 ${
-                            message.message_from === "user"
-                              ? "text-right"
-                              : "text-gray-900"
+                            message.from_me ? "text-right" : "text-gray-900"
                           }`}
                         >
-                          {message.message_from === "admin"
-                            ? "admin"
-                            : message.user_name}
+                          {message.from_me ? "You" : "User"}
                         </h5>
                         <div
                           className={`px-3.5 py-2 inline-flex ${
-                            message.message_from === "user"
-                              ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] md:rounded-tr-full md:rounded-b-full rounded-xl  text-white"
-                              : "bg-gradient-to-bl from-[#33A9C7] to-[#3a96ab] text-white md:rounded-tl-full md:rounded-b-full rounded-xl "
+                            message.from_me
+                              ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] md:rounded-tl-full md:rounded-b-full rounded-xl  text-white"
+                              : "bg-gradient-to-bl from-[#33A9C7] to-[#3a96ab] text-white md:rounded-tr-full md:rounded-b-full rounded-xl "
                           }`}
                         >
                           <h5 className="md:text-md text-sm font-normal leading-snug">
@@ -224,9 +219,7 @@ const ChatPage = () => {
                         </div>
                         <div
                           className={`inline-flex ${
-                            message.message_from === "user"
-                              ? "justify-start"
-                              : "justify-end"
+                            message.from_me ? "justify-end" : "justify-end"
                           } items-center`}
                         >
                           <h6 className="text-gray-500 md:text-sm text-xs font-normal leading-4 py-1">
@@ -241,7 +234,7 @@ const ChatPage = () => {
                         </div>
                       </div>
 
-                      {message.message_from === "user" && (
+                      {message.from_me && (
                         <img
                           className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
                           src={message.user_image}
@@ -268,9 +261,12 @@ const ChatPage = () => {
               </div>
               <div className="flex items-center gap-2">
                 <button
+                  disabled={
+                    !socketRef.current ||
+                    socketRef.current.readyState !== WebSocket.OPEN
+                  }
                   onClick={handleSendClick}
-                  disabled={isSendingMessage}
-                  className="items-center flex px-3 py-2 bg-primary rounded-full shadow"
+                  className="items-center flex px-3 py-2 bg-primary rounded-full shadow disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <IoIosSend size={30} color="white" />
                   <h3 className="text-white text-sm font-semibold leading-4 px-2">
