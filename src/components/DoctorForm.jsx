@@ -33,6 +33,8 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
       .min(1, t("choose_hospitals_required"))
       .required(t("choose_hospitals_required")),
     address: Yup.string().required(t("address_required")),
+    job_title: Yup.string().required(t("job_title_required")),
+
     bio: Yup.string().required(t("bio_required")),
     specialization_id: Yup.string().required(t("specialization_required")),
     is_visitor: Yup.string(),
@@ -92,7 +94,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
         is_visitor: initialData.is_visitor === "yes" ? "yes" : "no",
         isAbleToCancel: initialData.isAbleToCancel === "yes" ? "yes" : "no",
         hospital_ids:
-          initialData.hospitals?.map((hospital) => hospital.id) || [],
+        initialData.hospitals?.map((hospital) => hospital.id) || [],
         media: initialData.image || null,
       }
     : {
@@ -288,11 +290,11 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
               </div>
 
               <div className="px-3 my-6 md:mb-0 w-full">
-                <label
+              <label
                   className="block text-md almarai-semibold mb-4"
-                  htmlFor="job_title"
+                  htmlFor="phone"
                 >
-                  {t("jobtitle")}
+                  <span className="text-red-500">*</span> {t("jobtitle")}
                 </label>
                 <Field
                   type="text"

@@ -204,7 +204,7 @@ const ChatPage = () => {
                             message.from_me ? "text-right" : "text-gray-900"
                           }`}
                         >
-                          {message.from_me ? "You" : "User"}
+                          {message.from_me === "true" ? "admin" : "User"}
                         </h5>
                         <div
                           className={`px-3.5 py-2 inline-flex ${

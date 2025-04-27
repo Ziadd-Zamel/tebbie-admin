@@ -134,8 +134,8 @@ const Hospitals = () => {
                   {hospital.name}
                 </td>
                 <td  className="p-4 whitespace-nowrap" >
-                    {(hospital.address?.slice(0, 60) || t("none")) +
-                      (hospital.address?.length > 60 ? "..." : "")}
+                    {(hospital.address?.slice(0, 50) || t("none")) +
+                      (hospital.address?.length > 50 ? "..." : "")}
                   </td>
                 <td  className="p-4 whitespace-nowrap" >
                   <span
