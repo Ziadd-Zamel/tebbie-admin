@@ -50,54 +50,58 @@ const ChatPage = () => {
     setMessages([]);
   }, [selectedUser]);
   useEffect(() => {
-    if (!selectedUser || !wss_token) return;
-
+    if (!selectedUser || !wss_token || !usersData) return;
+  
+    // Find the user ID for the selected chat
+    const selectedChat = usersData.find((chat) => chat.chat_id === selectedUser);
+    const userId = selectedChat?.user?.id; // e.g., 10 for "محمد اسامه"
+  
     const socketUrl = `wss://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
-
+  
     socket.onopen = () => {
       console.log("WebSocket connected ✅");
     };
-
+  
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        const isFromUser = data.sender.id === userId; // Compare sender.id with user.id
         const newMessage = {
           id: data.id,
           chat_id: parseInt(data.chat_id),
-          user_id: data.chat_id,
+          user_id: data.sender.id,
           type: data.type === 0 ? "text" : data.type,
           content: data.content,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          from_me: true, // لأنك إنت الـ sender (الـ admin)
-          message_from: "admin", // لأن الرسالة من الـ admin
-          user_image: null, // مافيش صورة user
-          admin_image: "/default-admin.png", // صورة افتراضية للـ admin
+          from_me: !isFromUser, // True for admin, false for user
+          message_from: isFromUser ? "user" : "admin",
+          user_image: isFromUser ? (selectedChat?.user?.image || "/default-user.png") : null,
+          admin_image: isFromUser ? null : mainLogo,
         };
         setMessages((prevMessages) => {
-          const isDuplicate = prevMessages.some(
-            (msg) => msg.id === newMessage.id
-          );
+          const isDuplicate = prevMessages.some((msg) => msg.id === newMessage.id);
           return isDuplicate ? prevMessages : [...prevMessages, newMessage];
         });
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
       }
     };
-
+  
     socket.onclose = () => {
       console.log("WebSocket disconnected ❌");
     };
-
+  
     socket.onerror = (error) => {
       console.error("WebSocket error:", error);
-      console.log("WebSocket URL:", socket.url);
-      console.log("WebSocket readyState:", socket.readyState);
-      console.log("Error details:", error);
     };
-  }, [selectedUser, wss_token]);
+  
+    return () => {
+      socket.close();
+    };
+  }, [selectedUser, wss_token, usersData]);
   useEffect(() => {
     if (initialMessages) {
       const formattedOldMessages = initialMessages.map((message) => ({
@@ -109,9 +113,9 @@ const ChatPage = () => {
         created_at: message.created_at,
         updated_at: message.updated_at,
         from_me: message.from_me,
-        message_from: message.from_me ? "admin" : "user",
+        message_from: message.sender ? "admin" : "user",
         user_image: message.user_image || "/default-user.png",
-        admin_image: message.admin_image || "/default-admin.png",
+        admin_image: message.admin_image || mainLogo,
       }));
 
       setMessages((prevMessages) => {
@@ -191,10 +195,10 @@ const ChatPage = () => {
                         message.from_me ? "justify-start" : "justify-end"
                       }`}
                     >
-                      {message.from_me === "admin" && (
+                      {message.from_me && (
                         <img
                           className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
-                          src={message?.admin_image || mainLogo}
+                          src={message?.admin_image}
                         />
                       )}
 
@@ -234,7 +238,7 @@ const ChatPage = () => {
                         </div>
                       </div>
 
-                      {message.from_me && (
+                      {message.user_image === "user" && (
                         <img
                           className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
                           src={message.user_image}
