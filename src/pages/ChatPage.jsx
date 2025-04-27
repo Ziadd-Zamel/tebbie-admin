@@ -56,10 +56,9 @@ const ChatPage = () => {
     const selectedChat = usersData.find((chat) => chat.chat_id === selectedUser);
     const userId = selectedChat?.user?.id; // e.g., 10 for "محمد اسامه"
   
-    const socketUrl = `wss://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
+    const socketUrl = `https://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
-  
     socket.onopen = () => {
       console.log("WebSocket connected ✅");
     };
