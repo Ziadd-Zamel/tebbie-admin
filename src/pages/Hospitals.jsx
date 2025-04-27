@@ -134,8 +134,9 @@ const Hospitals = () => {
                   {hospital.name}
                 </td>
                 <td  className="p-4 whitespace-nowrap" >
-                  {hospital.address || "Na"}
-                </td>
+                    {(hospital.address?.slice(0, 60) || t("none")) +
+                      (hospital.address?.length > 60 ? "..." : "")}
+                  </td>
                 <td  className="p-4 whitespace-nowrap" >
                   <span
                     className={`px-3 py-2 rounded-full text-sm ${
