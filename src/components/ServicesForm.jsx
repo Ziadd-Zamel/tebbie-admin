@@ -81,7 +81,7 @@ const navigate = useNavigate()
     <section className="container mx-auto p-4 w-full">
       <form
         onSubmit={handleSubmit}
-        className="w-full rounded-2xl bg-white h-[40vh] p-6 shadow-lg flex flex-col justify-center items-center"
+        className="w-full rounded-2xl bg-white h-auto p-6 shadow-lg flex flex-col justify-center items-center"
       >
         <div className="px-3 my-4 md:mb-0">
           <input
@@ -91,7 +91,7 @@ const navigate = useNavigate()
             onChange={handleChange}
             id="name"
             placeholder={t("name")}
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary md:w-[494px] w-[300px]"
+            className="border border-gray-300 rounded-lg px-4 bg-[#F7F8FA] py-3 focus:outline-none focus:border-primary md:w-[494px] w-[300px]"
           />
         </div>
 
@@ -101,7 +101,7 @@ const navigate = useNavigate()
             id="type"
             value={formData.type}
             onChange={handleChange}
-            className="border border-gray-300 rounded-md py-2 px-6 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary md:w-[494px] w-[300px]"
+            className="border border-gray-300 rounded-md 2 px-6 bg-[#F7F8FA] py-3 focus:outline-none focus:border-primary md:w-[494px] w-[300px]"
           >
             <option value="">Select home visit</option>
             {homeVisit?.map((data) => (

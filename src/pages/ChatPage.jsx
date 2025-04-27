@@ -7,6 +7,7 @@ import { getMessages, getUsers } from "../utlis/https";
 import { useTranslation } from "react-i18next";
 import { useUser } from "../chatcontext/UserContext";
 import UserList from "../components/UserList";
+import { mainLogo } from "../../src/assets";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -32,7 +33,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (usersData?.length && !selectedUser) {
       const reversedUsers = usersData.slice();
-      setSelectedUser(reversedUsers[0].id);
+      setSelectedUser(reversedUsers[0].chat_id);
     }
   }, [usersData, selectedUser]);
 
@@ -125,7 +126,6 @@ const ChatPage = () => {
     }
   }, [initialMessages, selectedUser]);
 
-  console.log(messages);
 
   const handleSendClick = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -169,7 +169,7 @@ const ChatPage = () => {
   return (
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
-        <div className="flex m-4">
+        <div className="flex m-4 ">
           {usersData && (
             <UserList
               users={usersData}
@@ -182,7 +182,7 @@ const ChatPage = () => {
               ref={chatContainerRef}
               className="flex-grow  h-[80vh] overflow-auto"
             >
-              <div className="grid pb-11">
+              <div className="grid pb-11 p-4">
                 {messages?.length > 0 ? (
                   messages?.map((message) => (
                     <div
@@ -194,7 +194,7 @@ const ChatPage = () => {
                       {message.from_me === "admin" && (
                         <img
                           className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
-                          src={message?.admin_image}
+                          src={message?.admin_image || mainLogo}
                         />
                       )}
 
@@ -204,13 +204,13 @@ const ChatPage = () => {
                             message.from_me ? "text-right" : "text-gray-900"
                           }`}
                         >
-                          {message.from_me === "true" ? "admin" : "User"}
+                          {message.from_me ? "admin" : "User"}
                         </h5>
                         <div
                           className={`px-3.5 py-2 inline-flex ${
                             message.from_me
-                              ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] md:rounded-tl-full md:rounded-b-full rounded-xl  text-white"
-                              : "bg-gradient-to-bl from-[#33A9C7] to-[#3a96ab] text-white md:rounded-tr-full md:rounded-b-full rounded-xl "
+                              ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] rounded-tl-full rounded-b-full rounded-xl  text-white"
+                              : "bg-gradient-to-bl from-[#33A9C7] to-[#3a96ab] text-white rounded-tr-full rounded-b-full rounded-xl "
                           }`}
                         >
                           <h5 className="md:text-md text-sm font-normal leading-snug">

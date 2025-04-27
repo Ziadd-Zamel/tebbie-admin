@@ -8,11 +8,21 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { IoMdAdd } from "react-icons/io";
 import { toast } from "react-toastify";
-
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 const Sliders = () => {
   const token = localStorage.getItem("authToken");
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
   const queryClient = useQueryClient();
-
+  const { t } = useTranslation()
   const { mutate: handleDelete } = useMutation({
     mutationFn: ({ id }) => deleteSliders({ id, token }),
     onMutate: async ({ id }) => {
@@ -37,7 +47,22 @@ const Sliders = () => {
       queryClient.invalidateQueries(["sliderData", token]);
     },
   });
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setOpenDialog(true);
+  };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedId(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedId) {
+      handleDelete({ id: selectedId });
+    }
+    handleCloseDialog();
+  };
   const {
     data: sliderData,
     isLoading,
@@ -54,12 +79,6 @@ const Sliders = () => {
   if (error) {
     return <ErrorMessage />;
   }
-
-  const handleDeleteClick = (id) => {
-    if (window.confirm("Are you sure you want to delete this slider?")) {
-      handleDelete({ id });
-    }
-  };
 
   return (
     <section className="container mx-auto py-8">
@@ -112,6 +131,44 @@ const Sliders = () => {
             <p>Sorry, there are no sliders.</p>
           </div>
         )}
+        <Dialog
+                  open={openDialog}
+                  onClose={handleCloseDialog}
+                  PaperProps={{ sx: { borderRadius: "12px", padding: "16px" } }}
+                >
+                  <DialogTitle sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+                    {t("confirmDelete")}
+                  </DialogTitle>
+                  <DialogContent>
+                    <p className="text-gray-600">{t("areYouSureDeleteSlider")}</p>
+                  </DialogContent>
+                  <DialogActions sx={{ justifyContent: "center", gap: "16px" }}>
+                    <Button
+                      onClick={handleCloseDialog}
+                      sx={{
+                        backgroundColor: "#3AAB95",
+                        color: "white",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        "&:hover": { backgroundColor: "#33A9C7" },
+                      }}
+                    >
+                      {t("cancel")}
+                    </Button>
+                    <Button
+                      onClick={handleConfirmDelete}
+                      sx={{
+                        backgroundColor: "#DC3545",
+                        color: "white",
+                        padding: "8px 16px",
+                        borderRadius: "8px",
+                        "&:hover": { backgroundColor: "#a71d2a" },
+                      }}
+                    >
+                      {t("delete")}
+                    </Button>
+                  </DialogActions>
+                </Dialog>
       </div>
     </section>
   );

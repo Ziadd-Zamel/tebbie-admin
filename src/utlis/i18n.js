@@ -154,6 +154,9 @@ const resources = {
       citySearchPlaceholder: "Search by city name",
       noCitiesAvailable: "No cities available",
       areYouSureDeleteCity: "Are you sure you want to delete this city?",
+      areYouSureDeleteState: "Are you sure you want to delete this state?",
+      areYouSureDeleteSlider: "Are you sure you want to delete this slider?",
+
       cityDeletedSuccess: "City deleted successfully!",
       cityDeleteFailed: "Failed to delete city: {error}",
       code: "Code",
@@ -437,6 +440,9 @@ const resources = {
       citySearchPlaceholder: "البحث باسم المدينة",
       noCitiesAvailable: "لا توجد مدن متاحة",
       areYouSureDeleteCity: "هل أنت متأكد من حذف هذه المدينة؟",
+      areYouSureDeleteState: "هل أنت متأكد من حذف هذه الولاية",
+      areYouSureDeleteSlider: "هل أنت متأكد من حذف هذه الاعلان",
+
       cityDeletedSuccess: "تم حذف المدينة بنجاح!",
       cityDeleteFailed: "فشل في حذف المدينة: {error}",
       code: "الكود",
