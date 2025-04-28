@@ -3063,12 +3063,13 @@ export const getRequestForm = async ({ token }) => {
     throw error;
   }
 };
-export const markAsRead = async ({ token, name }) => {
+export const closeChat = async ({ token, chat_id,subject }) => {
   const formdata = new FormData();
-  formdata.append("name", name);
+  formdata.append("subject", subject);
+  formdata.append("chat_id", chat_id,);
 
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/mark-as-read`, {
+    const response = await fetch(`${API_URL}/close-chat`, {
       method: "POST",
       body: formdata,
       headers: {

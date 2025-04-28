@@ -15,7 +15,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
-  const login = async (email, password) => {
+  const login = async (email, password,fcmToken ) => {
     try {
       const response = await fetch(LOGIN_URL, {
         method: "POST",
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password,fcm_token: fcmToken }),
       });
 
       const data = await response.json(); 
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-  const CustomerServicelogin = async (email, password) => {
+  const CustomerServicelogin = async (email, password, fcmToken) => {
     try {
       const response = await fetch(CustomerService_login, {
         method: "POST",
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password , fcm_token: fcmToken }),
       });
 
       const data = await response.json(); 

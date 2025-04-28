@@ -2,12 +2,13 @@ import { IoIosSend } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getMessages, getUsers } from "../utlis/https";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getMessages, getUsers, closeChat } from "../utlis/https";
 import { useTranslation } from "react-i18next";
 import { useUser } from "../chatcontext/UserContext";
 import UserList from "../components/UserList";
 import { mainLogo } from "../../src/assets";
+import { toast } from "react-toastify";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -20,6 +21,8 @@ const ChatPage = () => {
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { selectedUser, setSelectedUser } = useUser();
   const socketRef = useRef(null);
+  const [isCloseChatInputVisible, setIsCloseChatInputVisible] = useState(false);
+  const [subject, setSubject] = useState("");
 
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
@@ -46,23 +49,57 @@ const ChatPage = () => {
     queryFn: () => getMessages({ token, id: selectedUser }),
     enabled: !!selectedUser,
   });
+
+  const closeChatMutation = useMutation({
+    mutationFn: closeChat,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["users-list"]);
+      setIsCloseChatInputVisible(false);
+      if (socketRef.current?.readyState === WebSocket.OPEN) {
+        socketRef.current.close();
+      }      setSubject("");
+      setSelectedUser(null);
+      toast.success("تم قفل المحدثة بنجاح");
+    },
+    onError: (error) => {
+      console.error("Error closing chat:", error);
+      toast.error(`حدث خطأ ما ${error}`);
+    },
+  });
+
+  const handleCloseChatClick = () => {
+    setIsCloseChatInputVisible(true);
+  };
+
+  const handleSubmitSubject = () => {
+    if (!subject.trim()) {
+      alert("Please enter a subject.");
+      return;
+    }
+    closeChatMutation.mutate({
+      token,
+      chat_id: selectedUser,
+      subject,
+    });
+  };
   useEffect(() => {
     setMessages([]);
   }, [selectedUser]);
   useEffect(() => {
     if (!selectedUser || !wss_token || !usersData) return;
-  
-    // Find the user ID for the selected chat
-    const selectedChat = usersData.find((chat) => chat.chat_id === selectedUser);
-    const userId = selectedChat?.user?.id; // e.g., 10 for "محمد اسامه"
-  
+
+    const selectedChat = usersData.find(
+      (chat) => chat.chat_id === selectedUser
+    );
+    const userId = selectedChat?.user?.id;
+
     const socketUrl = `https://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
     socket.onopen = () => {
       console.log("WebSocket connected ✅");
     };
-  
+
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -77,26 +114,30 @@ const ChatPage = () => {
           updated_at: new Date().toISOString(),
           from_me: !isFromUser, // True for admin, false for user
           message_from: isFromUser ? "user" : "admin",
-          user_image: isFromUser ? (selectedChat?.user?.image || "/default-user.png") : null,
+          user_image: isFromUser
+            ? selectedChat?.user?.image || "/default-user.png"
+            : null,
           admin_image: isFromUser ? null : mainLogo,
         };
         setMessages((prevMessages) => {
-          const isDuplicate = prevMessages.some((msg) => msg.id === newMessage.id);
+          const isDuplicate = prevMessages.some(
+            (msg) => msg.id === newMessage.id
+          );
           return isDuplicate ? prevMessages : [...prevMessages, newMessage];
         });
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
       }
     };
-  
+
     socket.onclose = () => {
       console.log("WebSocket disconnected ❌");
     };
-  
+
     socket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
-  
+
     return () => {
       socket.close();
     };
@@ -128,7 +169,6 @@ const ChatPage = () => {
       });
     }
   }, [initialMessages, selectedUser]);
-
 
   const handleSendClick = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
@@ -181,6 +221,39 @@ const ChatPage = () => {
             />
           )}
           <div className="w-3/4 relative p-8">
+            <div className="w-full flex justify-end">
+              {selectedUser &&   <button
+                onClick={handleCloseChatClick}
+                className="bg-red-600 hover:bg-red-400 text-white rounded-full p-2"
+              >
+                انهاء المحادثة
+              </button>}
+            
+            </div>
+            {isCloseChatInputVisible && (
+              <div className="mt-4 flex items-center gap-2">
+                <input
+                  type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="أدخل الموضوع..."
+                  className="border border-gray-300 rounded p-2 w-full"
+                />
+                <button
+                  onClick={handleSubmitSubject}
+                  disabled={closeChatMutation.isLoading}
+                  className="bg-blue-600 hover:bg-blue-400 text-white rounded-full p-2 w-28"
+                >
+                  {closeChatMutation.isLoading ? "جاري الإرسال..." : "إرسال"}
+                </button>
+                <button
+                  onClick={() => setIsCloseChatInputVisible(false)}
+                  className="bg-gray-600 hover:bg-gray-400 text-white rounded-full p-2  w-28"
+                >
+                  إلغاء
+                </button>
+              </div>
+            )}
             <div
               ref={chatContainerRef}
               className="flex-grow  h-[80vh] overflow-auto"

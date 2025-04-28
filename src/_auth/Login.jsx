@@ -6,6 +6,8 @@ import { useAuthContext } from "./authContext/JWTProvider";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Tabs, Tab, Box } from "@mui/material";
+import { getToken } from "firebase/messaging";
+import { messaging } from "../firebase/config";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +17,33 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
   const [showPassword, setShowPassword] = useState(false);
+
+  // Function to get FCM token
+  const getFCMToken = async () => {
+    try {
+      // Request notification permission
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        // Retrieve FCM token
+        const token = await getToken(messaging, {
+          vapidKey: import.meta.env.VITE_VAPID_KEY,
+        });
+
+        if (token) {
+          console.log(token);
+          
+          return token;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.error("Error retrieving FCM token:", err);
+      return null;
+    }
+  };
 
   const loginSchema = Yup.object().shape({
     email: Yup.string()
@@ -42,12 +71,15 @@ const Login = () => {
       setLoading(true);
       try {
         if (!CustomerServicelogin) {
+          
           throw new Error("JWTProvider is required for this form.");
         }
+        const fcmToken = await getFCMToken();
+console.log(fcmToken)
         await CustomerServicelogin(
           values.email,
           values.password,
-          "customer_service"
+          fcmToken
         );
         if (values.remember) {
           localStorage.setItem("email", values.email);
@@ -83,7 +115,10 @@ const Login = () => {
         if (!login) {
           throw new Error("JWTProvider is required for this form.");
         }
-        await login(values.email, values.password, "admin");
+        const fcmToken = await getFCMToken();
+        console.log(fcmToken)
+
+        await login(values.email, values.password ,fcmToken);
         if (values.remember) {
           localStorage.setItem("email", values.email);
         } else {

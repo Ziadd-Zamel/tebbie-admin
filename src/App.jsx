@@ -54,6 +54,8 @@ import CustomerService from "./pages/CustomerService/CustomerService";
 import UpdateCustomerService from "./pages/CustomerService/UpdateCustomerService";
 import AddCustomerService from "./pages/CustomerService/AddCustomerService";
 import { ChatOnlyMiddleware } from "./middlewares/ChatOnlyMiddleware";
+import ChatLayout from "./pages/ChatLayout";
+import useFirebaseNotifications from "./hooks/useFirebaseNotifications";
 
 const queryClient = new QueryClient();
 
@@ -192,7 +194,7 @@ const router = createBrowserRouter([
   },
   {
     path: "auth/login",
-    element: <GuestMiddleware  />,
+    element: <GuestMiddleware />,
     children: [{ index: true, element: <Login /> }],
   },
   {
@@ -201,8 +203,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
+        element: <ChatLayout />,
         children: [
-          { path: "", element: <ChatPage /> },
+          {  index: true, element: <ChatPage /> },
           {
             path: "*",
             element: <NotFound />,
@@ -214,6 +217,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  useFirebaseNotifications();
+
   return (
     <main>
       <QueryClientProvider client={queryClient}>
