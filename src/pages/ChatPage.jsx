@@ -34,6 +34,7 @@ const ChatPage = () => {
     queryFn: () => getUsers({ token }),
     enabled: !!token,
   });
+  console.log(usersData)
   const selectedChat = usersData?.find((chat) => chat.chat_id === selectedUser);
   const isChatClosed = selectedChat?.status === "closed";
   useEffect(() => {
@@ -90,8 +91,7 @@ const ChatPage = () => {
     setMessages([]);
   }, [selectedUser]);
   useEffect(() => {
-    if (!selectedUser || !wss_token || !usersData) return;
-
+    if (!selectedUser || !wss_token || !usersData || isChatClosed) return;
     const selectedChat = usersData.find(
       (chat) => chat.chat_id === selectedUser
     );
@@ -100,8 +100,7 @@ const ChatPage = () => {
     const socketUrl = `https://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
-    socket.onopen = () => {
-    };
+    socket.onopen = () => {};
 
     socket.onmessage = (event) => {
       try {
@@ -133,8 +132,7 @@ const ChatPage = () => {
       }
     };
 
-    socket.onclose = () => {
-    };
+    socket.onclose = () => {};
     socket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
@@ -170,7 +168,11 @@ const ChatPage = () => {
       });
     }
   }, [initialMessages, selectedUser]);
-
+  useEffect(() => {
+    if (isChatClosed) {
+      socketRef.current = null; 
+    }
+  }, [isChatClosed]);
   const handleSendClick = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       const messagePayload = {
@@ -223,15 +225,14 @@ const ChatPage = () => {
           )}
           <div className="w-3/4 relative p-8">
             <div className="w-full flex justify-end my-4">
-            {(!isChatClosed && selectedUser) && (
-  <button
-    onClick={handleCloseChatClick}
-    className="bg-red-600 hover:bg-red-400 text-white rounded-full p-2"
-  >
-    انهاء المحادثة
-  </button>
-)}
-
+              {!isChatClosed && selectedUser && (
+                <button
+                  onClick={handleCloseChatClick}
+                  className="bg-red-600 hover:bg-red-400 text-white rounded-full p-2"
+                >
+                  انهاء المحادثة
+                </button>
+              )}
             </div>
             {isCloseChatInputVisible && (
               <div className="mt-4 flex items-center gap-2">
