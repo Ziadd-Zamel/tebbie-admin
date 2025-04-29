@@ -282,7 +282,9 @@ const resources = {
       loading_map: "Loading map...",
       select_specialization_first: "Select a specialization first",
       physicalTherapy:"physical Therapy",
-      submission_failed:"submission failed"
+      submission_failed:"submission failed",
+      serviceDeletedSuccess :"service Deleted Success",
+
 
     },
   },
@@ -442,7 +444,7 @@ const resources = {
       areYouSureDeleteCity: "هل أنت متأكد من حذف هذه المدينة؟",
       areYouSureDeleteState: "هل أنت متأكد من حذف هذه الولاية",
       areYouSureDeleteSlider: "هل أنت متأكد من حذف هذه الاعلان",
-
+      serviceDeletedSuccess :"نم مسح الخدمة بنجاح",
       cityDeletedSuccess: "تم حذف المدينة بنجاح!",
       cityDeleteFailed: "فشل في حذف المدينة: {error}",
       code: "الكود",

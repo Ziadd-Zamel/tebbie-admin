@@ -25,7 +25,7 @@ const useFirebaseNotifications = () => {
 
     onMessage(messaging, (payload) => {
       const { title, body } = payload.notification;
-      toast.info(`رساله جديده ${title}: ${body}`, {
+      toast.info(` ${title}: ${body}`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,

@@ -220,7 +220,8 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                 {t("password")}
                 </label>
                 <Field
-                  type="password"
+                             type={showPassword ? "text" : "password"}
+
                   name="password"
                   placeholder={t("password")}
                   className="border border-gray-100 rounded-xl py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"

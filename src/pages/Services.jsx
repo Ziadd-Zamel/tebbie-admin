@@ -65,7 +65,6 @@ const Services = () => {
   const handleConfirmDelete = () => {
     if (selectedId) {
       handleDelete({ id: selectedId });
-      toast.info(t("deletingService"));
     }
     handleCloseDialog();
   };
