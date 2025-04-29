@@ -80,7 +80,7 @@ const Navbar = () => {
         >
           {pageName.charAt(0).toUpperCase() + pageName.slice(1)}
         </div>
-        <div className="flex items-center gap-3 lg:gap-5 xl:gap-6 shrink-0 ">
+        <div className="flex items-center gap-3  shrink-0 ">
           <LanguageDropdown />
           <Notifcation />
           <Profile />

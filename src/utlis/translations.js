@@ -49,7 +49,7 @@ export const pageTranslations = {
       "/services":"services",
       "/refunds":"refunds",
       "/refunds/:refundsId":"refunds details",
-      "/customer-service":"customer-service",
+      "/customer-service":"customer service",
       "/customer-service/:customerId":"update customer service",
       "/customer-service/add-customer-service":"add customer service",
       "/services/add-service":"add service",

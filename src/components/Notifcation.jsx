@@ -75,7 +75,7 @@ const NotificationDropdown = () => {
   };
 
   return (
-    <div ref={dropdownRef} dir={direction} className="relative ml-20 z-50">
+    <div ref={dropdownRef} dir={direction} className="relative  z-50">
       <button
         className="bg-[#FFFAF1] rounded-[8px] p-4 relative"
         onClick={toggleDropdown}

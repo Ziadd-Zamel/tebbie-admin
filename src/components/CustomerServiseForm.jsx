@@ -11,22 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const DoctorSchema = Yup.object().shape({
-  name: Yup.string().required("name_required"),
-  email: Yup.string().email("invalid_email").required("email_required"),
-  phone: Yup.string().required("phone_required"),
-  is_active: Yup.string(),
-  isAbleToCancel: Yup.string(),
-  password: Yup.string()
-    .min(8, "password_too_short") 
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "password_requirements" 
-    )
-,
-  password_confirmation: Yup.string()
-    .oneOf([Yup.ref("password"), null], "passwords_must_match")
-});
+
 const CustomerServiseForm = ({
   initialData,
   mode = "add",
@@ -43,8 +28,22 @@ const CustomerServiseForm = ({
     event.preventDefault();
     setShowPassword(!showPassword);
   };
-  // Mutation
-  const mutation = useMutation({
+  const DoctorSchema = Yup.object().shape({
+    name: Yup.string().required(t("name_required")),
+    email: Yup.string().email(t("invalid_email")).required(t("email_required")),
+    phone: Yup.string().required(t("phone_required")),
+    is_active: Yup.string(),
+    isAbleToCancel: Yup.string(),
+    password: Yup.string()
+      .min(8, t("password_too_short")) 
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        t("password_requirements")
+      )
+  ,
+    password_confirmation: Yup.string()
+      .oneOf([Yup.ref("password"), null], t("passwords_must_match"))
+  });  const mutation = useMutation({
     mutationFn: (data) => {
       return mode === "add"
         ? addCustomerService(data, token)
@@ -115,7 +114,7 @@ const CustomerServiseForm = ({
                   name="name"
                   component="div"
                   className="!text-red-700 my-2"
-                  render={(msg) => t(msg)}
+                 
                 />
               </div>
             </div>
@@ -139,7 +138,7 @@ const CustomerServiseForm = ({
                   name="phone"
                   component="div"
                   className="!text-red-700 mt-1"
-                  render={(msg) => t(msg)}
+                 
                 />
               </div>
 
@@ -161,7 +160,7 @@ const CustomerServiseForm = ({
                   name="email"
                   component="div"
                   className="text-red-700 mt-1"
-                  render={(msg) => t(msg)}
+                 
                 />
               </div>
             </div>
@@ -176,7 +175,7 @@ const CustomerServiseForm = ({
                   <span className="text-red-500">*</span> {t("password")}
                 </label>
                 <Field
-                  type="text"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
                   placeholder={t("password")}
@@ -193,7 +192,6 @@ const CustomerServiseForm = ({
                   name="password"
                   component="div"
                   className="!text-red-700 mt-1"
-                  render={(msg) => t(msg)}
                 />
               </div>
 
@@ -216,7 +214,6 @@ const CustomerServiseForm = ({
                   name="password_confirmation"
                   component="div"
                   className="text-red-700 mt-1"
-                  render={(msg) => t(msg)}
                 />
               </div>
             </div>
