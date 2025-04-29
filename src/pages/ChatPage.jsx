@@ -20,6 +20,7 @@ const ChatPage = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { selectedUser, setSelectedUser } = useUser();
+
   const socketRef = useRef(null);
   const [isCloseChatInputVisible, setIsCloseChatInputVisible] = useState(false);
   const [subject, setSubject] = useState("");
@@ -33,6 +34,8 @@ const ChatPage = () => {
     queryFn: () => getUsers({ token }),
     enabled: !!token,
   });
+  const selectedChat = usersData?.find((chat) => chat.chat_id === selectedUser);
+  const isChatClosed = selectedChat?.status === "closed";
   useEffect(() => {
     if (usersData?.length && !selectedUser) {
       const reversedUsers = usersData.slice();
@@ -57,7 +60,8 @@ const ChatPage = () => {
       setIsCloseChatInputVisible(false);
       if (socketRef.current?.readyState === WebSocket.OPEN) {
         socketRef.current.close();
-      }      setSubject("");
+      }
+      setSubject("");
       setSelectedUser(null);
       toast.success("تم قفل المحدثة بنجاح");
     },
@@ -97,13 +101,12 @@ const ChatPage = () => {
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
     socket.onopen = () => {
-      console.log("WebSocket connected ✅");
     };
 
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        const isFromUser = data.sender.id === userId; // Compare sender.id with user.id
+        const isFromUser = data.sender.id === userId;
         const newMessage = {
           id: data.id,
           chat_id: parseInt(data.chat_id),
@@ -112,7 +115,7 @@ const ChatPage = () => {
           content: data.content,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-          from_me: !isFromUser, // True for admin, false for user
+          from_me: !isFromUser,
           message_from: isFromUser ? "user" : "admin",
           user_image: isFromUser
             ? selectedChat?.user?.image || "/default-user.png"
@@ -131,9 +134,7 @@ const ChatPage = () => {
     };
 
     socket.onclose = () => {
-      console.log("WebSocket disconnected ❌");
     };
-
     socket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
@@ -221,14 +222,16 @@ const ChatPage = () => {
             />
           )}
           <div className="w-3/4 relative p-8">
-            <div className="w-full flex justify-end">
-              {selectedUser &&   <button
-                onClick={handleCloseChatClick}
-                className="bg-red-600 hover:bg-red-400 text-white rounded-full p-2"
-              >
-                انهاء المحادثة
-              </button>}
-            
+            <div className="w-full flex justify-end my-4">
+            {(!isChatClosed && selectedUser) && (
+  <button
+    onClick={handleCloseChatClick}
+    className="bg-red-600 hover:bg-red-400 text-white rounded-full p-2"
+  >
+    انهاء المحادثة
+  </button>
+)}
+
             </div>
             {isCloseChatInputVisible && (
               <div className="mt-4 flex items-center gap-2">
@@ -332,6 +335,7 @@ const ChatPage = () => {
                   className="grow shrink basis-0 text-black text-lg font-medium leading-4 w-full focus:outline-none bg-transparent"
                   placeholder="Type here..."
                   value={messageText}
+                  disabled={isChatClosed}
                   onChange={(e) => setMessageText(e.target.value)}
                 />
               </div>
@@ -339,6 +343,7 @@ const ChatPage = () => {
                 <button
                   disabled={
                     !socketRef.current ||
+                    isChatClosed ||
                     socketRef.current.readyState !== WebSocket.OPEN
                   }
                   onClick={handleSendClick}
