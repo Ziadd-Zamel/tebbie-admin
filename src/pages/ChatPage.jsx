@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { IoIosSend } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { useEffect, useRef, useState } from "react";
@@ -215,7 +216,7 @@ const ChatPage = () => {
   return (
     <section dir={direction}>
       <div className="w-full mx-auto container  flex flex-col">
-        <div className="flex m-4 ">
+        <div className="flex m-4 md:gap-6 gap-0">
           {usersData && (
             <UserList
               users={usersData}
@@ -223,7 +224,7 @@ const ChatPage = () => {
               onSelectUser={handleUserSelect}
             />
           )}
-          <div className="w-3/4 relative p-8">
+          <div className="md:w-3/4 w-full relative lg:p-8 md:p-6 p-4 bg-white rounded-md">
             <div className="w-full flex justify-end my-4">
               {!isChatClosed && selectedUser && (
                 <button
