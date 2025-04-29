@@ -141,7 +141,7 @@ const States = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <section dir={direction} className="container mx-auto p-6">
+    <section dir={direction} className="container mx-auto p-4">
       <div className="overflow-x-auto ">
         <div className="flex justify-end my-4">
           <Link
