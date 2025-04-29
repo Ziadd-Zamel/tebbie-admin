@@ -44,7 +44,7 @@ const UserList = ({ users, selectedUser, onSelectUser }) => {
     <>
       <button
         onClick={toggleUserList}
-        className="md:hidden fixed bottom-4 right-4 bg-primary text-white p-3 rounded-full shadow-lg z-50 flex items-center justify-center"
+        className="md:hidden fixed top-1/4 right-4 bg-primary text-white p-3 rounded-full shadow-lg z-50 flex items-center justify-center"
       >
         <FaUsers size={24} />
       </button>
