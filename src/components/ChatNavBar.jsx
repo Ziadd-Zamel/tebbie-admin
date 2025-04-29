@@ -10,9 +10,6 @@ const ChatNavBar = () => {
     try {
       localStorage.removeItem("authToken");
       localStorage.removeItem("wss_token");
-      
-      toast.success("تم تسجيل الخروج بنجاح");
-      
       navigate("/auth/login");
     } catch (error) {
       console.error("Error during logout:", error);
