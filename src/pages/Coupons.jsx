@@ -64,6 +64,7 @@ const Coupons = () => {
       toast.success(t("couponUpdatedSuccess"));
     },
     onError: (error) => {
+      toast.error(error.message); 
       toast.error(t("couponUpdateFailed", { error: error.message }));
     },
   });
@@ -84,7 +85,7 @@ const Coupons = () => {
     },
     onError: (error, _, context) => {
       queryClient.setQueryData(["Coupons", token], context.previousCoupons);
-      toast.error(t("couponAddFailed", { error: error.message }));
+      toast.error(error.message); 
     },
     onSuccess: () => {
       toast.success(t("couponAddedSuccess"));

@@ -321,7 +321,9 @@ export const newHospital = async ({
 
   formdata.append("name", name);
   formdata.append("address", address);
-  formdata.append("bio", bio);
+  if(bio){
+    formdata.append("bio", bio);
+  }
   formdata.append("description", description);
   formdata.append("password", password);
   formdata.append("email", email);
@@ -1570,13 +1572,12 @@ export const UpdateCoupon = async ({
 
     if (!response.ok) {
       throw new Error(
-        result.msg || "An error occurred while updating the Coupon"
+        result.message || "An error occurred while updating the Coupon"
       );
     }
 
     return result.data;
   } catch (error) {
-    console.error("Error:", error);
     throw error;
   }
 };
@@ -1607,7 +1608,6 @@ export const newCoupon = async ({ token, code, type, amount }) => {
 
     return result.data;
   } catch (error) {
-    console.error("Error:", error);
     throw error;
   }
 };

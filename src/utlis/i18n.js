@@ -171,7 +171,8 @@ const resources = {
       areYouSureDeleteCoupon: "Are you sure you want to delete this coupon?",
       fillAllFields: "Please fill in all fields for the new coupon",
       couponAddedSuccess: "Coupon added successfully!",
-      couponAddFailed: "Failed to add coupon: {error}",
+      couponAddFailed: "فشل في إضافة الكوبون: {error}",
+      codeTakenError: "الكود مستخدم بالفعل",
       couponUpdatedSuccess: "Coupon updated successfully!",
       couponUpdateFailed: "Failed to update coupon: {error}",
       couponDeletedSuccess: "Coupon deleted successfully!",
@@ -281,11 +282,9 @@ const resources = {
       invalid_coordinates: "Hospital coordinates are invalid.",
       loading_map: "Loading map...",
       select_specialization_first: "Select a specialization first",
-      physicalTherapy:"physical Therapy",
-      submission_failed:"submission failed",
-      serviceDeletedSuccess :"service Deleted Success",
-
-
+      physicalTherapy: "physical Therapy",
+      submission_failed: "submission failed",
+      serviceDeletedSuccess: "service Deleted Success",
     },
   },
   ar: {
@@ -444,7 +443,7 @@ const resources = {
       areYouSureDeleteCity: "هل أنت متأكد من حذف هذه المدينة؟",
       areYouSureDeleteState: "هل أنت متأكد من حذف هذه الولاية",
       areYouSureDeleteSlider: "هل أنت متأكد من حذف هذه الاعلان",
-      serviceDeletedSuccess :"نم مسح الخدمة بنجاح",
+      serviceDeletedSuccess: "نم مسح الخدمة بنجاح",
       cityDeletedSuccess: "تم حذف المدينة بنجاح!",
       cityDeleteFailed: "فشل في حذف المدينة: {error}",
       code: "الكود",
@@ -566,9 +565,8 @@ const resources = {
       invalid_coordinates: "إحداثيات المستشفى غير صالحة.",
       loading_map: "جاري تحميل الخريطة..",
       select_specialization_first: "اختر التخصص أولاً",
-      physicalTherapy:"علاج طبيعى",
-      submission_failed:"حدث خطأ ما"
-
+      physicalTherapy: "علاج طبيعى",
+      submission_failed: "حدث خطأ ما",
     },
   },
 };

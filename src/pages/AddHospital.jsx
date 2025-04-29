@@ -224,6 +224,7 @@ const AddHospital = () => {
                   id="bio"
                   onChange={handleChange}
                   name="bio"
+                  required
                   placeholder={t("bio")}
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                 />
@@ -451,6 +452,7 @@ const AddHospital = () => {
                 type="text"
                 name="description"
                 onChange={handleChange}
+                required
                 id="description"
                 placeholder={t("description")}
                 className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full min-h-44 "
