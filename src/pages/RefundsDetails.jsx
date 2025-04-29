@@ -123,8 +123,7 @@ const RefundsDetails = () => {
           className="border border-gray-300 rounded-lg py-2 px-4 bg-white h-[50px] focus:outline-none focus:border-primary w-full lg:w-[494px]"
         />
       </div>
-      <div className="overflow-x-auto md:w-full w-[90vw] md:text-md text-sm">
-        <div className="flex justify-end my-4">
+      <div className="flex justify-end my-4">
           <button
             onClick={handleOpenDialog}
             className="bg-primary text-white px-4 py-2 rounded-md"
@@ -132,6 +131,8 @@ const RefundsDetails = () => {
             {t("confirm")}
           </button>
         </div>
+      <div className="overflow-x-auto md:w-full w-[90vw] md:text-md text-sm">
+      
         <table className="w-full bg-white shadow-md">
           <thead>
             <tr className="bg-gray-100">

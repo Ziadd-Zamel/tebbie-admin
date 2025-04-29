@@ -96,7 +96,7 @@ const Services = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <section dir={direction} className="container mx-auto p-6 rounded-3xl">
+    <section dir={direction} className="container mx-auto m-4 rounded-3xl">
       
       <div className="bg-white rounded-3xl md:p-8 p-4 w-full min-h-screen">  
       <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
