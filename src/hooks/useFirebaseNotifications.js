@@ -14,7 +14,7 @@ const useFirebaseNotifications = () => {
           vapidKey: import.meta.env.VITE_VAPID_KEY, 
         });
         if (currentToken) {
-          console.log('Token received: ', currentToken);
+          console.log(' received: ');
         } else {
           console.error('No token available. Request permission to generate one.');
         }

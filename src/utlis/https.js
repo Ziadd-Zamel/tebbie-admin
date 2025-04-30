@@ -321,7 +321,7 @@ export const newHospital = async ({
 
   formdata.append("name", name);
   formdata.append("address", address);
-  if(bio){
+  if (bio) {
     formdata.append("bio", bio);
   }
   formdata.append("description", description);
@@ -747,6 +747,31 @@ export const getstates = async ({ token }) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+//states
+export const getStatByCities = async ({ token, id }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/cities-by-specialization`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          state_ids: [id],
+        }),
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -1551,13 +1576,22 @@ export const UpdateCoupon = async ({
   type,
   amount,
   id,
+  originalCoupon, // إضافة بيانات الكوبون الأصلية للمقارنة
   _method = "PATCH",
 }) => {
   const formdata = new FormData();
   formdata.append("_method", _method);
-  formdata.append("code", code);
-  formdata.append("type", type);
-  formdata.append("amount", amount);
+
+  // إضافة الحقول التي تغيرت فقط
+  if (code && code !== originalCoupon.code) {
+    formdata.append("code", code);
+  }
+  if (type && type !== originalCoupon.type) {
+    formdata.append("type", type);
+  }
+  if (amount && amount !== originalCoupon.amount) {
+    formdata.append("amount", amount);
+  }
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/coupons/${id}`, {
@@ -1572,7 +1606,7 @@ export const UpdateCoupon = async ({
 
     if (!response.ok) {
       throw new Error(
-        result.message || "An error occurred while updating the Coupon"
+        result.message || "حدث خطأ أثناء تحديث الكوبون"
       );
     }
 
@@ -2106,7 +2140,6 @@ export const newEmployee = async ({
     throw error;
   }
 };
-
 export const updateEmployee = async ({
   id,
   token,
@@ -2206,7 +2239,6 @@ export const restoreEmployee = async ({ id, token }) => {
     throw error;
   }
 };
-
 //services
 export const getServices = async ({ token }) => {
   try {
@@ -3063,10 +3095,10 @@ export const getRequestForm = async ({ token }) => {
     throw error;
   }
 };
-export const closeChat = async ({ token, chat_id,subject }) => {
+export const closeChat = async ({ token, chat_id, subject }) => {
   const formdata = new FormData();
   formdata.append("subject", subject);
-  formdata.append("chat_id", chat_id,);
+  formdata.append("chat_id", chat_id);
 
   try {
     const response = await fetch(`${API_URL}/close-chat`, {
@@ -3089,15 +3121,18 @@ export const closeChat = async ({ token, chat_id,subject }) => {
     throw error;
   }
 };
-export const getHospitalsByspecialization = async ({ token ,id=1 }) => {
+export const getHospitalsByspecialization = async ({ token, id = 1 }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/get-hospitals-by-specialization/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/get-hospitals-by-specialization/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();

@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  getcities,
   getDoctors,
   getSpecializations,
   getstates,
   newHospital,
+  getStatByCities, 
 } from "../utlis/https";
 import { toast } from "react-toastify";
 
@@ -43,10 +43,7 @@ const AddHospital = () => {
       queryKey: ["specializations"],
       queryFn: () => getSpecializations({ token }),
     });
-  const { data: cities, isLoading: citiesIsLoading } = useQuery({
-    queryKey: ["cities"],
-    queryFn: () => getcities({ token }),
-  });
+
   const [hospitalData, setHospitalData] = useState({
     name: "",
     bio: "",
@@ -68,12 +65,22 @@ const AddHospital = () => {
     visit_time: "",
     Password: "",
   });
+   // Fetch cities based on selected state_id
+ const { data: cities, isLoading: citiesIsLoading } = useQuery({
+  queryKey: ["cities", hospitalData.state_id], // Depend on state_id
+  queryFn: () => getStatByCities({ token, id: hospitalData.state_id }),
+  enabled: !!hospitalData.state_id, // Only fetch when state_id is set
+});
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setHospitalData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setHospitalData((prev) => {
+      const updatedData = { ...prev, [name]: value };
+      // Reset city_id when state_id changes
+      if (name === "state_id") {
+        updatedData.city_id = "";
+      }
+      return updatedData;
+    });
   };
   const handleSpecializationChange = (selectedSpecializationIds) => {
     setHospitalData((prev) => ({
@@ -294,57 +301,68 @@ const AddHospital = () => {
               </div>
             </div>
             <div className="lg:flex mb-6 w-full">
-             
-              <div className="px-3 my-6 md:mb-0 w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="state_id"
+      <div className="px-3 my-6 md:mb-0 w-full">
+      <label
+          htmlFor="state_id"
+          className="block text-md almarai-semibold mb-4"
                 >
-                  {t("state")}
+                  <span className="text-red-500">*</span>           {t("state")}
+
                 </label>
-                {stateIsLoading ? (
-                  <div className="text-gray-500">Loading...</div>
-                ) : (
-                  <select
-                    name="state_id"
-                    id="state_id"
-                    onChange={handleChange}
-                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                  >
-                    <option value="">Select State</option>
-                    {states.map((state) => (
-                      <option key={state.id} value={state.id}>
-                        {state.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <div className="px-3 my-6 md:mb-0 w-full">
-                <label
-                  className="block text-md almarai-semibold mb-4"
-                  htmlFor="city_id"
-                >
-                  {t("cities")}
-                </label>
-                {citiesIsLoading ? (
-                  <div className="text-gray-500">Loading...</div>
-                ) : (
-                  <select
-                    name="city_id"
-                    onChange={handleChange}
-                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
-                  >
-                    <option value="">Select City</option>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        {city.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-            </div>
+        {stateIsLoading ? (
+          <div className="text-gray-500">Loading...</div>
+        ) : (
+          <select
+            name="state_id"
+            id="state_id"
+            onChange={handleChange}
+            required
+            value={hospitalData.state_id}
+            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+          >
+            <option value="">{t("select_state")}</option>
+            {states?.map((state) => (
+              <option key={state.id} value={state.id}>
+                {state.name}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+      <div className="px-3 my-6 md:mb-0 w-full">
+        <label
+          className="block text-md almarai-semibold mb-4"
+          htmlFor="city_id"
+        >
+          {t("cities")}
+        </label>
+        {citiesIsLoading ? (
+          <div className="text-gray-500">Loading...</div>
+        ) : (
+          <select
+            name="city_id"
+            id="city_id"
+            onChange={handleChange}
+            value={hospitalData.city_id}
+            disabled={!hospitalData.state_id}
+            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+          >
+            <option value="">{t("select_city")}</option>
+            {cities?.length > 0 ? (
+              cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))
+            ) : (
+              <option value="" disabled>
+                {t("no_cities_available")}
+              </option>
+            )}
+          </select>
+        )}
+      </div>
+    </div>
 
             <div className="text-xl font-semibold  w-full flex items-center gap-3 ">
               <label>{t("active")}</label>

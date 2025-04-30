@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { sidebarLinks, therestofSidebarLinks } from "./Sidebar";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { ashraf, mainLogo } from "../assets";
+import {  mainLogo } from "../assets";
 import { IoMdLogOut } from "react-icons/io";
 import { useTranslation } from "react-i18next";
 import { useAuthContext } from "../_auth/authContext/JWTProvider";
 import { pageTranslations } from "../utlis/translations";
+import Profile from "./navBarComponents/Profile";
 
 // eslint-disable-next-line react/prop-types
 const MenuBar = ({ pageName }) => {
@@ -54,18 +55,8 @@ const MenuBar = ({ pageName }) => {
             >
               <FaBars color={"#02A09B"} size={30} />
             </button>
-            <Link
-              className={`flex items-center border-2 border-primary rounded-full transition-transform transform-gpu duration-300 ease-in-out hover:scale-110 hover:shadow-lg delay-75 shrink-0 ${
-                direction === "rtl" ? "ml-4" : "mr-4"
-              }`}
-              to="/profile"
-            >
-              <img
-                src={ashraf}
-                alt="Profile"
-                className="w-12 h-12 rounded-full object-cover shrink-0"
-              />
-            </Link>
+                 <Profile />
+       
           </div>
           <div
             className={`text-xl almarai-bold text-black whitespace-nowrap ${textAlignment}`}

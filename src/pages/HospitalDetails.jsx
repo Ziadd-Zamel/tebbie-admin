@@ -81,7 +81,7 @@ const HospitalDetails = () => {
         className="bg-white rounded-2xl  overflow-hidden border border-gray-100"
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-[#33A9C7] to-[#3AAB95] p-8">
+        <div className="relative bg-gradient-to-br from-[#33A9C7] to-[#3AAB95] lg:p-8 md:p-6 p-4">
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -94,7 +94,7 @@ const HospitalDetails = () => {
         </div>
 
         {/* Main Content */}
-        <div className="p-8 gap-8">
+        <div className="lg:p-8 md:p-6 p-4 lg:gap-8 md:gap-6 gap-4">
           {/* Left Column - Info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -308,9 +308,9 @@ const InfoItem = ({ label, displayLabel, value }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="text-gray-600 py-4 border-b border-gray-100 last:border-0 text-xl flex items-start"
+      className="text-gray-600 py-4 border-b border-gray-100 last:border-0 text-xl  items-start block"
     >
-      <span className="flex items-center shrink-0">
+      <span className="flex items-center shrink-0 my-4">
         {getIcon(label)}
         <strong className="text-gray-800 font-semibold"> {displayLabel} : </strong>
       </span>

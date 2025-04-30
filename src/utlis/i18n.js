@@ -285,6 +285,7 @@ const resources = {
       physicalTherapy: "physical Therapy",
       submission_failed: "submission failed",
       serviceDeletedSuccess: "service Deleted Success",
+      no_cities_available: "No cities available for this state",
     },
   },
   ar: {
@@ -567,6 +568,7 @@ const resources = {
       select_specialization_first: "اختر التخصص أولاً",
       physicalTherapy: "علاج طبيعى",
       submission_failed: "حدث خطأ ما",
+      no_cities_available: "لا توجد مدن متاحة لهذه المحافظة",
     },
   },
 };

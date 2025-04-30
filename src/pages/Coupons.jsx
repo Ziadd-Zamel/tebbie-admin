@@ -56,18 +56,19 @@ const Coupons = () => {
   });
 
   const { mutate: handleUpdate } = useMutation({
-    mutationFn: ({ id, token, code, type, amount }) =>
-      UpdateCoupon({ id, token, code, type, amount }),
+    mutationFn: ({ id, token, code, type, amount, originalCoupon }) =>
+      UpdateCoupon({ id, token, code, type, amount, originalCoupon }), // تمرير originalCoupon
     onSuccess: () => {
       queryClient.invalidateQueries(["Coupons", token]);
       setEditingCoupon(null);
       toast.success(t("couponUpdatedSuccess"));
     },
     onError: (error) => {
-      toast.error(error.message); 
+      toast.error(error.message);
       toast.error(t("couponUpdateFailed", { error: error.message }));
     },
   });
+
 
   const { mutate: handleAdd } = useMutation({
     mutationFn: ({ code, type, amount }) =>
@@ -85,7 +86,7 @@ const Coupons = () => {
     },
     onError: (error, _, context) => {
       queryClient.setQueryData(["Coupons", token], context.previousCoupons);
-      toast.error(error.message); 
+      toast.error(error.message);
     },
     onSuccess: () => {
       toast.success(t("couponAddedSuccess"));
@@ -161,9 +162,9 @@ const Coupons = () => {
   };
 
   const handleSaveClick = (id) => {
-    handleUpdate({ id, token, ...updatedCoupon });
+    const originalCoupon = couponData.find((coupon) => coupon.id === id); // العثور على الكوبون الأصلي
+    handleUpdate({ id, token, ...updatedCoupon, originalCoupon }); // تمرير original  originalCoupon
   };
-
   const filteredCoupons = useMemo(() => {
     if (!couponData) return [];
     return couponData.filter((coupon) =>
@@ -261,8 +262,10 @@ const Coupons = () => {
                         <option value="fixed">{t("fixed")}</option>
                         <option value="percentage">{t("percentage")}</option>
                       </select>
+                    ) : coupon.type === "fixed" ? (
+                      t("fixed")
                     ) : (
-                      coupon.type === "fixed" ? t("fixed") : t("percentage")
+                      t("percentage")
                     )}
                   </td>
                   <td className="py-3 px-6 text-center">
@@ -321,7 +324,7 @@ const Coupons = () => {
               ))}
               <tr className="border-b border-gray-200 hover:bg-gray-100">
                 <td className="py-3 px-6 text-center">{t("new")}</td>
-                <td className="py-3 px-6 text-center">
+                <td className="py-3 px-6 text-center shrink-0  min-w-48">
                   <input
                     type="text"
                     name="code"
@@ -331,7 +334,7 @@ const Coupons = () => {
                     className="border border-gray-300 rounded p-2 w-full"
                   />
                 </td>
-                <td className="py-3 px-6 text-center">
+                <td className="py-3 px-6 text-center shrink-0  min-w-48">
                   <select
                     name="type"
                     value={formState.type}
@@ -342,7 +345,7 @@ const Coupons = () => {
                     <option value="percentage">{t("percentage")}</option>
                   </select>
                 </td>
-                <td className="py-3 px-6 text-center">
+                <td className="py-3 px-6 text-center shrink-0 min-w-48">
                   <input
                     type="number"
                     name="amount"
@@ -352,7 +355,7 @@ const Coupons = () => {
                     className="border border-gray-300 rounded p-2 w-full"
                   />
                 </td>
-                <td className="py-3 px-6 text-center">
+                <td className="py-3 px-6 text-center shrink-0  min-w-48">
                   <button
                     onClick={handleAddClick}
                     className="text-green-500 hover:text-green-700 focus:outline-none"
@@ -372,7 +375,7 @@ const Coupons = () => {
             totalPages={totalPages}
             onPageChange={(newPage) => setCurrentPage(newPage)}
           />
-        <p className="lg:text-2xl text-xl text-gray-500 text-end">
+          <p className="lg:text-2xl text-xl text-gray-500 text-end">
             {t("Total")}: {filteredCoupons.length}
           </p>
         </div>
