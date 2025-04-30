@@ -53,7 +53,7 @@ export const pageTranslations = {
       "/customer-service/:customerId":"update customer service",
       "/customer-service/add-customer-service":"add customer service",
       "/services/add-service":"add service",
-
+      "/send-notification":"send notification",
 
       
 
@@ -113,6 +113,8 @@ export const pageTranslations = {
       "/customer-service/:customerId":"تعديل خدمة العملاء",
       "/customer-service/add-customer-service":"اضافة خدمة عملاء",
       "/services/add-service":"اضافة خدمة ",
+      "/send-notification":"ارسال اشعارات",
+
 
 
       default: "الصفحة غير معروفة",

@@ -56,6 +56,7 @@ import AddCustomerService from "./pages/CustomerService/AddCustomerService";
 import { ChatOnlyMiddleware } from "./middlewares/ChatOnlyMiddleware";
 import ChatLayout from "./pages/ChatLayout";
 import useFirebaseNotifications from "./hooks/useFirebaseNotifications";
+import SendNotification from "./pages/SendNotification";
 
 const queryClient = new QueryClient();
 
@@ -117,6 +118,7 @@ const router = createBrowserRouter([
               { path: "add", element: <AddSpecial /> },
             ],
           },
+          { path: "/send-notification", element: <SendNotification /> },
 
           { path: "coupons", element: <Coupons /> },
           { path: "financial", element: <Financial /> },

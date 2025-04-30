@@ -15,6 +15,7 @@ import {
   FaRegMoneyBillAlt
 } from "react-icons/fa";
 import { AiFillCustomerService } from "react-icons/ai";
+import { MdNotificationAdd } from "react-icons/md";
 
 import { useTranslation } from "react-i18next";
 import { pageTranslations } from "../utlis/translations";
@@ -63,6 +64,11 @@ export const therestofSidebarLinks = [
     path: "/sliders",
     label: "sliders",
     icon: <PiImagesSquareBold size={22} />,
+  },
+  {
+    path: "/send-notification",
+    label: "send notification",
+    icon: <MdNotificationAdd  size={22} />,
   },
   {
     path: "/states",

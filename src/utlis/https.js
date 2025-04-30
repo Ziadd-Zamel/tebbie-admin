@@ -3142,3 +3142,27 @@ export const getHospitalsByspecialization = async ({ token, id = 1 }) => {
     throw error;
   }
 };
+export const fetchUsers = async ({ token }) => {
+  const response = await fetch(`${API_URL}/dashboard/v1/all-users`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error("Failed to fetch users");
+  return result.data; // Assuming data is an array of { id, name }
+};
+
+export const sendNotification = async ({ user_ids, title, body, token }) => {
+  const response = await fetch(`${API_URL}/dashboard/v1/send-notification`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user_ids, title, body }),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error("Failed to send notification");
+  return result.data;
+};
