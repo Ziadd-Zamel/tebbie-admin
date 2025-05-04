@@ -91,7 +91,7 @@ export const pageTranslations = {
       "/cities":"المدن",
       "/cities/:cityId":"تعديل المدينة",
       "/states":"الولايات",
-      "/recharge-card":"اعادة شحن البطاقه",
+      "/recharge-card":"كروت الشحن",
       "/settings":"نقاط الولاء",
       "/settings/:settingId":"تعديل الاعدادات",
       "/chat":"المحاداثات",

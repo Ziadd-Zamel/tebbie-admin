@@ -157,7 +157,7 @@ const RechargeCards = () => {
             <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-start">#</th>
               <th className="py-3 px-6 text-left">{t("cardNumber")}</th>
-              <th className="py-3 px-6 text-left">{t("validation")}</th>
+              <th className="py-3 px-6 text-left">{t("validatity")}</th>
               <th className="py-3 px-6 text-left">{t("expireDate")}</th>
               <th className="py-3 px-6 text-left">{t("price")}</th>
             </tr>

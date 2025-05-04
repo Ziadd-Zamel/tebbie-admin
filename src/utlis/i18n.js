@@ -374,7 +374,7 @@ const resources = {
       DoctorInformation: "معلومات عن الدكتور",
       successfully_updated: "تم التعديل بنجاح",
       "add-city": "اضافة مدينة",
-      "recharge-card": "اعادة شحن البطاقه",
+      "recharge-card": "كروت الشحن",
       hospitals: "المستشفيات",
       add: "اضافة",
       deletedDoctors: "الدكاتره المحذوفة",
