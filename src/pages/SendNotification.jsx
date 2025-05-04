@@ -46,7 +46,7 @@ const SendNotification = () => {
     queryFn: () => fetchUsers({ token }),
   });
 
-  const { mutate: handleSend, isLoading: isSending } = useMutation({
+  const { mutate: handleSend, isPending: isSending } = useMutation({
     mutationFn: ({ user_ids, title, body }) =>
       sendNotification({ user_ids, title, body, token }),
     onSuccess: () => {

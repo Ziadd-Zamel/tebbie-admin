@@ -51,10 +51,15 @@ export default function MultiSearchSelectorSelectAll({
     if (!isOpen) setSearchTerm("");
   }, [isOpen]);
 
-  const selectedNames = options
-    .filter((option) => selectedValues.includes(option.value))
-    .map((option) => option.label)
-    .join(", ");
+  const selectedNames =
+  selectedValues.length > 0
+    ? selectedValues.length > 7
+      ? `${selectedValues.length} users selected`
+      : options
+          .filter((option) => selectedValues.includes(option.value))
+          .map((option) => option.label)
+          .join(", ")
+    : placeholder;
 
   return (
     <div className="relative w-full font-sans" ref={dropdownRef}>
