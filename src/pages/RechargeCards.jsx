@@ -67,7 +67,7 @@ const RechargeCards = () => {
       ...(isValid !== undefined && { is_valid: isValid }),
       ...(expireDate && { expire_date: expireDate }),
     });
-    const url = `http://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
+    const url = `https://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
     window.open(url, "_blank");
   };
 
