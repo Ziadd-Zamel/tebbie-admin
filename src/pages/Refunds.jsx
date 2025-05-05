@@ -66,7 +66,7 @@ const Refunds = () => {
       </div>
 
       <div className="overflow-x-auto md:w-full w-[90vw] md:text-md text-sm">
-        <table className="w-full bg-white shadow-md">
+        <table className="w-full bg-white ">
           <thead>
             <tr className="bg-gray-100">
               <th className="p-4">#</th>

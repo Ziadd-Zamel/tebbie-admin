@@ -158,7 +158,7 @@ const RechargeCards = () => {
               <th className="py-3 px-6 text-start">#</th>
               <th className="py-3 px-6 text-left">{t("cardNumber")}</th>
               <th className="py-3 px-6 text-left">{t("validatity")}</th>
-              <th className="py-3 px-6 text-left">{t("expireDate")}</th>
+              <th className="py-3 px-6 text-left  whitespace-nowrap">{t("expireDate")}</th>
               <th className="py-3 px-6 text-left">{t("price")}</th>
             </tr>
           </thead>
@@ -189,9 +189,9 @@ const RechargeCards = () => {
                     <IoCardOutline size={30} className="text-gray-500" />
                   </td>
                   <td className="py-3 px-6 text-left">{card.card_number}</td>
-                  <td className="py-3 px-6 text-left">
+                  <td className="py-3 px-6 text-left shrink-0 whitespace-nowrap">
                     <span
-                      className={`font-semibold text-white rounded-full py-1 text-sm px-2 ${
+                      className={`font-semibold text-white rounded-full py-1 text-sm px-2  whitespace-nowrap ${
                         card.is_valid === 1
                           ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white"
                           : "bg-red-600"
