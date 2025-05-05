@@ -6,7 +6,6 @@ import { IoCardOutline } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
-import * as XLSX from "xlsx";
 import { FaFileExcel } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import RechargeCardsPagination from "../components/RechargeCardsPagination";
@@ -31,10 +30,10 @@ const useDebounce = (value, delay) => {
 const RechargeCards = () => {
   const token = localStorage.getItem("authToken");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isValid, setIsValid] = useState(undefined); // undefined, 1, or 0
+  const [isValid, setIsValid] = useState(undefined); 
   const [expireDate, setExpireDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500); // 500ms debounce delay
+  const debouncedSearchTerm = useDebounce(searchTerm, 500); 
   const itemsPerPage = 100;
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
@@ -63,34 +62,29 @@ const RechargeCards = () => {
   });
 
   const handleExport = () => {
-    const exportData = cardData?.data.map((card) => ({
-      "Card Number": card.card_number,
-      "Expire Date": card.expire_date,
-      Price: card.price,
-    }));
-
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const columnWidths = [{ wch: 20 }, { wch: 15 }, { wch: 10 }];
-    worksheet["!cols"] = columnWidths;
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Recharge Cards");
-    XLSX.writeFile(workbook, "RechargeCards.xlsx");
+    const params = new URLSearchParams({
+      ...(debouncedSearchTerm && { card_number: debouncedSearchTerm }),
+      ...(isValid !== undefined && { is_valid: isValid }),
+      ...(expireDate && { expire_date: expireDate }),
+    });
+    const url = `http://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
+    window.open(url, "_blank");
   };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on search
+    setCurrentPage(1); 
   };
 
   const handleIsValidChange = (e) => {
     const value = e.target.value;
-    setIsValid(value === "" ? undefined : Number(value)); // Convert to undefined, 1, or 0
-    setCurrentPage(1); // Reset to page 1 on filter change
+    setIsValid(value === "" ? undefined : Number(value)); 
+    setCurrentPage(1); 
   };
 
   const handleExpireDateChange = (e) => {
     setExpireDate(e.target.value);
-    setCurrentPage(1); // Reset to page 1 on filter change
+    setCurrentPage(1); 
   };
 
   if (error) {
@@ -184,7 +178,7 @@ const RechargeCards = () => {
                   key={card.id}
                   className="border-b border-gray-200 hover:bg-gray-100"
                 >
-                  <td className="py-3 px-6 text-left flex items-center gap-3">
+                  <td className="py-3 sostenuto: px-6 text-left flex items-center gap-3">
                     {index + 1 + startIndex}
                     <IoCardOutline size={30} className="text-gray-500" />
                   </td>
