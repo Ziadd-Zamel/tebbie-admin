@@ -54,8 +54,8 @@ const Settings = () => {
                     ([points, value]) => (
                       <div key={points}>
                         {i18n.language === "ar"
-                          ? `${points} ${t("point")} = ${value} ${t("riyal")}`
-                          : `${points} ${t("point")} = ${value} ${t("riyal")}`}
+                          ? `${points} ${t("point")} = ${value} ${t("dinar")}`
+                          : `${points} ${t("point")} = ${value} ${t("dinar")}`}
                       </div>
                     )
                   )}
