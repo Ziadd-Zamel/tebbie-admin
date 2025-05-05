@@ -4,19 +4,17 @@ import { useTranslation } from "react-i18next";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Loader from "../pages/Loader";
 import { getNotification } from "../utlis/https";
-import { useUser } from "../chatcontext/UserContext";
 import { useNavigate } from "react-router-dom";
 
 const NotificationDropdown = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const token = localStorage.getItem("authToken");
-  const { setSelectedUser } = useUser();
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
   const {
-    data: notifications = [], // Default to empty array to avoid undefined
+    data: notifications = [],
     isLoading,
     error,
   } = useQuery({
@@ -69,13 +67,14 @@ const NotificationDropdown = () => {
     };
   }, []);
 
-  const handleNotificationClick = (userId) => {
-    setSelectedUser(userId);
-    navigate("/chat");
+  const handleNotificationClick = (type) => {
+    if (type === "booking") {
+      navigate("/refunds");
+    }
   };
 
   return (
-    <div ref={dropdownRef} dir={direction} className="relative  z-50">
+    <div ref={dropdownRef} dir={direction} className="relative z-50">
       <button
         className="bg-[#FFFAF1] rounded-[8px] p-4 relative"
         onClick={toggleDropdown}
@@ -102,8 +101,12 @@ const NotificationDropdown = () => {
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  onClick={() => handleNotificationClick(notification.user_id)}
-                  className="px-4 py-6 relative hover:bg-Secondary cursor-pointer"
+                  onClick={() => handleNotificationClick(notification.type)}
+                  className={`px-4 py-6 relative hover:bg-Secondary ${
+                    notification.type === "booking"
+                      ? "cursor-pointer"
+                      : "cursor-not-allowed"
+                  }`}
                 >
                   <div className="flex items-center space-x-4 px-4">
                     <span className="p-4 rounded-full bg-[#E9EBF8] ml-4">

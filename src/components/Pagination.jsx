@@ -5,21 +5,23 @@ import { IconButton, Typography } from "@mui/material";
 // eslint-disable-next-line react/prop-types
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "ar"; 
+  const isRTL = i18n.language === "ar";
 
   return (
     <div
       className="mt-6 flex lg:gap-4 gap-2 justify-center items-center"
-      style={{ direction: isRTL ? "rtl" : "ltr" }} 
+      style={{ direction: isRTL ? "rtl" : "ltr" }}
     >
       <IconButton
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1 || totalPages === 0}
         sx={{
-          backgroundColor: currentPage === 1 || totalPages === 0 ? "#ccc" : "#02A09B",
+          backgroundColor:
+            currentPage === 1 || totalPages === 0 ? "#ccc" : "#02A09B",
           color: currentPage === 1 || totalPages === 0 ? "#888" : "#fff",
-          '&:hover': {
-            backgroundColor: currentPage === 1 || totalPages === 0 ? "#ccc" : "#027F7F",
+          "&:hover": {
+            backgroundColor:
+              currentPage === 1 || totalPages === 0 ? "#ccc" : "#027F7F",
           },
         }}
       >
@@ -34,10 +36,15 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages || totalPages === 0}
         sx={{
-          backgroundColor: currentPage === totalPages || totalPages === 0 ? "#ccc" : "#02A09B",
-          color: currentPage === totalPages || totalPages === 0 ? "#888" : "#fff",
-          '&:hover': {
-            backgroundColor: currentPage === totalPages || totalPages === 0 ? "#ccc" : "#027F7F",
+          backgroundColor:
+            currentPage === totalPages || totalPages === 0 ? "#ccc" : "#02A09B",
+          color:
+            currentPage === totalPages || totalPages === 0 ? "#888" : "#fff",
+          "&:hover": {
+            backgroundColor:
+              currentPage === totalPages || totalPages === 0
+                ? "#ccc"
+                : "#027F7F",
           },
         }}
       >

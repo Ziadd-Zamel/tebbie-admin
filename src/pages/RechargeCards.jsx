@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import { FaFileExcel } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
-import Pagination from "../components/Pagination";
+import RechargeCardsPagination from "../components/RechargeCardsPagination";
 
 // Custom debounce hook
 const useDebounce = (value, delay) => {
@@ -211,8 +211,8 @@ const RechargeCards = () => {
         </table>
       </div>
 
-      <div className="flex justify-between items-end p-4">
-        <Pagination
+      <div className="flex justify-between items-end gap-4 flex-wrap p-4">
+        <RechargeCardsPagination
           currentPage={currentPage}
           totalPages={cardData?.pagination.total_pages || 1}
           onPageChange={setCurrentPage}

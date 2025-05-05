@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { fetchUsers, sendNotification } from "../utlis/https";
 import MultiSearchSelectorSelectAll from "./MultiSearchSelectorSelectAll";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 const token = localStorage.getItem("authToken");
 
@@ -95,7 +96,7 @@ const SendNotification = () => {
     }
   };
 
-  if (isLoading) return <div>{t("loading")}</div>;
+  if (isLoading) return <Loader />;
   if (error) return <div>{t("errorFetchingUsers")}</div>;
 
   return (
