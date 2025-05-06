@@ -203,7 +203,7 @@ const Employees = () => {
                           <AiFillDelete size={25} />
                         </button>
                         <button
-                          onClick={() => navigate(`/employees/${employee.id}`)}
+                          onClick={() => navigate(`/clinics/${employee.id}`)}
                           className="text-blue-500 hover:text-blue-700 focus:outline-none"
                         >
                           <AiFillEdit size={25} />

@@ -6,14 +6,14 @@ import SpecializationsForm from "../components/SpecializationsForm";
 const token = localStorage.getItem("authToken");
 
 const UpdateSpecial = () => {
-  const { spId } = useParams();
+  const { clinId } = useParams();
 
   const {
     data: specializationData,
 
   } = useQuery({
-    queryKey: ["Specialization-details", spId],
-    queryFn: () => getSpecificSpecializations({ id: spId, token }),
+    queryKey: ["Specialization-details", clinId],
+    queryFn: () => getSpecificSpecializations({ id: clinId, token }),
   });
 
   console.log(specializationData);

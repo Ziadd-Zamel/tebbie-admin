@@ -195,7 +195,7 @@ const resources = {
       pointsValue: "Points Value",
       actions: "Actions",
       point: "point",
-      dinar : "Dinar",
+      dinar: "Dinar",
       keyPlaceholder: "Key",
       valuePlaceholder: "Value",
       update: "Update",
@@ -306,6 +306,7 @@ const resources = {
         body_required: "Notification body is required",
         body_min: "Body must be at least 10 characters",
       },
+      select_hospital: "select hospital",
     },
   },
   ar: {
@@ -609,6 +610,7 @@ const resources = {
         body_required: "نص الإشعار مطلوب",
         body_min: "النص يجب أن يكون 10 أحرف على الأقل",
       },
+      select_hospital: "اختر مستشفى",
     },
   },
 };

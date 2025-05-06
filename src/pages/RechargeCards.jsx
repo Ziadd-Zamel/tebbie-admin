@@ -104,7 +104,7 @@ const RechargeCards = () => {
         </Link>
         <button
           onClick={handleExport}
-          className="px-6 py-2 border-[#048c87] border-2  text-[#048c87]  text-lg rounded-[8px] hover:bg-bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] hover:text-white transition-all duration-500 flex justify-center items-center gap-2"
+          className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2"
         >
           {t("Excel-Export")}
           <FaFileExcel />

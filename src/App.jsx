@@ -104,10 +104,10 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "employees",
+            path: "clinics",
             children: [
               { index: true, element: <Employees /> },
-              { path: ":empId", element: <UpdateEmployee /> },
+              { path: ":clinId", element: <UpdateEmployee /> },
             ],
           },
           {

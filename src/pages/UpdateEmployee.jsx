@@ -20,7 +20,7 @@ const UpdateEmployee = () => {
   const token = localStorage.getItem("authToken");
   const { i18n, t } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
-  const { empId } = useParams();
+  const { clinId } = useParams();
   const [imagePreview, setImagePreview] = useState(null);
   const queryClient = useQueryClient();
 const navigate= useNavigate()
@@ -58,8 +58,8 @@ const navigate= useNavigate()
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["employee", empId],
-    queryFn: () => getSpecificEmployee({ token, id: empId }),
+    queryKey: ["employee", clinId],
+    queryFn: () => getSpecificEmployee({ token, id: clinId }),
   });
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = (event) => {
@@ -93,7 +93,7 @@ const navigate= useNavigate()
     onSubmit: (values) => {
       const dataToSubmit = {
         ...values,
-        id: empId,
+        id: clinId,
         email: values.email !== initialData.email ? values.email : undefined,
       };
       mutation.mutate(dataToSubmit);
@@ -101,7 +101,7 @@ const navigate= useNavigate()
   });
 
   useEffect(() => {
-    if (empId && initialData) {
+    if (clinId && initialData) {
       formik.setValues({
         name: initialData.name || "",
         email: initialData.email || "",
@@ -113,7 +113,7 @@ const navigate= useNavigate()
       });
       setImagePreview(initialData.media_url || null);
     }
-  }, [empId, initialData]);
+  }, [clinId, initialData]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

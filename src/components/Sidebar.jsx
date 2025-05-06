@@ -35,7 +35,7 @@ export const sidebarLinks = [
   { path: "/hospitals", label: "hospitals", icon: <CiHospital1 size={22} /> },
   { path: "/specializations", label: "specializations", icon: <FaClinicMedical size={22} /> },
   { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
-  { path: "/employees", label: "employees", icon: <IoMdPeople size={22} /> },
+  { path: "/clinics", label: "clinic", icon: <IoMdPeople size={22} /> },
   { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
   { path: "/request-Form", label: "requests", icon: <BsCardText   size={22} /> },
 ];
