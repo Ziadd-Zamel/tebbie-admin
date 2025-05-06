@@ -429,12 +429,12 @@ export const updateHospital = async ({
   formdata.append("visit_time", visit_time);
   formdata.append("open_visits", open_visits);
   formdata.append("active", active);
-  formdata.append("password", password);
-
+  if(password){
+    formdata.append("password", password);
+  }
   if (email && email !== previousEmail) {
     formdata.append("email", email);
   }
-
   old_media.forEach((file) => {
     formdata.append("old_media[]", file);
   });
