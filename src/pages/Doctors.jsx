@@ -48,7 +48,7 @@ const Doctors = () => {
 
   return (
     <section dir={direction} className="container max-auto md:px-4 px-2 ">
-      <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
+      <div className="flex justify-end md:flex-row flex-col gap-2 items-center my-4">
       <div className="flex justify-end items-end gap-2">
           <Link
             to={"/doctors/add-doctor"}
