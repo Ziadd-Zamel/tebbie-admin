@@ -39,11 +39,12 @@ export const sidebarLinks = [
   { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
   { path: "/request-Form", label: "requests", icon: <BsCardText   size={22} /> },
 ];
-
 export const therestofSidebarLinks = [
   { path: "/refunds", label: "refunds", icon: <FaRegMoneyBillAlt   size={22} /> },
   { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
   { path: "/coupons", label: "Coupons", icon: <RiCoupon2Fill  size={22} /> },
+  { path: "/admin-chat", label: "Admin-chat", icon: <IoIosChatbubbles  size={22} /> },
+
   {
     path: "/settings",
     label: "settings",

@@ -2876,7 +2876,6 @@ export const getHomeVisitReport = async ({
 };
 
 //customer service
-//customer service
 export const getAllCustomerService = async ({ token }) => {
   try {
     const response = await fetch(`${API_URL}/customer-services`, {
@@ -3151,7 +3150,6 @@ export const fetchUsers = async ({ token }) => {
   if (!response.ok) throw new Error("Failed to fetch users");
   return result.data; // Assuming data is an array of { id, name }
 };
-
 export const sendNotification = async ({ user_ids, title, body, token }) => {
   const response = await fetch(`${API_URL}/dashboard/v1/send-notification`, {
     method: "POST",
@@ -3164,4 +3162,66 @@ export const sendNotification = async ({ user_ids, title, body, token }) => {
   const result = await response.json();
   if (!response.ok) throw new Error("Failed to send notification");
   return result.data;
+};
+
+//admin chat
+export const fetchAdminUsersList = async ({
+  token,
+  search,
+  page,
+}) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/admin/all-chats`;
+    const params = [];
+    if (search) {
+      params.push(`search=${search}`);
+    }
+    if (page) {
+      params.push(`page=${page}`);
+    }
+  
+   
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch reviews report: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getReviewsReport: ${error.message}`);
+  }
+};
+
+export const getAdminMessages = async ({ token, id }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/chat/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
 };

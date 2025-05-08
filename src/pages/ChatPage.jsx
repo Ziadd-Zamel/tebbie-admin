@@ -73,7 +73,7 @@ const ChatPage = () => {
   const handleCloseChatClick = () => {
     setIsCloseChatInputVisible(true);
   };
-
+console.log(messages)
   const handleSubmitSubject = () => {
  
     closeChatMutation.mutate({

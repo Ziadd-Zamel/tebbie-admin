@@ -54,6 +54,7 @@ export const pageTranslations = {
       "/customer-service/add-customer-service":"add customer service",
       "/services/add-service":"add service",
       "/send-notification":"send notification",
+      "/admin-chat":"All Chat",
 
       
 
@@ -114,6 +115,8 @@ export const pageTranslations = {
       "/customer-service/add-customer-service":"اضافة خدمة عملاء",
       "/services/add-service":"اضافة خدمة ",
       "/send-notification":"ارسال اشعارات",
+      "/admin-chat":"جميع المحادثات",
+
 
 
 

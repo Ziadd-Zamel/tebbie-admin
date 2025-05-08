@@ -307,6 +307,10 @@ const resources = {
         body_min: "Body must be at least 10 characters",
       },
       select_hospital: "select hospital",
+      customer_service_name: "customer service ",
+      no_users_found:"no users found"
+
+
     },
   },
   ar: {
@@ -611,6 +615,8 @@ const resources = {
         body_min: "النص يجب أن يكون 10 أحرف على الأقل",
       },
       select_hospital: "اختر مستشفى",
+      customer_service_name: "خدمة العملاء",
+      no_users_found:"لا يوجد مستخدمون"
     },
   },
 };
