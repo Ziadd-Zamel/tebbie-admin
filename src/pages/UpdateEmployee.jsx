@@ -113,6 +113,7 @@ const navigate= useNavigate()
       });
       setImagePreview(initialData.media_url || null);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinId, initialData]);
 
   const handleImageChange = (e) => {

@@ -74,7 +74,7 @@ const Hospitals = () => {
   return (
     <section dir={direction} className="container mx-auto  bg-gray-50">
       <div className="rounded-3xl md:p-8 p-4 md:m-4 m-0 min-h-screen overflow-auto bg-white">
-        <div className="flex justify-between md:flex-row flex-col gap-2 my-4">
+      <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
           <Link
             to={"/hospitals/add-hospital"}
             className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
@@ -84,7 +84,7 @@ const Hospitals = () => {
           </Link>
           <Link
             to={"/hospitals/trashed-hospitals"}
-            className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+            className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
           >
             <IoTrashSharp />
             {t("trash")}
