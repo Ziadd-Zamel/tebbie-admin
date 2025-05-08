@@ -10,9 +10,7 @@ const UserList = ({ users, selectedUser, onSelectUser }) => {
 
   const filteredUsers = users?.filter(
     (user) =>
-      user.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (user.subject &&
-        user.subject.toLowerCase().includes(searchQuery.toLowerCase()))
+      user.user.name.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
 
   const toggleUserList = () => {
@@ -69,7 +67,7 @@ const UserList = ({ users, selectedUser, onSelectUser }) => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="ابحث عن المستخدمين أو المواضيع..."
+            placeholder="ابحث عن المستخدمين..."
             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
@@ -114,11 +112,7 @@ const UserList = ({ users, selectedUser, onSelectUser }) => {
                     <span>{user.user.name}</span>
                   </div>
 
-                  {user.subject && (
-                    <span className="text-gray-600 text-xs truncate max-w-[200px]">
-                      {user.subject}
-                    </span>
-                  )}
+                  
                 </div>
               </li>
             ))

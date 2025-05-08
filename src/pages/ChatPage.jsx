@@ -24,7 +24,6 @@ const ChatPage = () => {
 
   const socketRef = useRef(null);
   const [isCloseChatInputVisible, setIsCloseChatInputVisible] = useState(false);
-  const [subject, setSubject] = useState("");
 
   const handleUserSelect = (userId) => {
     setSelectedUser(userId);
@@ -35,7 +34,6 @@ const ChatPage = () => {
     queryFn: () => getUsers({ token }),
     enabled: !!token,
   });
-  console.log(usersData)
   const selectedChat = usersData?.find((chat) => chat.chat_id === selectedUser);
   const isChatClosed = selectedChat?.status === "closed";
   useEffect(() => {
@@ -63,7 +61,6 @@ const ChatPage = () => {
       if (socketRef.current?.readyState === WebSocket.OPEN) {
         socketRef.current.close();
       }
-      setSubject("");
       setSelectedUser(null);
       toast.success("تم قفل المحدثة بنجاح");
     },
@@ -78,14 +75,10 @@ const ChatPage = () => {
   };
 
   const handleSubmitSubject = () => {
-    if (!subject.trim()) {
-      alert("Please enter a subject.");
-      return;
-    }
+ 
     closeChatMutation.mutate({
       token,
       chat_id: selectedUser,
-      subject,
     });
   };
   useEffect(() => {
@@ -237,19 +230,13 @@ const ChatPage = () => {
             </div>
             {isCloseChatInputVisible && (
               <div className="mt-4 flex items-center gap-2">
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="أدخل الموضوع..."
-                  className="border border-gray-300 rounded p-2 w-full"
-                />
+             
                 <button
                   onClick={handleSubmitSubject}
                   disabled={closeChatMutation.isLoading}
                   className="bg-blue-600 hover:bg-blue-400 text-white rounded-full p-2 w-28"
                 >
-                  {closeChatMutation.isLoading ? "جاري الإرسال..." : "إرسال"}
+                  {closeChatMutation.isLoading ? "جاري التأكيد..." : "تأكيد"}
                 </button>
                 <button
                   onClick={() => setIsCloseChatInputVisible(false)}

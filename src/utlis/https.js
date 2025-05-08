@@ -3095,9 +3095,8 @@ export const getRequestForm = async ({ token }) => {
     throw error;
   }
 };
-export const closeChat = async ({ token, chat_id, subject }) => {
+export const closeChat = async ({ token, chat_id }) => {
   const formdata = new FormData();
-  formdata.append("subject", subject);
   formdata.append("chat_id", chat_id);
 
   try {
