@@ -44,7 +44,6 @@ const AdminChatList = ({ token, selectedUser, onSelectUser }) => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery, token]);
 
-  // Infinite scroll logic
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -109,7 +108,7 @@ const AdminChatList = ({ token, selectedUser, onSelectUser }) => {
       {/* User List Container */}
       <div
         ref={userListRef}
-        className={`md:h-[80vh] h-[60vh] overflow-auto md:bg-white bg-gray-50 rounded-md md:rounded-none md:shadow-none shadow-lg md:static fixed bottom-0 left-0 right-0 z-50 md:w-1/4 w-full max-h-[60vh] transition-transform duration-300 ease-in-out ${
+        className={`h-[50vh] overflow-auto md:bg-white bg-gray-50 rounded-md md:rounded-none md:shadow-none shadow-lg md:static fixed bottom-0 left-0 right-0 z-50 md:w-1/4 w-full  transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-y-0" : "translate-y-full"
         } md:translate-y-0`}
       >

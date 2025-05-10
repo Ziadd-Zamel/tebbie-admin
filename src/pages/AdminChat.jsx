@@ -49,7 +49,7 @@ const AdminChat = () => {
     <section dir={direction}>
       <div className="w-full mx-auto container flex flex-col">
         <div className="flex m-4 md:gap-6 gap-0">
-          <div className="md:w-1/4 w-full">
+          <div className="md:w-1/4 w-full md:block hidden">
             <Skeleton
               variant="rectangular"
               width="100%"
@@ -138,7 +138,7 @@ const AdminChat = () => {
   return (
     <section dir={direction}>
       <div className="w-full mx-auto container flex flex-col">
-        <div className="flex m-4 md:gap-6 gap-0">
+        <div className="flex  md:gap-6 gap-0">
           {usersData && (
             <AdminChatList
               users={usersData}
