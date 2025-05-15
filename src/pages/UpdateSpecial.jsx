@@ -16,7 +16,6 @@ const UpdateSpecial = () => {
     queryFn: () => getSpecificSpecializations({ id: spId, token }),
   });
 
-  console.log(specializationData);
 
   return (
     <section className="container mx-auto p-4">

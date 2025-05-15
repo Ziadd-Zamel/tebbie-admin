@@ -25,7 +25,6 @@ const Services = () => {
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const queryClient = useQueryClient();
 
-  // Pagination and search states
   const servicesPerPage = 9;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -148,7 +147,7 @@ const Services = () => {
         {service.type === "1"
           ? t("doctor")
           : service.type === "2"
-          ? t("patient")
+          ? t("nursing")
           : service.type === "3"
           ? t("physicalTherapy")
           : t("others")}
