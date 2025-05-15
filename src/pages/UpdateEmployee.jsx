@@ -128,7 +128,7 @@ const navigate= useNavigate()
     mutationFn: (data) => updateEmployee({ ...data, token }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee"] });
-navigate("/employees")
+navigate("/clinics")
       toast.success("تم تعديل بيانات الموظف بنجاح");
     },
     onError: (error) => {
