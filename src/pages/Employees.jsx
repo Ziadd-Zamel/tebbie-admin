@@ -229,7 +229,6 @@ const Employees = () => {
           </p>
         </div>
       </div>
-
       {/* Delete Confirmation Dialog */}
       <Dialog
         open={openDialog}
@@ -270,7 +269,6 @@ const Employees = () => {
         </DialogActions>
       </Dialog>
 
-    
     </section>
     {isModalOpen && (
         <Employeesmodal

@@ -75,7 +75,6 @@ const Login = () => {
           throw new Error("JWTProvider is required for this form.");
         }
         const fcmToken = await getFCMToken();
-console.log(fcmToken)
         await CustomerServicelogin(
           values.email,
           values.password,
@@ -156,10 +155,10 @@ console.log(fcmToken)
 
   const renderForm = (formik) => (
     <form className="w-full" onSubmit={formik.handleSubmit}>
-      <div className="xl:mb-4 mb-3">
+      <div className=" mb-3">
         <label
           htmlFor="email"
-          className="block text-lg almarai-thin xl:mb-4 mb-3 text-right"
+          className="block text-lg almarai-thin  mb-3 text-right"
         >
           البريد الالكتروني
         </label>
@@ -170,7 +169,7 @@ console.log(fcmToken)
           name="email"
           autoComplete="off"
           {...formik.getFieldProps("email")}
-          className="mt-1 block w-full px-5 xl:py-4 py-3 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
+          className="mt-1 block w-full px-5  py-3 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
         />
         {formik.touched.email && formik.errors.email ? (
           <div className="text-red-500 text-sm mt-2">{formik.errors.email}</div>
@@ -178,10 +177,10 @@ console.log(fcmToken)
       </div>
 
       {/* Password Input */}
-      <div className="xl:mb-4 mb-3 relative">
+      <div className=" mb-3 relative">
         <label
           htmlFor="password"
-          className="block text-lg almarai-thin xl:mb-4 mb-3 text-right"
+          className="block text-lg almarai-thin  mb-3 text-right"
         >
           كلمة المرور
         </label>
@@ -191,7 +190,7 @@ console.log(fcmToken)
           type={showPassword ? "text" : "password"}
           autoComplete="off"
           {...formik.getFieldProps("password")}
-          className="mt-1 block w-full px-5 xl:py-4 py-3 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
+          className="mt-1 block w-full px-5  py-3 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
         />
         <button
           type="button"
@@ -200,17 +199,18 @@ console.log(fcmToken)
         >
           {showPassword ? <FaEyeSlash size={25} /> : <FaEye size={25} />}
         </button>
-        {formik.touched.password && formik.errors.password ? (
+    
+      </div>
+          {formik.touched.password && formik.errors.password ? (
           <div className="text-red-500 text-sm mt-2">
             {formik.errors.password}
           </div>
         ) : null}
-      </div>
       {formik.status && (
         <div className="text-red-500 text-sm mt-4">{formik.status}</div>
       )}
       {/* Submit Button */}
-      <div className="flex justify-center md:justify-end mt-8">
+      <div className="flex justify-center md:justify-end mt-6">
         {loading ? (
           <button
             className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg hover:bg-transparent my-6 flex items-center justify-center"
@@ -237,10 +237,10 @@ console.log(fcmToken)
         className="min-h-screen flex flex-col justify-center items-center custom-radial-gradient p-4"
       >
         <div className="w-full max-w-md h-full flex flex-col justify-center items-center">
-          <div className="xl:my-8 my-6 flex w-full justify-center items-center">
+          <div className="my-6 flex w-full justify-center items-center">
             <img className="h-auto xl:w-40 w-36" src={mainLogo} alt="Logo" />
           </div>
-          <h1 className="xl:text-3xl text-2xl almarai-medium xl:mb-12 mb-10 text-center md:text-right">
+          <h1 className="xl:text-3xl text-2xl almarai-medium xl:mb-12 mb-8 text-center md:text-right">
             اهلًا بعودتك
           </h1>
           <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
