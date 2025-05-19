@@ -108,7 +108,7 @@ export const pageTranslations = {
       "/request-Form":"استمارة الطلب",
       "/services":"الخدمات",
       "/refunds":"المبالغ المستردة",
-      "/refunds/:refundsId":"تفاصيل المبالغ المستردة",
+      "/refunds/:refundsId":" المبالغ المستردة",
       "/doctorName":"اسم الدكتور",
       "/customer-service":"خدمة العملاء",
       "/customer-service/:customerId":"تعديل خدمة العملاء",

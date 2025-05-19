@@ -138,11 +138,11 @@ const RefundsDetails = () => {
             <tr className="bg-gray-100">
               <th className="p-4">#</th>
 
-              <th className="p-4">{t("doctorName")}</th>
-              <th className="p-4">{t("patientName")}</th>
-              <th className="p-4">{t("hospital")}</th>
+              <th className="p-4 whitespace-nowrap">{t("doctorName")}</th>
+              <th className="p-4 whitespace-nowrap">{t("patientName")}</th>
+              <th className="p-4 whitespace-nowrap">{t("hospital")}</th>
               <th className="p-4">{t("price")}</th>
-              <th className="p-4">{t("date")}</th>
+              <th className="p-4 whitespace-nowrap">{t("date")}</th>
               <th className="p-4">
                 <input
                   type="checkbox"
@@ -166,12 +166,12 @@ const RefundsDetails = () => {
             ) : (
               currentRefund.map((refund) => (
                 <tr key={refund.id} className="text-center border border-b">
-                  <td className="p-4">{refund.id}</td>
-                  <td className="p-4">{refund.doctor.name}</td>
-                  <td className="p-4">{refund.user.name}</td>
-                  <td className="p-4">{refund.hospital.name}</td>
-                  <td className="p-4">{refund.price}</td>
-                  <td className="p-4">{refund.date}</td>
+                  <td className="p-4 ">{refund.id}</td>
+                  <td className="p-4 whitespace-nowrap">{refund.doctor.name}</td>
+                  <td className="p-4 whitespace-nowrap">{refund.user.name}</td>
+                  <td className="p-4 whitespace-nowrap">{refund.hospital.name}</td>
+                  <td className="p-4 whitespace-nowrap">{refund.price}</td>
+                  <td className="p-4 whitespace-nowrap">{refund.date}</td>
                   <td className="p-4">
                     <input
                       className="InputPrimary"
@@ -185,6 +185,8 @@ const RefundsDetails = () => {
             )}
           </tbody>
         </table>
+
+      </div>
  <div className="flex justify-between items-end mt-4">
         <Pagination
             currentPage={currentPage}
@@ -195,8 +197,6 @@ const RefundsDetails = () => {
           {t("Total")}: {refundsData.length}
         </p>
       </div>
-      </div>
-
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}

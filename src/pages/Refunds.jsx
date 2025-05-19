@@ -82,13 +82,13 @@ const Refunds = () => {
                 </td>
               </tr>
             ) : (
-              currentRefund.map((refund ,index) => (
+              currentRefund.map((refund, index) => (
                 <tr
                   onClick={() => navigate(`/refunds/${refund.hospital.id}`)}
                   key={index}
                   className="text-center border border-b  hover:bg-gray-100 cursor-pointer"
                 >
-                  <td className="p-4">{index+1}</td>
+                  <td className="p-4">{index + 1}</td>
                   <td className="p-4 whitespace-nowrap">
                     {refund.hospital.name}
                   </td>
@@ -100,7 +100,8 @@ const Refunds = () => {
             )}
           </tbody>
         </table>
-        <div className="flex justify-between items-center mt-4">
+      </div>
+      <div className="flex justify-between items-center mt-4">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -109,8 +110,6 @@ const Refunds = () => {
         <p className="md:text-2xl text-xl text-gray-500 text-end">
           {t("Total")}: {refundsData.length}
         </p>
-        </div>
-      
       </div>
     </section>
   );
