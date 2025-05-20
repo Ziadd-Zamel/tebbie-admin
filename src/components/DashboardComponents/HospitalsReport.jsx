@@ -2,9 +2,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
-import {
-  getHospitalsReport,
-} from "../../utlis/https";
+import { getHospitalsReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
@@ -27,7 +25,7 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const HospitalsReport = ({hospitalsData}) => {
+const HospitalsReport = ({ hospitalsData }) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -68,10 +66,6 @@ const HospitalsReport = ({hospitalsData}) => {
       }),
     enabled: !!token,
   });
-
-
-
-
 
   const hospitalOptions = useMemo(
     () =>
@@ -133,18 +127,18 @@ const HospitalsReport = ({hospitalsData}) => {
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <CiHospital1  size={30} className="text-[#3CAB8B]" />
+        <CiHospital1 size={30} className="text-[#3CAB8B]" />
         {t("hospitalReport")}
       </p>
-    
+
       <div className="flex xl:flex-row flex-col gap-4">
-      <input
-        type="text"
-        placeholder={t("search")}
-        value={rawSearchTerm}
-        onChange={(e) => setRawSearchTerm(e.target.value)}
-        className="md:w-1/2 w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+        <input
+          type="text"
+          placeholder={t("search")}
+          value={rawSearchTerm}
+          onChange={(e) => setRawSearchTerm(e.target.value)}
+          className="md:w-1/2 w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <div className="md:w-1/2 w-full">
           <OneSelectDropdown
             options={hospitalOptions}
@@ -191,20 +185,22 @@ const HospitalsReport = ({hospitalsData}) => {
         </div>
       </div>
       <DocotrReportTable
-      translation="hospital"
+        translation="hospital"
         currentStates={currentStates}
-        isLoading={isLoading  }
+        isLoading={isLoading}
       />
-      <div className="flex justify-between items-end mt-4">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-        <p className="text-2xl text-gray-500 text-end">
-          {t("Total")}: {filteredData.length}
-        </p>
-      </div>
+      {filteredData.length > 10 && (
+        <div className="flex justify-between items-end mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+          <p className="text-2xl text-gray-500 text-end">
+            {t("Total")}: {filteredData.length}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -203,7 +203,7 @@ const ReviewsReport = ({
         currentStates={currentStates || {}}
         isLoading={isLoading}
       />
-      <div className="flex justify-between items-end mt-4">
+      {filteredData.length> 10 && (  <div className="flex justify-between items-end mt-4">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -212,7 +212,9 @@ const ReviewsReport = ({
         <p className="text-2xl text-gray-500 text-end">
           {t("Total")}: {filteredData.length}
         </p>
-      </div>
+      </div>)}
+
+    
     </div>
   );
 };

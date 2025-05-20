@@ -58,6 +58,7 @@ import ChatLayout from "./pages/ChatLayout";
 import useFirebaseNotifications from "./hooks/useFirebaseNotifications";
 import SendNotification from "./pages/SendNotification";
 import AdminChat from "./pages/AdminChat";
+import HospitalReportDetails from "./pages/HospitalReportDetails";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
           { index: true, element: <Dashboard /> },
+          { path: "hospital-report/:hosId", element: <HospitalReportDetails /> },
           {
             path: "doctors",
             children: [

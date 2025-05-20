@@ -1,9 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useTranslation } from "react-i18next";
 import Loader from "../../pages/Loader";
+import { useNavigate } from "react-router-dom";
 
 const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
@@ -24,7 +26,8 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
           currentStates?.map((data, index) => (
             <tr
               key={index}
-              className="border-b border-gray-200 hover:bg-gray-100"
+              onClick={translation === "hospital" ? () => navigate(`/hospital-report/${data.hospital_id}`) : undefined}
+              className={`border-b border-gray-200 ${translation === "hospital" ? "hover:bg-gray-100 cursor-pointer" : ""}`}
             >
               <td className="py-2 px-6 text-center">
                 {data?.doctor_name ||
@@ -32,7 +35,9 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
                   data?.user_name ||
                   data?.service_name}
               </td>
-              <td className="py-2 px-6 text-center">{data?.total_count || data?.total_bookings || t("Na")}</td>
+              <td className="py-2 px-6 text-center">
+                {data?.total_count || data?.total_bookings || t("Na")}
+              </td>
             </tr>
           ))
         ) : (

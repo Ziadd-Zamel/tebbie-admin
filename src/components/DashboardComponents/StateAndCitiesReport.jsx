@@ -128,16 +128,17 @@ const StateAndCitiesReport = () => {
         </tbody>
       </table>
 
-      <div className="flex justify-between items-end mt-4">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-        <p className="text-2xl text-gray-500 text-end">
-          {t("Total")}: {filteredData.length}
-        </p>
-      </div>
+      {filteredData.length> 10 && (  <div className="flex justify-between items-end mt-4">
+           <Pagination
+             currentPage={currentPage}
+             totalPages={totalPages}
+             onPageChange={handlePageChange}
+           />
+           <p className="text-2xl text-gray-500 text-end">
+             {t("Total")}: {filteredData.length}
+           </p>
+         </div>)}
+   
     </div>
   );
 };
