@@ -8,7 +8,12 @@ import HospitalsReport from "../components/DashboardComponents/HospitalsReport";
 import UsersReport from "../components/DashboardComponents/UsersReport";
 import HomeVisitReporteport from "../components/DashboardComponents/HomeVisitReporteport";
 import { useQuery } from "@tanstack/react-query";
-import { getAllHospitals ,getAllUsers ,getAllDoctors ,getAllHomeVisit } from "../utlis/https";
+import {
+  getAllHospitals,
+  getAllUsers,
+  getAllDoctors,
+  getAllHomeVisit,
+} from "../utlis/https";
 import Loader from "./Loader";
 const Dashboard = () => {
   const { i18n } = useTranslation();
@@ -35,13 +40,24 @@ const Dashboard = () => {
     direction === "rtl"
       ? "xl:grid-cols-6 xl:flex-row-reverse"
       : "xl:grid-cols-6";
-      if (hospitalsIsLoading || usersIsLoading || DoctorsIsLoading || HomeVisitIsLoading) return <Loader />;
+  if (
+    hospitalsIsLoading ||
+    usersIsLoading ||
+    DoctorsIsLoading ||
+    HomeVisitIsLoading
+  )
+    return <Loader />;
   return (
     <>
       <section className="container mx-auto ">
         <div dir={direction} className="w-full flex flex-col gap-4 ">
-            <TodaySales />
-            <ReviewsReport HomeVisitData={HomeVisitData} DoctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+          <TodaySales />
+          <ReviewsReport
+            HomeVisitData={HomeVisitData}
+            DoctorsData={DoctorsData}
+            usersData={usersData}
+            HospitalsData={hospitalsData}
+          />
 
           <div
             className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
@@ -58,10 +74,20 @@ const Dashboard = () => {
             className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
-              <CancelledReport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+              <CancelledReport
+                hospitalsData={HomeVisitData}
+                doctorsData={DoctorsData}
+                usersData={usersData}
+                HospitalsData={hospitalsData}
+              />
             </div>
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
-              <HomeVisitReporteport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+              <HomeVisitReporteport
+                hospitalsData={HomeVisitData}
+                doctorsData={DoctorsData}
+                usersData={usersData}
+                HospitalsData={hospitalsData}
+              />
             </div>
           </div>
 
@@ -69,10 +95,19 @@ const Dashboard = () => {
             className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
-              <UsersReport hospitalsData={HomeVisitData} doctorsData={DoctorsData} usersData={usersData} HospitalsData={hospitalsData} />
+              <UsersReport
+                hospitalsData={HomeVisitData}
+                doctorsData={DoctorsData}
+                usersData={usersData}
+                HospitalsData={hospitalsData}
+              />
             </div>
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm ">
-              <DoctorReport hospitalsData={HomeVisitData} doctorsData={DoctorsData}  HospitalsData={hospitalsData} />
+              <DoctorReport
+                hospitalsData={HomeVisitData}
+                doctorsData={DoctorsData}
+                HospitalsData={hospitalsData}
+              />
             </div>
           </div>
         </div>
