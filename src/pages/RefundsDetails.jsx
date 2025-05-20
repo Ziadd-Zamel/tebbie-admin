@@ -124,15 +124,14 @@ const RefundsDetails = () => {
         />
       </div>
       <div className="flex justify-end my-4">
-          <button
-            onClick={handleOpenDialog}
-            className="bg-primary text-white px-4 py-2 rounded-md"
-          >
-            {t("confirm")}
-          </button>
-        </div>
+        <button
+          onClick={handleOpenDialog}
+          className="bg-primary text-white px-4 py-2 rounded-md"
+        >
+          {t("confirm")}
+        </button>
+      </div>
       <div className="overflow-x-auto md:w-full w-[90vw] md:text-md text-sm">
-      
         <table className="w-full bg-white shadow-md">
           <thead>
             <tr className="bg-gray-100">
@@ -167,9 +166,13 @@ const RefundsDetails = () => {
               currentRefund.map((refund) => (
                 <tr key={refund.id} className="text-center border border-b">
                   <td className="p-4 ">{refund.id}</td>
-                  <td className="p-4 whitespace-nowrap">{refund.doctor.name}</td>
+                  <td className="p-4 whitespace-nowrap">
+                    {refund.doctor.name}
+                  </td>
                   <td className="p-4 whitespace-nowrap">{refund.user.name}</td>
-                  <td className="p-4 whitespace-nowrap">{refund.hospital.name}</td>
+                  <td className="p-4 whitespace-nowrap">
+                    {refund.hospital.name}
+                  </td>
                   <td className="p-4 whitespace-nowrap">{refund.price}</td>
                   <td className="p-4 whitespace-nowrap">{refund.date}</td>
                   <td className="p-4">
@@ -185,13 +188,12 @@ const RefundsDetails = () => {
             )}
           </tbody>
         </table>
-
       </div>
- <div className="flex justify-between items-end mt-4">
+      <div className="flex justify-between items-end mt-4">
         <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
         />
         <p className="md:text-2xl text-xl text-gray-500 text-end">
           {t("Total")}: {refundsData.length}

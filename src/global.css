@@ -7,9 +7,14 @@
   box-sizing: border-box;
 }
 
-.almarai {
-  font-family: "Almarai", sans-serif;
-  font-optical-sizing: auto;
+* {
+  box-sizing: border-box;
+  font-family: 'Almarai', sans-serif !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body {
+  font-family: 'Almarai', sans-serif;
 }
 
 .almarai-thin {
