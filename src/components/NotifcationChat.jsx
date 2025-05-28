@@ -9,7 +9,6 @@ const NotifcationChat = () => {
 
     const unsubscribe = onValue(messagesRef, (snapshot) => {
       const messages = snapshot.val();
-      console.log(messages)
       if (messages) {
         Object.values(messages).forEach((message) => {
           toast.info(`رسالة جديدة: ${message.content}`, {

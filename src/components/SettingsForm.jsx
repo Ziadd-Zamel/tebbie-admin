@@ -11,7 +11,7 @@ const SettingsForm = ({ initialData = {}, mode = "add" }) => {
   const token = localStorage.getItem("authToken");
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const [formState, setFormState] = useState({
     points_for_register: initialData.points_for_register || "",
     points_for_review: initialData.points_for_review || "",
@@ -22,7 +22,9 @@ const navigate = useNavigate()
 
   useEffect(() => {
     if (mode === "update" && Object.keys(initialData).length > 0) {
-      const [key, value] = Object.entries(initialData.points_value || {})[0] || ["", ""];
+      const [key, value] = Object.entries(
+        initialData.points_value || {}
+      )[0] || ["", ""];
       setFormState((prev) => ({
         ...prev,
         points_for_register: initialData.points_for_register || "",
@@ -41,7 +43,7 @@ const navigate = useNavigate()
         : updateSetting({ ...data, token });
     },
     onSuccess: () => {
-      navigate("/settings")
+      navigate("/settings");
       mode === "add"
         ? toast.success(t("settingsAdded"))
         : toast.success(t("settingsUpdated"));
@@ -73,13 +75,18 @@ const navigate = useNavigate()
   };
 
   return (
-    <section dir={direction} className="container mx-auto p-4 w-full flex justify-center items-center 2xl:h-[80vh] h-full">
+    <section
+      dir={direction}
+      className="container mx-auto p-4 w-full flex justify-center items-center h-full"
+    >
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-8 my-8 rounded flex flex-col justify-center shadow w-full 2xl:h-[50vh] h-full max-w-3xl"
+        className="space-y-4 bg-white p-8 my-8 rounded-2xl flex flex-col justify-center shadow w-full  h-full max-w-3xl"
       >
         <div>
-          <label className="block mb-1 font-medium">{t("pointsForRegister")}</label>
+          <label className="block mb-1 font-medium">
+            {t("pointsForRegister")}
+          </label>
           <input
             type="number"
             name="points_for_register"
@@ -91,7 +98,9 @@ const navigate = useNavigate()
         </div>
         <div className="flex gap-4 w-full">
           <div className="w-full">
-            <label className="block mb-1 font-medium">{t("pointsForReview")}</label>
+            <label className="block mb-1 font-medium">
+              {t("pointsForReview")}
+            </label>
             <input
               type="number"
               name="points_for_review"
@@ -102,7 +111,9 @@ const navigate = useNavigate()
             />
           </div>
           <div className="w-full">
-            <label className="block mb-1 font-medium">{t("pointsForBooking")}</label>
+            <label className="block mb-1 font-medium">
+              {t("pointsForBooking")}
+            </label>
             <input
               type="number"
               name="points_for_booking"
@@ -113,25 +124,29 @@ const navigate = useNavigate()
             />
           </div>
         </div>
-        <div>
-          <label className="block mb-1 font-medium">{t("pointsValue")}</label>
-          <div className="flex gap-2">
+        <div className="flex w-full gap-4">
+          <div className="w-1/2">
+            <label className="block mb-1 font-medium">{t("points")}</label>
             <input
               type="text"
               name="key"
               placeholder={t("keyPlaceholder")}
               value={formState.key}
               onChange={handleChange}
-              className="w-1/2 border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary"
+              className=" border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
               required
             />
+          </div>
+          <div className="w-1/2">
+            <label className="block mb-1 font-medium">{t("pointsValue")}</label>
+
             <input
               type="text"
               name="value"
               placeholder={t("valuePlaceholder")}
               value={formState.value}
               onChange={handleChange}
-              className="w-1/2 border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary"
+              className=" border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary  w-full"
               required
             />
           </div>

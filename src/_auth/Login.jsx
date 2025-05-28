@@ -30,7 +30,6 @@ const Login = () => {
         });
 
         if (token) {
-          console.log(token);
           
           return token;
         } else {
@@ -115,7 +114,6 @@ const Login = () => {
           throw new Error("JWTProvider is required for this form.");
         }
         const fcmToken = await getFCMToken();
-        console.log(fcmToken)
 
         await login(values.email, values.password ,fcmToken);
         if (values.remember) {

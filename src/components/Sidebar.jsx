@@ -60,7 +60,6 @@ export const therestofSidebarLinks = [
     label: "common questions",
     icon: <FaQuestion size={22} />,
   },
-  // {path:"/chat" , label:"chat", icon:<IoIosChatbubbles size={22} />  },
   {
     path: "/sliders",
     label: "sliders",

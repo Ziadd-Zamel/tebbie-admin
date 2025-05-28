@@ -26,7 +26,6 @@ try {
 
 try {
   const messaging = self.firebase.messaging();
-  console.log(messaging)
   messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification.title;
     const notificationOptions = {

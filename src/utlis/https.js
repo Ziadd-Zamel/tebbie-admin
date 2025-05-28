@@ -2483,6 +2483,30 @@ export const postRefund = async ({ appointments, token }) => {
     throw error;
   }
 };
+export const cancelBooking = async ({ bookingId, token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/delete-booking/${bookingId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while processing the refund"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
 //dashboard
 export const getAllUsers = async () => {
   try {

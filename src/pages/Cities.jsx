@@ -104,7 +104,7 @@ const Cities = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <section dir={direction} className="container mx-auto py-8  w-full">
+    <section dir={direction} className="container mx-auto lg:p-8 md:p-6 p-4  w-full">
       <div className="rounded-3xl   p-4 bg-white overflow-auto min-h-screen">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
           <input
@@ -112,22 +112,22 @@ const Cities = () => {
             placeholder={t("citySearchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full md:w-1/3 p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
           />
-          <div className="flex justify-end gap-4 w-full md:w-1/3">
+          <div className="flex md:flex-row flex-col justify-end gap-4 w-full ">
             <Link
               to="/cities/add-city"
-              className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+              className="px-6 py-2 shrik-0 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
             >
               {t("addCity")}
-              <IoMdAddCircle />
+              <IoMdAddCircle className="shrink-0" />
             </Link>
             <Link
               to="/cities/trashed-cities"
-              className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
+              className="px-6 py-2 shrik-0 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
               >
               {t("trash")}
-              <IoTrashSharp />
+              <IoTrashSharp className="shrik-0" />
             </Link>
           </div>
         </div>
