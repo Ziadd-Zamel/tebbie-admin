@@ -160,7 +160,7 @@ const totalPages =
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
               />
-              <p className="text-2xl text-gray-500 text-end">
+              <p className="lg:text-2xl md:text-xl text-lg text-gray-500 text-end">
                 {t("Total")}: {requestsData.length}
               </p>
             </div>

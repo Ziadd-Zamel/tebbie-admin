@@ -10,10 +10,12 @@ import { useUser } from "../chatcontext/UserContext";
 import UserList from "../components/UserList";
 import { mainLogo } from "../../src/assets";
 import { toast } from "react-toastify";
+import { Tabs, Tab, Box } from "@mui/material";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
+  const [tabValue, setTabValue] = useState(0); // لتتبع علامة التبويب المختارة
   const token = localStorage.getItem("authToken");
   const wss_token = localStorage.getItem("wss_token");
   const queryClient = useQueryClient();
@@ -21,7 +23,6 @@ const ChatPage = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { selectedUser, setSelectedUser } = useUser();
-
   const socketRef = useRef(null);
   const [isCloseChatInputVisible, setIsCloseChatInputVisible] = useState(false);
 
@@ -29,19 +30,15 @@ const ChatPage = () => {
     setSelectedUser(userId);
     queryClient.invalidateQueries(["messages"]);
   };
+
   const { data: usersData, isLoading: usersIsLoading } = useQuery({
     queryKey: ["users-list"],
     queryFn: () => getUsers({ token }),
     enabled: !!token,
   });
+
   const selectedChat = usersData?.find((chat) => chat.chat_id === selectedUser);
   const isChatClosed = selectedChat?.status === "closed";
-  useEffect(() => {
-    if (usersData?.length && !selectedUser) {
-      const reversedUsers = usersData.slice();
-      setSelectedUser(reversedUsers[0].chat_id);
-    }
-  }, [usersData, selectedUser]);
 
   const {
     data: initialMessages,
@@ -62,7 +59,7 @@ const ChatPage = () => {
         socketRef.current.close();
       }
       setSelectedUser(null);
-      toast.success("تم قفل المحدثة بنجاح");
+      toast.success("تم قفل المحادثة بنجاح");
     },
     onError: (error) => {
       console.error("Error closing chat:", error);
@@ -73,17 +70,18 @@ const ChatPage = () => {
   const handleCloseChatClick = () => {
     setIsCloseChatInputVisible(true);
   };
-console.log(messages)
+
   const handleSubmitSubject = () => {
- 
     closeChatMutation.mutate({
       token,
       chat_id: selectedUser,
     });
   };
+
   useEffect(() => {
     setMessages([]);
   }, [selectedUser]);
+
   useEffect(() => {
     if (!selectedUser || !wss_token || !usersData || isChatClosed) return;
     const selectedChat = usersData.find(
@@ -135,6 +133,7 @@ console.log(messages)
       socket.close();
     };
   }, [selectedUser, wss_token, usersData]);
+
   useEffect(() => {
     if (initialMessages) {
       const formattedOldMessages = initialMessages.map((message) => ({
@@ -162,11 +161,13 @@ console.log(messages)
       });
     }
   }, [initialMessages, selectedUser]);
+
   useEffect(() => {
     if (isChatClosed) {
-      socketRef.current = null; 
+      socketRef.current = null;
     }
   }, [isChatClosed]);
+
   const handleSendClick = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       const messagePayload = {
@@ -185,6 +186,23 @@ console.log(messages)
         chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const filteredUsers = usersData?.filter((user) => {
+    if (tabValue === 1) {
+      return user.status == "closed";
+    } else {
+      return user.status === "active";
+    }
+  });
+  useEffect(() => {
+    if (filteredUsers?.length && !selectedUser) {
+      setSelectedUser(filteredUsers[0].chat_id);
+    }
+  }, [filteredUsers, selectedUser]);
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+    setSelectedUser(null);
+  };
 
   if (isLoading || usersIsLoading) {
     return <Loader />;
@@ -208,11 +226,54 @@ console.log(messages)
 
   return (
     <section dir={direction}>
-      <div className="w-full mx-auto container  flex flex-col">
+      <div className="w-full mx-auto container flex flex-col">
+        <Box sx={{ borderBottom: "none" }}>
+          <Tabs
+            value={tabValue}
+            onChange={handleTabChange}
+            aria-label="chat tabs"
+            centered
+            sx={{
+              "& .MuiTabs-indicator": { display: "none" }, // إزالة الخط السفلي الافتراضي
+            }}
+          >
+              <Tab
+              label="المحادثات النشطة"
+              sx={{
+                "&.Mui-selected": {
+                  backgroundImage:
+                    "linear-gradient(to bottom left, #3a96ab , #33A9C7)",
+                  borderRadius: "1rem",
+                  color: "#fff",
+                },
+                color: "#000",
+                borderRadius: "1rem",
+                margin: "0 8px",
+                fontWeight: 700,
+              }}
+            />
+            <Tab
+              label="المحادثات المغلقة"
+              sx={{
+                "&.Mui-selected": {
+                  backgroundImage:
+                    "linear-gradient(to bottom left, #33A9C7, #3a96ab)",
+                  borderRadius: "1rem",
+                  color: "#fff",
+                },
+                color: "#000",
+                borderRadius: "1rem",
+                margin: "0 8px",
+                fontWeight: 700,
+              }}
+            />
+          
+          </Tabs>
+        </Box>
         <div className="flex m-4 md:gap-6 gap-0">
-          {usersData && (
+          {filteredUsers && (
             <UserList
-              users={usersData}
+              users={filteredUsers}
               selectedUser={selectedUser}
               onSelectUser={handleUserSelect}
             />
@@ -230,7 +291,6 @@ console.log(messages)
             </div>
             {isCloseChatInputVisible && (
               <div className="mt-4 flex items-center gap-2">
-             
                 <button
                   onClick={handleSubmitSubject}
                   disabled={closeChatMutation.isLoading}
@@ -240,7 +300,7 @@ console.log(messages)
                 </button>
                 <button
                   onClick={() => setIsCloseChatInputVisible(false)}
-                  className="bg-gray-600 hover:bg-gray-400 text-white rounded-full p-2  w-28"
+                  className="bg-gray-600 hover:bg-gray-400 text-white rounded-full p-2 w-28"
                 >
                   إلغاء
                 </button>
@@ -317,7 +377,7 @@ console.log(messages)
                 )}
               </div>
             </div>
-            <div className="w-full bg-white absolute bottom-0 left-0 pl-3 pr-1 py-2 rounded-3xl border border-gray-200 items-center gap-2 inline-flex justify-between">
+            <div className="w-full bg-white absolute bottom-2 left-0 pl-3 pr-1 py-2 rounded-3xl border border-gray-200 items-center gap-2 inline-flex justify-between">
               <div className="flex items-center gap-2 text-primary w-full">
                 <CgProfile size={30} />
                 <input

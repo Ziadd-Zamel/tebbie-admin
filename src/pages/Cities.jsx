@@ -105,7 +105,7 @@ const Cities = () => {
 
   return (
     <section dir={direction} className="container mx-auto lg:p-8 md:p-6 p-4  w-full">
-      <div className="rounded-3xl   p-4 bg-white overflow-auto min-h-screen">
+      <div className="rounded-3xl p-4 bg-white overflow-auto ">
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
           <input
             type="text"

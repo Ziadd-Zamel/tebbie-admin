@@ -153,10 +153,10 @@ const Login = () => {
 
   const renderForm = (formik) => (
     <form className="w-full" onSubmit={formik.handleSubmit}>
-      <div className=" mb-3">
+      <div className=" mb-2">
         <label
           htmlFor="email"
-          className="block text-lg almarai-thin  mb-3 text-right"
+          className="block text-lg almarai-thin  mb-2 text-right"
         >
           البريد الالكتروني
         </label>
@@ -167,7 +167,7 @@ const Login = () => {
           name="email"
           autoComplete="off"
           {...formik.getFieldProps("email")}
-          className="mt-1 block w-full px-5  py-3 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
+          className="mt-1 block w-full px-5  py-2 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
         />
         {formik.touched.email && formik.errors.email ? (
           <div className="text-red-500 text-sm mt-2">{formik.errors.email}</div>
@@ -175,10 +175,10 @@ const Login = () => {
       </div>
 
       {/* Password Input */}
-      <div className=" mb-3 relative">
+      <div className=" mb-2 relative">
         <label
           htmlFor="password"
-          className="block text-lg almarai-thin  mb-3 text-right"
+          className="block text-lg almarai-thin  mb-2 text-right"
         >
           كلمة المرور
         </label>
@@ -188,14 +188,14 @@ const Login = () => {
           type={showPassword ? "text" : "password"}
           autoComplete="off"
           {...formik.getFieldProps("password")}
-          className="mt-1 block w-full px-5  py-3 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
+          className="mt-1 block w-full px-5  py-2 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
         />
         <button
           type="button"
           onClick={togglePassword}
           className="absolute top-1/2 left-4 transform translate-y-1/2 text-gray-500"
         >
-          {showPassword ? <FaEyeSlash size={25} /> : <FaEye size={25} />}
+          {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22} />}
         </button>
     
       </div>
@@ -208,7 +208,7 @@ const Login = () => {
         <div className="text-red-500 text-sm mt-4">{formik.status}</div>
       )}
       {/* Submit Button */}
-      <div className="flex justify-center md:justify-end mt-6">
+      <div className="flex justify-center md:justify-end mt-4">
         {loading ? (
           <button
             className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg hover:bg-transparent my-6 flex items-center justify-center"
@@ -219,7 +219,7 @@ const Login = () => {
         ) : (
           <button
             type="submit"
-            className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg hover:bg-transparent xl:my-6 my-5"
+            className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg hover:bg-transparent xl:my-6 2xl:my-6 my-4"
           >
             تسجيل دخول
           </button>
@@ -238,7 +238,7 @@ const Login = () => {
           <div className="my-6 flex w-full justify-center items-center">
             <img className="h-auto xl:w-40 w-36" src={mainLogo} alt="Logo" />
           </div>
-          <h1 className="xl:text-3xl text-2xl almarai-medium xl:mb-12 mb-8 text-center md:text-right">
+          <h1 className="xl:text-3xl text-2xl almarai-medium xl:mb-10 mb-6 text-center md:text-right">
             اهلًا بعودتك
           </h1>
           <Box sx={{ width: "100%", bgcolor: "background.paper" }}>

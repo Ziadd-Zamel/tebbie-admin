@@ -9,7 +9,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
   return (
     <div
-      className="mt-6 flex lg:gap-4 gap-2 justify-center items-center"
+      className="mt-6 flex lg:gap-4 gap-2 justify-center items-center lg:text-2xl md:text-xl  text-lg"
       style={{ direction: isRTL ? "rtl" : "ltr" }}
     >
       <IconButton

@@ -142,7 +142,7 @@ const States = () => {
 
   return (
     <section dir={direction} className="container mx-auto p-4">
-      <div className="overflow-x-auto ">
+      <div className="rounded-3xl p-4 bg-white overflow-auto ">
         <div className="flex justify-end my-4">
           <Link
             to={"/states/trashed-state"}

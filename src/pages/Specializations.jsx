@@ -103,8 +103,10 @@ const Specializations = () => {
   if (error) return <ErrorMessage />;
 
   return (
-    <section dir={direction} className="container mx-auto p-6 rounded-3xl">
-      <div className="mb-6 flex justify-between items-center w-full">
+    <section dir={direction} className="container mx-auto lg:p-6 p-4  rounded-3xl">
+
+      <div className="bg-white rounded-3xl p-4">
+    <div className="mb-6 flex justify-between items-center w-full">
         <input
           type="text"
           placeholder={t("search-placeholder")}
@@ -123,7 +125,7 @@ const Specializations = () => {
         </div>
       </div>
 
-      <table className="w-full bg-white">
+      <table className="w-full ">
         <thead>
           <tr className="bg-gray-100">
             <th className="p-4">#</th>
@@ -169,6 +171,8 @@ const Specializations = () => {
         </tbody>
       </table>
 
+      </div>
+  
       <Dialog
         className="text-center"
         open={openDialog}
@@ -213,13 +217,13 @@ const Specializations = () => {
         </DialogActions>
       </Dialog>
 
-      <div className="flex justify-between items-end mt-4">
+      <div className="flex justify-between items-end mt-4 p-4">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-        <p className="text-2xl text-gray-500 text-end">
+        <p className="lg:text-2xl md:text-xl  text-lg text-gray-500 text-end">
           {t("Total")} : {specializationsData.length}
         </p>
       </div>

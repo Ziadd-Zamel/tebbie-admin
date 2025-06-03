@@ -53,8 +53,9 @@ const Refunds = () => {
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
   return (
-    <section dir={direction} className="container mx-auto p-6 bg-gray-50">
-      <div className="my-10">
+      <section dir={direction} className="container mx-auto md:p-4 p-0  w-full">
+        <div className="bg-white rounded-3xl md:p-8 p-4 w-full ">
+ <div className="my-10">
         <input
           type="text"
           name="name"
@@ -101,16 +102,19 @@ const Refunds = () => {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-between items-center mt-4">
+         <div className="flex justify-between items-end mt-4">
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-        <p className="md:text-2xl text-xl text-gray-500 text-end">
+              <p className="lg:text-2xl md:text-xl text-lg text-gray-500 text-end">
           {t("Total")}: {refundsData.length}
         </p>
       </div>
+        </div>
+     
+       
     </section>
   );
 };

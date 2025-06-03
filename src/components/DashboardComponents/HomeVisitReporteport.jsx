@@ -2,10 +2,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ErrorMessage from "../../pages/ErrorMessage";
-import {
-
-  getHomeVisitReport,
-} from "../../utlis/https";
+import { getHomeVisitReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
@@ -28,9 +25,7 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const HomeVisitReporteport = ({  hospitalsData,
-  usersData,
-  doctorsData,}) => {
+const HomeVisitReporteport = ({ hospitalsData, usersData, doctorsData }) => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -67,7 +62,7 @@ const HomeVisitReporteport = ({  hospitalsData,
       filters.toDate,
     ],
     queryFn: () =>
-        getHomeVisitReport({
+      getHomeVisitReport({
         token,
         user_id: filters.selectedUser,
         doctor_id: filters.selectedDoctor,
@@ -79,10 +74,6 @@ const HomeVisitReporteport = ({  hospitalsData,
   });
 
   // Fetch auxiliary data (users, hospitals, doctors)
-
-
-
-
 
   const userOptions = useMemo(
     () => usersData.map((user) => ({ value: user.id, label: user.name })),
@@ -157,7 +148,7 @@ const HomeVisitReporteport = ({  hospitalsData,
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <FaHome   size={30} className="text-[#3CAB8B]" />
+        <FaHome size={30} className="text-[#3CAB8B]" />
         {t("homevisitReport")}
       </p>
       <input
@@ -236,11 +227,9 @@ const HomeVisitReporteport = ({  hospitalsData,
         </div>
       </div>
       <DocotrReportTable
-            translation="users"
+        translation="users"
         currentStates={currentStates}
-        isLoading={
-          isLoading 
-        }
+        isLoading={isLoading}
       />
       <div className="flex justify-between items-end mt-4">
         <Pagination
@@ -248,7 +237,7 @@ const HomeVisitReporteport = ({  hospitalsData,
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-        <p className="text-2xl text-gray-500 text-end">
+        <p className="lg:text-2xl md:text-xl  text-lg text-gray-500 text-end">
           {t("Total")}: {filteredData.length}
         </p>
       </div>

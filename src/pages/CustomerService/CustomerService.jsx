@@ -76,7 +76,7 @@ const CustomerService = () => {
 
   return (
     <section dir={direction} className="container mx-auto bg-gray-50">
-      <div className="rounded-3xl md:p-8 p-4 md:m-4 m-0 min-h-screen overflow-auto bg-white">
+      <div className="rounded-3xl md:p-8 p-4 md:m-4 m-0  overflow-auto bg-white">
         <div className="flex justify-between md:flex-row flex-col gap-2 my-4">
           <Link
             to={"/customer-service/add-customer-service"}

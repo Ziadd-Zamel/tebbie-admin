@@ -17,7 +17,7 @@ const Hospitals = () => {
   const hospitalPerPage = 9;
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState("");
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchQuery, setSearchQuery] = useState("");
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
   const {
@@ -34,7 +34,9 @@ const Hospitals = () => {
 
   const filteredHospitals = hospitalData?.filter((hospital) => {
     if (!statusFilter && !searchQuery) return true;
-    const nameMatch = hospital.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const nameMatch = hospital.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     const statusMatch = statusFilter ? hospital.active === statusFilter : true;
     return nameMatch && statusMatch;
   });
@@ -55,7 +57,7 @@ const Hospitals = () => {
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const totalPages =
@@ -74,17 +76,17 @@ const Hospitals = () => {
   return (
     <section dir={direction} className="container mx-auto  bg-gray-50">
       <div className="rounded-3xl md:p-8 p-4 md:m-4 m-0 min-h-screen overflow-auto bg-white">
-      <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
+        <div className="flex justify-end gap-2 items-center lg:text-lg md:text-md text-sm">
           <Link
             to={"/hospitals/add-hospital"}
-            className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+            className="lg:px-6 px-4 shrink-0  py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95]  rounded-[8px] focus:outline-none text-center"
           >
             <FaHospitalUser />
             {t("AddHospital")}
           </Link>
           <Link
             to={"/hospitals/trashed-hospitals"}
-            className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
+            className="lg:px-6 px-4 py-2 border-[#048c87] border-2  text-[#048c87]  rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
           >
             <IoTrashSharp />
             {t("trash")}
@@ -93,22 +95,22 @@ const Hospitals = () => {
 
         <div className="flex   md:flex-row flex-col gap-2">
           {/* Search Bar */}
-          <div className="my-4 md:w-1/2 w-full text-end">
+          <div className="mt-4  md:w-1/2 w-full text-end">
             <input
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder={t("hospitalNameSearch")}
               className="border border-gray-300 rounded-lg py-2 px-4  h-[50px] focus:outline-none focus:border-primary w-full "
-              />
+            />
           </div>
 
-          <div className="my-4  md:w-1/2 w-full">
+          <div className="md:my-4 my-2  md:w-1/2 w-full">
             <select
               value={statusFilter}
               onChange={handleStatusFilterChange}
               className="border border-gray-300 rounded-lg py-2 px-4  h-[50px] focus:outline-none focus:border-primary w-full "
-              >
+            >
               <option value="">{t("All")}</option>
               <option value="1">{t("active")}</option>
               <option value="0">{t("inactive")}</option>
@@ -116,53 +118,58 @@ const Hospitals = () => {
           </div>
         </div>
         <div className="overflow-x-auto md:w-full w-[90vw]">
-
-        <table className="min-w-full table-auto mt-4 border-collapse ">
-          <thead>
-          <tr className="bg-gray-100">
-          <th  className="p-4 text-start whitespace-nowrap">{t("HospitalName")}</th>
-              <th  className="p-4 text-start whitespace-nowrap">{t("address")}</th>
-              <th  className="p-4 text-start whitespace-nowrap">{t("status")}</th>
-              <th  className="p-4 text-start whitespace-nowrap">{t("email")}</th>
-              <th  className="p-4 text-start whitespace-nowrap">{t("Actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentHospital.map((hospital) => (
-              <tr key={hospital.id} className="border-b">
-                <td  className="p-4 whitespace-nowrap" >
-                  {hospital.name}
-                </td>
-                <td  className="p-4 whitespace-nowrap" >
+          <table className="min-w-full table-auto mt-4 border-collapse ">
+            <thead>
+              <tr className="bg-gray-100">
+                <th className="p-4 text-start whitespace-nowrap">
+                  {t("HospitalName")}
+                </th>
+                <th className="p-4 text-start whitespace-nowrap">
+                  {t("address")}
+                </th>
+                <th className="p-4 text-start whitespace-nowrap">
+                  {t("status")}
+                </th>
+                <th className="p-4 text-start whitespace-nowrap">
+                  {t("email")}
+                </th>
+                <th className="p-4 text-start whitespace-nowrap">
+                  {t("Actions")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentHospital.map((hospital) => (
+                <tr key={hospital.id} className="border-b">
+                  <td className="p-4 whitespace-nowrap">{hospital.name}</td>
+                  <td className="p-4 whitespace-nowrap">
                     {(hospital.address?.slice(0, 50) || t("none")) +
                       (hospital.address?.length > 50 ? "..." : "")}
                   </td>
-                <td  className="p-4 whitespace-nowrap" >
-                  <span
-                    className={`px-3 py-2 rounded-full text-sm ${
-                      hospital.active === "1"
-                        ? "bg-green-100 text-green-600"
-                        : "bg-red-100 text-red-600"
-                    }`}
-                  >
-                    {hospital.active === "1" ? t("active") : t("inactive")}
-                  </span>
-                </td>
-                <td  className="p-4 whitespace-nowrap" >
-                  {hospital.email}
-                </td>
-                <td  className="p-4 whitespace-nowrap" >
-                  <Link
-                    to={`/hospitals/${hospital.id}`}
-                    className="text-md text-[#3CAB8B]"
-                  >
-                    <FaRegEye size={25} />
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  <td className="p-4 whitespace-nowrap">
+                    <span
+                      className={`px-3 py-2 rounded-full text-sm ${
+                        hospital.active === "1"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
+                      }`}
+                    >
+                      {hospital.active === "1" ? t("active") : t("inactive")}
+                    </span>
+                  </td>
+                  <td className="p-4 whitespace-nowrap">{hospital.email}</td>
+                  <td className="p-4 whitespace-nowrap">
+                    <Link
+                      to={`/hospitals/${hospital.id}`}
+                      className="text-md text-[#3CAB8B]"
+                    >
+                      <FaRegEye size={25} />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
         <div className="flex justify-between items-end mt-4">
           <Pagination
@@ -170,7 +177,7 @@ const Hospitals = () => {
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
-          <p className="text-2xl text-gray-500 text-end">
+          <p className="lg:text-2xl text-xl text-gray-500 text-end">
             {t("Total")} : {filteredHospitals.length}
           </p>
         </div>

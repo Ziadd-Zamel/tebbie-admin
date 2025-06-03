@@ -118,7 +118,7 @@ const CommonQuestions = () => {
 
   return (
     <section dir={direction} className="container mx-auto py-8">
-      <div className="md:p-8 p-4 m-4 bg-white rounded-3xl shadow-lg min-h-screen">
+      <div className="md:p-8 p-4 m-4 bg-white rounded-2xl">
         {/* Header with Search and Add Button */}
         <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <input

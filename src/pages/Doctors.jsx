@@ -48,11 +48,11 @@ const Doctors = () => {
 
   return (
     <section dir={direction} className="container max-auto md:px-4 px-2 ">
-      <div className="flex justify-end md:flex-row flex-col gap-2 items-center my-4">
-      <div className="flex justify-end items-end gap-2">
+      <div className="flex md:justify-end justify-center  gap-2 items-center my-4 lg:text-lg text-md">
+        <div className="flex  gap-2  ">
           <Link
             to={"/doctors/add-doctor"}
-            className="lg:px-6 px-4 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+            className="lg:px-6 md:px-4 px-2 shrink-0 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95]  rounded-[8px] focus:outline-none text-center"
           >
             {t("add-doctor")}
             <IoPersonAddSharp />
@@ -61,14 +61,13 @@ const Doctors = () => {
         <div className="flex justify-end">
           <Link
             to={"/doctors/trashed-doctors"}
-            className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
+            className="lg:px-6 md:px-4 px-2  py-2 border-[#048c87] border-2  text-[#048c87]  rounded-[8px]  flex justify-center items-center gap-2 shrink-0"
           >
             {t("recyclebin")}
             <IoTrashSharp />
           </Link>
         </div>
       </div>
-
       <div className="flex items-center flex-wrap sm:justify-start justify-center gap-6 w-full">
         {currentDoctors.length > 0 ? (
           currentDoctors.map((doctor) => (
@@ -136,7 +135,6 @@ const Doctors = () => {
           </p>
         )}
       </div>
-
       <div className="flex justify-between items-end mt-4 p-4">
         <Pagination
           currentPage={currentPage}
