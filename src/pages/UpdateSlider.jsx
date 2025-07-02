@@ -113,7 +113,6 @@ const UpdateSlider = () => {
       alert("Please provide an image.");
       return;
     }
-    console.log("Form Data before submission:", formData);
 
     handleUpdateSlider(formData);
   };

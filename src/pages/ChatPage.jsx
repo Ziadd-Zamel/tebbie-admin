@@ -15,7 +15,7 @@ import { Tabs, Tab, Box } from "@mui/material";
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState("");
-  const [tabValue, setTabValue] = useState(0); // لتتبع علامة التبويب المختارة
+  const [tabValue, setTabValue] = useState(0);
   const token = localStorage.getItem("authToken");
   const wss_token = localStorage.getItem("wss_token");
   const queryClient = useQueryClient();
@@ -89,7 +89,7 @@ const ChatPage = () => {
     );
     const userId = selectedChat?.user?.id;
 
-    const socketUrl = `https://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
+    const socketUrl = `wss://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
     socket.onopen = () => {};
@@ -204,26 +204,6 @@ const ChatPage = () => {
     setSelectedUser(null);
   };
 
-  if (isLoading || usersIsLoading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return (
-      <div className="h-[70vh] flex flex-col justify-center items-center text-red-500">
-        <p>حدث خطأ أثناء تحميل الرسائل. يرجى المحاولة لاحقًا.</p>
-        <button
-          onClick={() =>
-            queryClient.invalidateQueries(["messages", selectedUser])
-          }
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
-        >
-          إعادة المحاولة
-        </button>
-      </div>
-    );
-  }
-
   return (
     <section dir={direction}>
       <div className="w-full mx-auto container flex flex-col">
@@ -234,10 +214,10 @@ const ChatPage = () => {
             aria-label="chat tabs"
             centered
             sx={{
-              "& .MuiTabs-indicator": { display: "none" }, // إزالة الخط السفلي الافتراضي
+              "& .MuiTabs-indicator": { display: "none" },
             }}
           >
-              <Tab
+            <Tab
               label="المحادثات النشطة"
               sx={{
                 "&.Mui-selected": {
@@ -249,8 +229,8 @@ const ChatPage = () => {
                 color: "#000",
                 borderRadius: "1rem",
                 margin: "0 8px",
-                fontWeight: 700,
-              }}
+                fontWeight: 700
+        }}
             />
             <Tab
               label="المحادثات المغلقة"
@@ -267,7 +247,6 @@ const ChatPage = () => {
                 fontWeight: 700,
               }}
             />
-          
           </Tabs>
         </Box>
         <div className="flex m-4 md:gap-6 gap-0">
@@ -308,10 +287,26 @@ const ChatPage = () => {
             )}
             <div
               ref={chatContainerRef}
-              className="flex-grow  h-[80vh] overflow-auto"
+              className="flex-grow h-[80vh] overflow-auto"
             >
               <div className="grid pb-11 p-4">
-                {messages?.length > 0 ? (
+                {isLoading || usersIsLoading ? (
+                  <div className="h-[70vh] flex justify-center items-center">
+                    <Loader />
+                  </div>
+                ) : error ? (
+                  <div className="h-[70vh] flex flex-col justify-center items-center text-red-500">
+                    <p>حدث خطأ أثناء تحميل الرسائل. يرجى المحاولة لاحقًا.</p>
+                    <button
+                      onClick={() =>
+                        queryClient.invalidateQueries(["messages", selectedUser])
+                      }
+                      className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      إعادة المحاولة
+                    </button>
+                  </div>
+                ) : messages?.length > 0 ? (
                   messages?.map((message) => (
                     <div
                       key={message.id}
@@ -321,11 +316,10 @@ const ChatPage = () => {
                     >
                       {message.from_me && (
                         <img
-                          className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
+                          className="w-8 h-8 md:w-10 md:h-10 rounded-full shrink-0"
                           src={message?.admin_image}
                         />
                       )}
-
                       <div className="grid">
                         <h5
                           className={`text-md font-semibold leading-snug pb-1 ${
@@ -337,8 +331,8 @@ const ChatPage = () => {
                         <div
                           className={`px-3.5 py-2 inline-flex ${
                             message.from_me
-                              ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] rounded-tl-full rounded-b-full rounded-xl  text-white"
-                              : "bg-gradient-to-bl from-[#33A9C7] to-[#3a96ab] text-white rounded-tr-full rounded-b-full rounded-xl "
+                              ? "bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] rounded-tl-full rounded-b-full rounded-xl text-white"
+                              : "bg-gradient-to-bl from-[#33A9C7] to-[#3a96ab] text-white rounded-tr-full rounded-b-full rounded-xl"
                           }`}
                         >
                           <h5 className="md:text-md text-sm font-normal leading-snug">
@@ -361,10 +355,9 @@ const ChatPage = () => {
                           </h6>
                         </div>
                       </div>
-
                       {message.user_image === "user" && (
                         <img
-                          className="w-8 h-8 md:w-10  md:h-10 rounded-full  shrink-0"
+                          className="w-8 h-8 md:w-10 md:h-10 rounded-full shrink-0"
                           src={message.user_image}
                         />
                       )}
@@ -372,7 +365,7 @@ const ChatPage = () => {
                   ))
                 ) : (
                   <div className="h-[70vh] flex justify-center items-center text-red-500">
-                    <p>عذرا لا يوجد رسائل لعرضها </p>
+                    <p>عذرا لا يوجد رسائل لعرضها</p>
                   </div>
                 )}
               </div>

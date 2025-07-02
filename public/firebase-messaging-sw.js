@@ -4,14 +4,14 @@ importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js
 importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCsDflLnpLi_KEWs9zfVSugG9ehdPTy-Y4",
-  authDomain: "tebbi-1fda2.firebaseapp.com",
+  apiKey: "AIzaSyANpB3y5Oj7zHMfzQvMPtIH5JCsOp7eH64",
+  authDomain: "tabi-4ebab.firebaseapp.com",
   databaseURL: "https://tebbi-1fda2-default-rtdb.firebaseio.com",
-  projectId: "tebbi-1fda2",
-  storageBucket: "tebbi-1fda2.firebasestorage.app",
-  messagingSenderId: "922205311973",
-  appId: "1:922205311973:web:f33c211eafa473499a950c",
-  measurementId: "G-G9FY96CGGX"
+  projectId: "tabi-4ebab",
+  storageBucket: "tabi-4ebab.firebasestorage.app",
+  messagingSenderId: "15841420156",
+  appId: "1:15841420156:web:15322e26632bbf5b993af9",
+  measurementId: "G-39N8YZZRNX"
 };
 
 try {

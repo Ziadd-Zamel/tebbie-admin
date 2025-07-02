@@ -20,7 +20,6 @@ const UpdateLabType = () => {
     queryKey: ["labstype-details", labTypeId],
     queryFn: () => getSpecificLabType({ id: labTypeId, token }),
   });
-  console.log(labestype);
 
   return (
     <section dir={direction}>

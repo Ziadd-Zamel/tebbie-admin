@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  getDoctors,
   getSpecializations,
   getstates,
   newHospital,
-  getStatByCities, 
+  getStatByCities,
+  getAllDoctors,
 } from "../utlis/https";
 import { toast } from "react-toastify";
 
@@ -13,7 +13,7 @@ import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
 
 import { useState, useCallback } from "react";
 import HospitalMap from "./HospitalMap";
-import MultiSelectDropdown from "../components/MultiSelectDropdown";
+import MultiSelectDropdown from "../components/MultiSearchSelectorHospital";
 import { IoMdAdd, IoIosCloseCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
@@ -36,7 +36,7 @@ const AddHospital = () => {
   });
   const { data: doctors, isLoading: doctorsIsLoading } = useQuery({
     queryKey: ["doctors"],
-    queryFn: () => getDoctors({ token }),
+    queryFn: () => getAllDoctors({ token }),
   });
   const { data: specializationsData, isLoading: sppecializationsIsLoading } =
     useQuery({
@@ -65,17 +65,15 @@ const AddHospital = () => {
     visit_time: "",
     Password: "",
   });
-   // Fetch cities based on selected state_id
- const { data: cities, isLoading: citiesIsLoading } = useQuery({
-  queryKey: ["cities", hospitalData.state_id], // Depend on state_id
-  queryFn: () => getStatByCities({ token, id: hospitalData.state_id }),
-  enabled: !!hospitalData.state_id, // Only fetch when state_id is set
-});
+  const { data: cities, isLoading: citiesIsLoading } = useQuery({
+    queryKey: ["cities", hospitalData.state_id],
+    queryFn: () => getStatByCities({ token, id: hospitalData.state_id }),
+    enabled: !!hospitalData.state_id,
+  });
   const handleChange = (e) => {
     const { name, value } = e.target;
     setHospitalData((prev) => {
       const updatedData = { ...prev, [name]: value };
-      // Reset city_id when state_id changes
       if (name === "state_id") {
         updatedData.city_id = "";
       }
@@ -152,12 +150,40 @@ const AddHospital = () => {
       (item) => item instanceof File
     );
     const allMedia = [...existingMedia, ...newMediaFiles];
+
+    // Format time
+    const formattedStartTime = hospitalData.start_visit_from
+      ? `${hospitalData.start_visit_from}:00`
+      : "";
+    const formattedEndTime = hospitalData.end_visit_at
+      ? `${hospitalData.end_visit_at}:00`
+      : "";
+
+    const start = new Date(`1970-01-01T${formattedStartTime}`);
+    const end = new Date(`1970-01-01T${formattedEndTime}`);
+    if (end <= start) {
+      toast.error("وقت نهاية الزيارة يجب أن يكون بعد وقت البداية");
+      return;
+    }
+
     mutation.mutate({
       ...hospitalData,
       media: allMedia,
+      start_visit_from: formattedStartTime,
+      end_visit_at: formattedEndTime,
     });
   };
+  const doctorsOptions =
+    doctors?.map((data) => ({
+      value: data.id,
+      label: data.name,
+    })) || [];
 
+  const specializationOptions =
+    specializationsData?.map((data) => ({
+      value: data.id,
+      label: data.name,
+    })) || [];
   return (
     <section className="container mx-auto p-4 w-full ">
       <div
@@ -274,10 +300,12 @@ const AddHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                    translation={"التخصصات"}
-                    doctors={specializationsData}
-                    selectedDoctors={hospitalData.specialization_id}
-                    handleDoctorChange={handleSpecializationChange}
+                    options={specializationOptions || []}
+                    selectedValues={hospitalData.specialization_id}
+                    onChange={handleSpecializationChange}
+                    placeholder="اختر التخصصات"
+                    searchPlaceholder="ابحث عن التخصص"
+                    fallbackMessage="لا توجد تخصصات"
                   />
                 )}
               </div>
@@ -292,77 +320,78 @@ const AddHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                    translation={t("doctors")}
-                    doctors={doctors}
-                    selectedDoctors={hospitalData.doctor_ids}
-                    handleDoctorChange={handleDoctorChange}
+                    options={doctorsOptions || []}
+                    selectedValues={hospitalData.doctor_ids}
+                    onChange={handleDoctorChange}
+                    placeholder="اختر الأطباء"
+                    searchPlaceholder="ابحث عن طبيب"
+                    fallbackMessage="لا يوجد أطباء"
                   />
                 )}
               </div>
             </div>
             <div className="lg:flex mb-6 w-full">
-      <div className="px-3 my-6 md:mb-0 w-full">
-      <label
-          htmlFor="state_id"
-          className="block text-md almarai-semibold mb-4"
+              <div className="px-3 my-6 md:mb-0 w-full">
+                <label
+                  htmlFor="state_id"
+                  className="block text-md almarai-semibold mb-4"
                 >
-                  <span className="text-red-500">*</span>           {t("state")}
-
+                  <span className="text-red-500">*</span> {t("state")}
                 </label>
-        {stateIsLoading ? (
-          <div className="text-gray-500">Loading...</div>
-        ) : (
-          <select
-            name="state_id"
-            id="state_id"
-            onChange={handleChange}
-            required
-            value={hospitalData.state_id}
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          >
-            <option value="">{t("select_state")}</option>
-            {states?.map((state) => (
-              <option key={state.id} value={state.id}>
-                {state.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-      <div className="px-3 my-6 md:mb-0 w-full">
-        <label
-          className="block text-md almarai-semibold mb-4"
-          htmlFor="city_id"
-        >
-          {t("cities")}
-        </label>
-        {citiesIsLoading ? (
-          <div className="text-gray-500">Loading...</div>
-        ) : (
-          <select
-            name="city_id"
-            id="city_id"
-            onChange={handleChange}
-            value={hospitalData.city_id}
-            disabled={!hospitalData.state_id}
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          >
-            <option value="">{t("select_city")}</option>
-            {cities?.length > 0 ? (
-              cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.name}
-                </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                {t("no_cities_available")}
-              </option>
-            )}
-          </select>
-        )}
-      </div>
-    </div>
+                {stateIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="state_id"
+                    id="state_id"
+                    onChange={handleChange}
+                    required
+                    value={hospitalData.state_id}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                  >
+                    <option value="">{t("select_state")}</option>
+                    {states?.map((state) => (
+                      <option key={state.id} value={state.id}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <div className="px-3 my-6 md:mb-0 w-full">
+                <label
+                  className="block text-md almarai-semibold mb-4"
+                  htmlFor="city_id"
+                >
+                  {t("cities")}
+                </label>
+                {citiesIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="city_id"
+                    id="city_id"
+                    onChange={handleChange}
+                    value={hospitalData.city_id}
+                    disabled={!hospitalData.state_id}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                  >
+                    <option value="">{t("select_city")}</option>
+                    {cities?.length > 0 ? (
+                      cities.map((city) => (
+                        <option key={city.id} value={city.id}>
+                          {city.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        {t("no_cities_available")}
+                      </option>
+                    )}
+                  </select>
+                )}
+              </div>
+            </div>
 
             <div className="text-xl font-semibold  w-full flex items-center gap-3 ">
               <label>{t("active")}</label>
@@ -400,61 +429,61 @@ const AddHospital = () => {
               </div>
             </div>
             {hospitalData.open_visits === "1" && (
-  <>
-    <div className="lg:flex mb-6 w-full">
-      <div className="px-3 my-6 md:mb-0 w-full">
-        <label
-          className="block text-md almarai-semibold mb-4"
-          htmlFor="start_visit_from"
-        >
-          start visit from
-        </label>
-        <input
-          type="time"
-          onChange={handleChange}
-          id="start_visit_from"
-          name="start_visit_from"
-          className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-        />
-      </div>
+              <>
+                <div className="lg:flex mb-6 w-full">
+                  <div className="px-3 my-6 md:mb-0 w-full">
+                    <label
+                      className="block text-md almarai-semibold mb-4"
+                      htmlFor="start_visit_from"
+                    >
+                      start visit from
+                    </label>
+                    <input
+                      type="time"
+                      onChange={handleChange}
+                      id="start_visit_from"
+                      name="start_visit_from"
+                      className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    />
+                  </div>
 
-      <div className="px-3 my-6 md:mb-0 w-full">
-        <label
-          className="block text-md almarai-semibold mb-4"
-          htmlFor="end_visit_at"
-        >
-          end visit at
-        </label>
-        <input
-          type="time"
-          onChange={handleChange}
-          id="end_visit_at"
-          name="end_visit_at"
-          className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-        />
-      </div>
-    </div>
+                  <div className="px-3 my-6 md:mb-0 w-full">
+                    <label
+                      className="block text-md almarai-semibold mb-4"
+                      htmlFor="end_visit_at"
+                    >
+                      end visit at
+                    </label>
+                    <input
+                      type="time"
+                      onChange={handleChange}
+                      id="end_visit_at"
+                      name="end_visit_at"
+                      className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    />
+                  </div>
+                </div>
 
-    <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full">
-      <div className="w-full">
-        <label
-          className="block text-md almarai-semibold mb-4"
-          htmlFor="visit_time"
-        >
-          {t("visit_time")}
-        </label>
-        <input
-          type="text"
-          value={hospitalData.visit_time}
-          onChange={handleChange}
-          id="visit_time"
-          name="visit_time"
-          className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-        />
-      </div>
-    </div>
-  </>
-)}
+                <div className="lg:flex justify-end gap-4 px-4 items-end mb-6 w-full">
+                  <div className="w-full">
+                    <label
+                      className="block text-md almarai-semibold mb-4"
+                      htmlFor="visit_time"
+                    >
+                      {t("visit_time")}
+                    </label>
+                    <input
+                      type="text"
+                      value={hospitalData.visit_time}
+                      onChange={handleChange}
+                      id="visit_time"
+                      name="visit_time"
+                      className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
 
             <div className="px-3 my-6 md:mb-0 w-full relative">

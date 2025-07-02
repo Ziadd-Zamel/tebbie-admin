@@ -29,6 +29,7 @@ import { RiCoupon2Fill } from "react-icons/ri";
 import { BsCardText } from 'react-icons/bs';
 import { FaStethoscope } from "react-icons/fa";
 import LogoutDialog from "./LogoutDialog";
+import { RiShieldCheckLine } from "react-icons/ri";
 
 export const sidebarLinks = [
   { path: "/", label: "dashboard", icon: <FaRegClock size={22} /> },
@@ -44,7 +45,11 @@ export const therestofSidebarLinks = [
   { path: "/recharge-card", label: "rechard card", icon: <FaCreditCard size={22} /> },
   { path: "/coupons", label: "Coupons", icon: <RiCoupon2Fill  size={22} /> },
   { path: "/admin-chat", label: "Admin-chat", icon: <IoIosChatbubbles  size={22} /> },
-
+ {
+    path: "/terms",
+    label: "Terms & Conditions",
+    icon: <RiShieldCheckLine size={22} />,
+  }, 
   {
     path: "/settings",
     label: "settings",

@@ -56,6 +56,7 @@ export const pageTranslations = {
       "/send-notification":"send notification",
       "/admin-chat":"All Chat",
       "/hospital-report/:hosId":"hospitals report",
+      "/terms":"Terms & Conditions",
 
 
       
@@ -119,6 +120,8 @@ export const pageTranslations = {
       "/send-notification":"ارسال اشعارات",
       "/admin-chat":"جميع المحادثات",
       "/hospital-report/:hosId":"تقرير المستشفيات",
+      "/terms":"الشروط والأحكام",
+
 
 
 

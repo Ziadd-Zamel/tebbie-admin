@@ -60,7 +60,9 @@ const Navbar = () => {
      if (pathname.startsWith("/hospital-report/")) {
       return pageTranslations[language]["/hospital-report/:hosId"];
     }
-     
+      if (pathname.startsWith("/terms/")) {
+      return pageTranslations[language]["/terms/"];
+    }
     
     
     return (

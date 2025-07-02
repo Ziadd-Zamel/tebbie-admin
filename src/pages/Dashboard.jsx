@@ -75,18 +75,18 @@ const Dashboard = () => {
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <CancelledReport
-                hospitalsData={HomeVisitData}
+              
                 doctorsData={DoctorsData}
                 usersData={usersData}
-                HospitalsData={hospitalsData}
+                hospitalsData={hospitalsData}
               />
             </div>
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <HomeVisitReporteport
-                hospitalsData={HomeVisitData}
+                hospitalsData={hospitalsData}
                 doctorsData={DoctorsData}
                 usersData={usersData}
-                HospitalsData={hospitalsData}
+              
               />
             </div>
           </div>
@@ -96,17 +96,15 @@ const Dashboard = () => {
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <UsersReport
-                hospitalsData={HomeVisitData}
                 doctorsData={DoctorsData}
                 usersData={usersData}
-                HospitalsData={hospitalsData}
+                hospitalsData={hospitalsData}
               />
             </div>
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm ">
               <DoctorReport
-                hospitalsData={HomeVisitData}
+                hospitalsData={hospitalsData}
                 doctorsData={DoctorsData}
-                HospitalsData={hospitalsData}
               />
             </div>
           </div>

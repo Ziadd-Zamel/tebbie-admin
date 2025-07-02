@@ -2,22 +2,22 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import {
-  getDoctors,
   getSpecializations,
   getSpecificHospital,
   getstates,
   updateHospital,
-  getStatByCities, 
+  getStatByCities,
+  getAllDoctors,
 } from "../utlis/https";
 import { useState, useCallback, useEffect } from "react";
 import Loader from "./Loader";
 import HospitalMap from "./HospitalMap";
 import { ErrorMessage } from "formik";
-import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { IoMdAdd, IoIosCloseCircle } from "react-icons/io";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
 import { TextField } from "@mui/material";
+import MultiSelectDropdown from "../components/MultiSearchSelectorHospital";
 
 const token = localStorage.getItem("authToken");
 
@@ -47,14 +47,14 @@ const UpdateHospital = () => {
 
   const { data: doctors, isLoading: doctorsIsLoading } = useQuery({
     queryKey: ["doctors"],
-    queryFn: () => getDoctors({ token }),
+    queryFn: () => getAllDoctors({ token }),
   });
   const { data: specializationsData, isLoading: sppecializationsIsLoading } =
     useQuery({
       queryKey: ["specializations"],
       queryFn: () => getSpecializations({ token }),
     });
-   
+
   const [hospitalData, setHospitalData] = useState({
     name: "",
     bio: "",
@@ -159,10 +159,9 @@ const UpdateHospital = () => {
       };
       return updateHospital({ token, ...payload });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("تم تعديل بيانات المستشفى بنجاح");
       setErrorMessage("");
-      console.log("hospital data updated successfully", data);
     },
     onError: (error) => {
       toast.error("حدث خطأ أثناء تعديل بيانات المستشفى");
@@ -207,11 +206,26 @@ const UpdateHospital = () => {
     );
 
     const allMedia = [...existingMedia, ...newMediaFiles];
+    const formattedStartTime = hospitalData.start_visit_from
+      ? `${hospitalData.start_visit_from}:00`
+      : "";
+    const formattedEndTime = hospitalData.end_visit_at
+      ? `${hospitalData.end_visit_at}:00`
+      : "";
+
+    const start = new Date(`1970-01-01T${formattedStartTime}`);
+    const end = new Date(`1970-01-01T${formattedEndTime}`);
+    if (end <= start) {
+      toast.error("وقت نهاية الزيارة يجب أن يكون بعد وقت البداية");
+      return;
+    }
 
     mutation.mutate({
       id: HospitalId,
       ...hospitalData,
       media: allMedia,
+      start_visit_from: formattedStartTime,
+      end_visit_at: formattedEndTime,
     });
   };
 
@@ -226,6 +240,17 @@ const UpdateHospital = () => {
       </div>
     );
   }
+  const doctorsOptions =
+    doctors?.map((data) => ({
+      value: data.id,
+      label: data.name,
+    })) || [];
+
+  const specializationOptions =
+    specializationsData?.map((data) => ({
+      value: data.id,
+      label: data.name,
+    })) || [];
   return (
     <section className="container mx-auto p-4 w-full ">
       <div
@@ -343,10 +368,12 @@ const UpdateHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                    translation="specializations"
-                    doctors={specializationsData}
-                    selectedDoctors={hospitalData.specialization_id}
-                    handleDoctorChange={handleSpecializationChange}
+                    options={specializationOptions || []}
+                    selectedValues={hospitalData.specialization_id}
+                    onChange={handleSpecializationChange}
+                    placeholder={t("select_specialization")}
+                    searchPlaceholder={t("search")}
+                    fallbackMessage="لا توجد تخصصات"
                   />
                 )}
               </div>
@@ -361,75 +388,77 @@ const UpdateHospital = () => {
                   <div className="text-gray-500">Loading...</div>
                 ) : (
                   <MultiSelectDropdown
-                    translation="doctors"
-                    doctors={doctors}
-                    selectedDoctors={hospitalData.doctor_ids}
-                    handleDoctorChange={handleDoctorChange}
+                    options={doctorsOptions || []}
+                    selectedValues={hospitalData.doctor_ids}
+                    onChange={handleDoctorChange}
+                    placeholder={t("select_hospital")}
+                    searchPlaceholder={t("search")}
+                    fallbackMessage={t("no_hospitals_found")}
                   />
                 )}
               </div>
             </div>
             <div className="lg:flex mb-6 w-full">
-      <div className="px-3 my-6 md:mb-0 w-full">
-        <label
-          className="block text-md almarai-semibold mb-4"
-          htmlFor="state_id"
-        >
-                       <span className="text-red-500">*</span> {t("state")}
-        </label>
-        {stateIsLoading ? (
-          <div className="text-gray-500">Loading...</div>
-        ) : (
-          <select
-            name="state_id"
-            id="state_id"
-            value={hospitalData.state_id}
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          >
-            <option value="">{t("select_state")}</option>
-            {states?.map((state) => (
-              <option key={state.id} value={state.id}>
-                {state.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-      <div className="px-3 my-6 md:mb-0 w-full">
-        <label
-          className="block text-md almarai-semibold mb-4"
-          htmlFor="city_id"
-        >
-                      <span className="text-red-500">*</span> {t("cities")}
-        </label>
-        {citiesIsLoading ? (
-          <div className="text-gray-500">Loading...</div>
-        ) : (
-          <select
-            name="city_id"
-            id="city_id"
-            value={hospitalData.city_id}
-            onChange={handleChange}
-            disabled={!hospitalData.state_id}
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          >
-            <option value="">{t("select_city")}</option>
-            {cities?.length > 0 ? (
-              cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.name}
-                </option>
-              ))
-            ) : (
-              <option value="" disabled>
-                {t("no_cities_available")}
-              </option>
-            )}
-          </select>
-        )}
-      </div>
-    </div>
+              <div className="px-3 my-6 md:mb-0 w-full">
+                <label
+                  className="block text-md almarai-semibold mb-4"
+                  htmlFor="state_id"
+                >
+                  <span className="text-red-500">*</span> {t("state")}
+                </label>
+                {stateIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="state_id"
+                    id="state_id"
+                    value={hospitalData.state_id}
+                    onChange={handleChange}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                  >
+                    <option value="">{t("select_state")}</option>
+                    {states?.map((state) => (
+                      <option key={state.id} value={state.id}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <div className="px-3 my-6 md:mb-0 w-full">
+                <label
+                  className="block text-md almarai-semibold mb-4"
+                  htmlFor="city_id"
+                >
+                  <span className="text-red-500">*</span> {t("cities")}
+                </label>
+                {citiesIsLoading ? (
+                  <div className="text-gray-500">Loading...</div>
+                ) : (
+                  <select
+                    name="city_id"
+                    id="city_id"
+                    value={hospitalData.city_id}
+                    onChange={handleChange}
+                    disabled={!hospitalData.state_id}
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                  >
+                    <option value="">{t("select_city")}</option>
+                    {cities?.length > 0 ? (
+                      cities.map((city) => (
+                        <option key={city.id} value={city.id}>
+                          {city.name}
+                        </option>
+                      ))
+                    ) : (
+                      <option value="" disabled>
+                        {t("no_cities_available")}
+                      </option>
+                    )}
+                  </select>
+                )}
+              </div>
+            </div>
             <div className="text-xl font-semibold  w-full flex items-center gap-3 my-4">
               <label>{t("active")}</label>
               <input
@@ -452,21 +481,21 @@ const UpdateHospital = () => {
               <h2 className="text-2xl font-semibold">{t("homevisit")}</h2>
             </div>
             <div className="flex justify-center my-3  items-center  w-full">
-                <div className="text-xl font-semibold  w-full  flex items-center gap-3">
-                  <label> {t("homevisit")}</label>
-                  <input
-                    className="InputPrimary"
-                    type="checkbox"
-                    checked={hospitalData.open_visits === 1}
-                    onChange={(e) =>
-                      setHospitalData({
-                        ...hospitalData,
-                        open_visits: e.target.checked ? 1 : 0,
-                      })
-                    }
-                  />
-                </div>
+              <div className="text-xl font-semibold  w-full  flex items-center gap-3">
+                <label> {t("homevisit")}</label>
+                <input
+                  className="InputPrimary"
+                  type="checkbox"
+                  checked={hospitalData.open_visits === 1}
+                  onChange={(e) =>
+                    setHospitalData({
+                      ...hospitalData,
+                      open_visits: e.target.checked ? 1 : 0,
+                    })
+                  }
+                />
               </div>
+            </div>
             <div className="flex flex-col lg:flex-row gap-4 mb-6 w-full">
               <TextField
                 label="Start Visit From"
@@ -509,8 +538,6 @@ const UpdateHospital = () => {
                   className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full "
                 />
               </div>
-
- 
             </div>
             <div className="w-full bg-gray-200 h-[1px] my-4"></div>
 

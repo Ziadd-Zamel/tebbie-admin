@@ -7,36 +7,25 @@ import placeholder from "../assets/placeholder.svg";
 import { Link } from "react-router-dom";
 import { IoPersonAddSharp, IoTrashSharp } from "react-icons/io5";
 import { FaAward } from "react-icons/fa";
-import Pagination from "../components/Pagination";
 import { useState } from "react";
+import RechargeCardsPagination from "../components/RechargeCardsPagination";
 
 const token = localStorage.getItem("authToken");
 
 const Doctors = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const {
-    data: doctors = [], // Default to empty array if no data
+    data: doctors = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["doctors"],
-    queryFn: () => getDoctors({ token }),
+    queryKey: ["doctors", currentPage],
+    queryFn: () => getDoctors({ token, page: currentPage }),
   });
 
-  const doctorsPerPage = 8; // Number of doctors per page
   const { t, i18n } = useTranslation();
-  const [currentPage, setCurrentPage] = useState(1);
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
-
-  // Pagination calculations
-  const indexOfLastDoctor = currentPage * doctorsPerPage;
-  const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
-  const currentDoctors = doctors.slice(indexOfFirstDoctor, indexOfLastDoctor);
-  const totalPages =
-    doctors.length > 0 ? Math.ceil(doctors.length / doctorsPerPage) : 0;
-
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
 
   if (isLoading) {
     return <Loader />;
@@ -68,17 +57,17 @@ const Doctors = () => {
           </Link>
         </div>
       </div>
-      <div className="flex items-center flex-wrap sm:justify-start justify-center gap-6 w-full">
-        {currentDoctors.length > 0 ? (
-          currentDoctors.map((doctor) => (
+      <div className="flex items-center flex-wrap sm:justify-start justify-center  md:gap-4 gap-3 w-full">
+        {doctors?.data.length > 0 ? (
+          doctors?.data.map((doctor) => (
             <div
-              key={doctor.id}
-              className="bg-white h-60 2xl:w-[320px] w-[300px] shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
+              key={doctor?.id}
+              className="bg-white h-60  md:w-[300px] w-full shadow-md rounded-xl md:p-4 p-3 lg:text-lg md:text-md text-sm"
             >
               <div className="flex">
                 <div className="w-1/3">
                   <img
-                    src={doctor.image || placeholder}
+                    src={doctor?.image || placeholder}
                     alt={doctor.name}
                     className="w-full h-24 object-cover rounded-md"
                     onError={(e) => (e.target.src = placeholder)}
@@ -92,9 +81,9 @@ const Doctors = () => {
                     {doctor.job_title}
                   </p>
                   <p className="text-sm text-gray-600 ">
-                    {doctor.bio.length > 40
+                    {doctor.bio && doctor.bio.length > 40
                       ? `${doctor.bio.substring(0, 40)}...`
-                      : doctor.bio}
+                      : doctor.bio || ""}
                   </p>
                 </div>
               </div>
@@ -135,14 +124,14 @@ const Doctors = () => {
           </p>
         )}
       </div>
-      <div className="flex justify-between items-end mt-4 p-4">
-        <Pagination
+      <div className="flex justify-between items-end gap-4 flex-wrap p-4">
+        <RechargeCardsPagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+          totalPages={doctors?.last_page || 1}
+          onPageChange={setCurrentPage}
         />
         <p className="md:text-2xl text-xl text-gray-500 text-end">
-          {t("Total")}: {doctors.length}
+          {t("total")} : {doctors?.total || 0}
         </p>
       </div>
     </section>

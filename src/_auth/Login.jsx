@@ -86,7 +86,6 @@ const Login = () => {
         }
         navigate("/chat");
       } catch (error) {
-        console.log(error);
         if (error.message === "Failed to fetch") {
           setStatus("فشل الاتصال بالخادم. تحقق من الشبكة أو حاول لاحقًا.");
         } else if (error.status === 500) {
@@ -123,7 +122,6 @@ const Login = () => {
         }
         navigate(from, { replace: true });
       } catch (error) {
-        console.log(error);
         if (error.message === "Failed to fetch") {
           setStatus("فشل الاتصال بالخادم. تحقق من الشبكة أو حاول لاحقًا.");
         } else if (error.status === 500) {

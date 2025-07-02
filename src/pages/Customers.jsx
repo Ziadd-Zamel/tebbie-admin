@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import DropdownMenu from "../components/productsComponents/DropdownMenu";
 import { useTranslation } from "react-i18next";
 
@@ -215,7 +215,6 @@ const Customers = () => {
 
   const handleDelete = (productId) => {
     setData(data.filter((item) => item.id !== productId));
-    console.log(`Deleting product with id: ${productId}`);
   };
 
   const handleEdit = (productId) => {

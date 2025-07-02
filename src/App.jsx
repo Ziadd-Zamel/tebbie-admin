@@ -59,6 +59,7 @@ import useFirebaseNotifications from "./hooks/useFirebaseNotifications";
 import SendNotification from "./pages/SendNotification";
 import AdminChat from "./pages/AdminChat";
 import HospitalReportDetails from "./pages/HospitalReportDetails";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 const queryClient = new QueryClient();
 
@@ -183,6 +184,7 @@ const router = createBrowserRouter([
             ],
           },
           { path: "request-Form", element: <RequestForm /> },
+          { path: "terms", element: <TermsAndConditions /> },
           {
             path: "refunds",
             children: [

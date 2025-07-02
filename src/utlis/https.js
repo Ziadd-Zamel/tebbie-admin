@@ -26,13 +26,19 @@ export const updateUserData = async ({
   phone,
   address,
   media_url,
+  password
 }) => {
   const formdata = new FormData();
   formdata.append("name", name);
   formdata.append("email", email);
   formdata.append("phone", phone);
   formdata.append("address", address);
-  formdata.append("image", media_url);
+  if(password){
+    formdata.append("password", password);
+  }
+  if (media_url) {
+    formdata.append("image", media_url);
+  }
 
   const response = await fetch(`${API_URL}/dashboard/v1/admin/update`, {
     method: "POST",
@@ -51,11 +57,10 @@ export const updateUserData = async ({
 
   return result.data;
 };
-
 //doctors
-export const getDoctors = async ({ token }) => {
+export const getDoctors = async ({ token, page = 1 }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/doctors`, {
+    const response = await fetch(`${API_URL}/dashboard/v1/doctors?page=${page}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -71,6 +76,7 @@ export const getDoctors = async ({ token }) => {
     throw error;
   }
 };
+
 export const getSpecificDoctor = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/doctors/${id}`, {
@@ -316,6 +322,8 @@ export const newHospital = async ({
   media = [],
   doctor_ids = [],
   specialization_id = [],
+  start_visit_from,
+  end_visit_at
 }) => {
   const formdata = new FormData();
 
@@ -324,6 +332,14 @@ export const newHospital = async ({
   if (bio) {
     formdata.append("bio", bio);
   }
+  if(end_visit_at){
+    formdata.append("start_visit_from", start_visit_from);
+  }
+  if(start_visit_from){
+    formdata.append("end_visit_at", end_visit_at);
+  }
+  
+  
   formdata.append("description", description);
   formdata.append("password", password);
   formdata.append("email", email);
@@ -429,7 +445,7 @@ export const updateHospital = async ({
   formdata.append("visit_time", visit_time);
   formdata.append("open_visits", open_visits);
   formdata.append("active", active);
-  if(password){
+  if (password) {
     formdata.append("password", password);
   }
   if (email && email !== previousEmail) {
@@ -1605,9 +1621,7 @@ export const UpdateCoupon = async ({
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        result.message || "حدث خطأ أثناء تحديث الكوبون"
-      );
+      throw new Error(result.message || "حدث خطأ أثناء تحديث الكوبون");
     }
 
     return result.data;
@@ -2485,13 +2499,16 @@ export const postRefund = async ({ appointments, token }) => {
 };
 export const cancelBooking = async ({ bookingId, token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/delete-booking/${bookingId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/delete-booking/${bookingId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     const result = await response.json();
 
@@ -3189,11 +3206,7 @@ export const sendNotification = async ({ user_ids, title, body, token }) => {
 };
 
 //admin chat
-export const fetchAdminUsersList = async ({
-  token,
-  search,
-  page,
-}) => {
+export const fetchAdminUsersList = async ({ token, search, page }) => {
   try {
     let url = `${API_URL}/dashboard/v1/admin/all-chats`;
     const params = [];
@@ -3203,8 +3216,7 @@ export const fetchAdminUsersList = async ({
     if (page) {
       params.push(`page=${page}`);
     }
-  
-   
+
     if (params.length > 0) {
       url += `?${params.join("&")}`;
     }
@@ -3249,9 +3261,7 @@ export const getAdminMessages = async ({ token, id }) => {
   }
 };
 
-//get hospital report 
-
-
+//get hospital report
 export const getHospitalReport = async ({
   token,
   hospital_id,
@@ -3294,5 +3304,57 @@ export const getHospitalReport = async ({
     return data.data || [];
   } catch (error) {
     throw new Error(`Error in getReviewsReport: ${error.message}`);
+  }
+};
+
+// terms and conditions
+export const getTermsAndConditions = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/terms`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const updatetermsAndConditions = async ({ token, term_condition }) => {
+  const formdata = new FormData();
+  formdata.append("term_condition", term_condition);
+
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/terms`, {
+      method: "POST",
+      body: formdata,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      if (Array.isArray(result.errors)) {
+        console.error("Validation Errors:", result.errors);
+        throw new Error(result.errors.join(", "));
+      } else {
+        throw new Error(
+          result.message || "An error occurred while adding the doctor"
+        );
+      }
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
   }
 };
