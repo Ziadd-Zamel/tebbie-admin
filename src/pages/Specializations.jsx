@@ -136,7 +136,7 @@ const Specializations = () => {
                 <td className="p-4">
                   <LazyLoad height={150} offset={100}>
                     <img
-                      src={specialization.media_url}
+                      src={specialization.media_url ||placeholder}
                       alt={specialization.name}
                       className="w-14 h-14 object-fit rounded-lg mx-auto"
                       loading="lazy"

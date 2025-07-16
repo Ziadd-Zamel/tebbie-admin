@@ -58,9 +58,14 @@ export const updateUserData = async ({
   return result.data;
 };
 //doctors
-export const getDoctors = async ({ token, page = 1 }) => {
+export const getDoctors = async ({ token, page = 1, search = "", isSpecial = "", isVisitor = "" }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/doctors?page=${page}`, {
+    const queryParams = new URLSearchParams({ page });
+    if (search) queryParams.append("name", search);
+    if (isSpecial) queryParams.append("is_special", isSpecial);
+    if (isVisitor) queryParams.append("is_visitor", isVisitor);
+
+    const response = await fetch(`${API_URL}/dashboard/v1/doctors?${queryParams.toString()}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -72,6 +77,7 @@ export const getDoctors = async ({ token, page = 1 }) => {
       const data = await response.json();
       return data.data;
     }
+    throw new Error("Failed to fetch doctors");
   } catch (error) {
     throw error;
   }

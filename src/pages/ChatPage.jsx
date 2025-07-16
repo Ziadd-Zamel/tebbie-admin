@@ -93,7 +93,6 @@ const ChatPage = () => {
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
     socket.onopen = () => {};
-
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
