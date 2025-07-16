@@ -90,6 +90,7 @@ const ChatPage = () => {
     const userId = selectedChat?.user?.id;
 
     const socketUrl = `wss://tabi-chat.evyx.lol/comm/?wss_token=${wss_token}&user_type=customer_service&chat_id=${selectedUser}`;
+    console.log(socketUrl);
     const socket = new WebSocket(socketUrl);
     socketRef.current = socket;
     socket.onopen = () => {};
@@ -97,6 +98,13 @@ const ChatPage = () => {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        if (parseInt(data.chat_id, 10) !== selectedUser) {
+          console.log(
+            `Received message for another chat (ID: ${data.chat_id}), but current chat is (ID: ${selectedUser}). Ignoring.`
+          );
+          queryClient.invalidateQueries(["users-list"]);
+          return;
+        }
         const isFromUser = data.sender.id === userId;
         const newMessage = {
           id: data.id,
@@ -229,8 +237,8 @@ const ChatPage = () => {
                 color: "#000",
                 borderRadius: "1rem",
                 margin: "0 8px",
-                fontWeight: 700
-        }}
+                fontWeight: 700,
+              }}
             />
             <Tab
               label="المحادثات المغلقة"
@@ -299,7 +307,10 @@ const ChatPage = () => {
                     <p>حدث خطأ أثناء تحميل الرسائل. يرجى المحاولة لاحقًا.</p>
                     <button
                       onClick={() =>
-                        queryClient.invalidateQueries(["messages", selectedUser])
+                        queryClient.invalidateQueries([
+                          "messages",
+                          selectedUser,
+                        ])
                       }
                       className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
                     >
