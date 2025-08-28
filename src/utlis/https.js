@@ -26,14 +26,14 @@ export const updateUserData = async ({
   phone,
   address,
   media_url,
-  password
+  password,
 }) => {
   const formdata = new FormData();
   formdata.append("name", name);
   formdata.append("email", email);
   formdata.append("phone", phone);
   formdata.append("address", address);
-  if(password){
+  if (password) {
     formdata.append("password", password);
   }
   if (media_url) {
@@ -58,20 +58,29 @@ export const updateUserData = async ({
   return result.data;
 };
 //doctors
-export const getDoctors = async ({ token, page = 1, search = "", isSpecial = "", isVisitor = "" }) => {
+export const getDoctors = async ({
+  token,
+  page = 1,
+  search = "",
+  isSpecial = "",
+  isVisitor = "",
+}) => {
   try {
     const queryParams = new URLSearchParams({ page });
     if (search) queryParams.append("name", search);
     if (isSpecial) queryParams.append("is_special", isSpecial);
     if (isVisitor) queryParams.append("is_visitor", isVisitor);
 
-    const response = await fetch(`${API_URL}/dashboard/v1/doctors?${queryParams.toString()}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/doctors?${queryParams.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -329,7 +338,7 @@ export const newHospital = async ({
   doctor_ids = [],
   specialization_id = [],
   start_visit_from,
-  end_visit_at
+  end_visit_at,
 }) => {
   const formdata = new FormData();
 
@@ -338,14 +347,13 @@ export const newHospital = async ({
   if (bio) {
     formdata.append("bio", bio);
   }
-  if(end_visit_at){
+  if (end_visit_at) {
     formdata.append("start_visit_from", start_visit_from);
   }
-  if(start_visit_from){
+  if (start_visit_from) {
     formdata.append("end_visit_at", end_visit_at);
   }
-  
-  
+
   formdata.append("description", description);
   formdata.append("password", password);
   formdata.append("email", email);
@@ -2278,6 +2286,53 @@ export const getServices = async ({ token }) => {
     throw error;
   }
 };
+export const getHomeVisitReportById = async ({ token, serviceId }) => {
+  try {
+    const url = `${API_URL}/dashboard/v1/get-home-visit-report/${serviceId}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit report: ${response.status} - ${errorText}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Error in getHomeVisitReport: ${error.message}`);
+  }
+};
+export const getUserReportById = async ({ token, userid }) => {
+  try {
+    const url = `${API_URL}/dashboard/v1/get-user-report-data/${userid}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit report: ${response.status} - ${errorText}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Error in getHomeVisitReport: ${error.message}`);
+  }
+};
+
 export const updateService = async ({
   token,
   name,
@@ -2921,7 +2976,36 @@ export const getHomeVisitReport = async ({
     throw new Error(`Error in getReviewsReport: ${error.message}`);
   }
 };
+export const getPaymentReport = async ({ token }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/admin/payments/without-booking`;
+    const params = [];
 
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch reviews report: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getReviewsReport: ${error.message}`);
+  }
+};
 //customer service
 export const getAllCustomerService = async ({ token }) => {
   try {

@@ -11,6 +11,7 @@ import Loader from "./Loader";
 import { useParams } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const HospitalReportDetails = () => {
   const token = localStorage.getItem("authToken");
@@ -19,8 +20,8 @@ const HospitalReportDetails = () => {
   const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [fromDate, setFromDate] = useState(""); // State for fromDate
-  const [toDate, setToDate] = useState(""); // State for toDate
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const statesPerPage = 10;
 
   const {
@@ -28,7 +29,7 @@ const HospitalReportDetails = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["hospital-Report", token, hosId, fromDate, toDate], // Include fromDate and toDate in queryKey
+    queryKey: ["hospital-Report", token, hosId, fromDate, toDate],
     queryFn: () =>
       getHospitalReport({
         token,
@@ -73,6 +74,29 @@ const HospitalReportDetails = () => {
     CancelBooking(id);
   };
 
+  const handleCancelBookingConfirm = (bookingId) => {
+    Swal.fire({
+      title: t("are_you_sure"),
+      text: t("cannotRestoreBookingAfterCancel"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3CAB8B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: t("cancel_booking"),
+      cancelButtonText: t("close"),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleCancelBooking(bookingId);
+        Swal.fire({
+          title: t("canceled"),
+          text: t("bookingCanceledSuccessfully"),
+          icon: "success",
+          confirmButtonColor: "#3CAB8B",
+        });
+      }
+    });
+  };
+
   // Excel export function
   const exportToExcel = () => {
     const worksheet = utils.json_to_sheet(
@@ -108,9 +132,15 @@ const HospitalReportDetails = () => {
       <div className="bg-white min-h-screen p-4 rounded-2xl w-full overflow-x-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center my-4 gap-4">
           <h1 className="font-bold md:text-xl text-lg lg:text-2xl flex items-center gap-2 text-gray-800">
-            <CiHospital1 size={35} className="text-[#3CAB8B]" aria-hidden="true" />
+            <CiHospital1
+              size={35}
+              className="text-[#3CAB8B]"
+              aria-hidden="true"
+            />
             {t("hospitalReport")}
-            {hospitalData.hospital_name ? `- ${hospitalData.hospital_name}` : ""}
+            {hospitalData.hospital_name
+              ? `- ${hospitalData.hospital_name}`
+              : ""}
           </h1>
           <div className="flex flex-col justify-end items-end md:flex-row gap-4">
             <div className="w-full">
@@ -135,15 +165,16 @@ const HospitalReportDetails = () => {
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            {currentStates.length > 0 && (<button
-              onClick={exportToExcel}
-              className="px-6 h-12 shrink-0 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
-              aria-label={t("Excel-Export")}
-            >
-              {t("Excel-Export")}
-              <FaFileExcel aria-hidden="true" />
-            </button>)}
-            
+            {currentStates.length > 0 && (
+              <button
+                onClick={exportToExcel}
+                className="px-6 h-12 shrink-0 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
+                aria-label={t("Excel-Export")}
+              >
+                {t("Excel-Export")}
+                <FaFileExcel aria-hidden="true" />
+              </button>
+            )}
           </div>
         </div>
         <div className="overflow-x-auto lg:w-full md:w-[100vw] w-[90vw] rounded-lg">
@@ -235,7 +266,9 @@ const HospitalReportDetails = () => {
                     </td>
                     <td className="whitespace-nowrap py-3 px-3">
                       <button
-                        onClick={() => handleCancelBooking(data.booking_id)}
+                        onClick={() =>
+                          handleCancelBookingConfirm(data.booking_id)
+                        }
                         className="px-4 py-2 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm"
                       >
                         {t("cancel_booking")}

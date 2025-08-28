@@ -46,7 +46,9 @@ const Navbar = () => {
       return pageTranslations[language]["/settings/:settingId"];
     }
     if (pathname.startsWith("/customer-service/add-customer-service")) {
-      return pageTranslations[language]["/customer-service/add-customer-service"];
+      return pageTranslations[language][
+        "/customer-service/add-customer-service"
+      ];
     }
     if (pathname.startsWith("/customer-service/")) {
       return pageTranslations[language]["/customer-service/:customerId"];
@@ -57,14 +59,16 @@ const Navbar = () => {
     if (pathname.startsWith("/specializations/")) {
       return pageTranslations[language]["/specializations/:spId"];
     }
-     if (pathname.startsWith("/hospital-report/")) {
+    if (pathname.startsWith("/hospital-report/")) {
       return pageTranslations[language]["/hospital-report/:hosId"];
     }
-      if (pathname.startsWith("/terms/")) {
+    if (pathname.startsWith("/terms/")) {
       return pageTranslations[language]["/terms/"];
     }
-    
-    
+    if (pathname.startsWith("/home-visit-report/")) {
+      return pageTranslations[language]["/home-visit-report/:serviceId"];
+    }
+
     return (
       pageTranslations[language][pathname] || pageTranslations[language].default
     );

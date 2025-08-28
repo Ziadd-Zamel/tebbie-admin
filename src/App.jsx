@@ -60,6 +60,8 @@ import SendNotification from "./pages/SendNotification";
 import AdminChat from "./pages/AdminChat";
 import HospitalReportDetails from "./pages/HospitalReportDetails";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import HomeVisitReportPage from "./pages/HomeVisitReportPage";
+import UserseportPage from "./pages/UserReportPage";
 
 const queryClient = new QueryClient();
 
@@ -73,7 +75,18 @@ const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: "hospital-report/:hosId", element: <HospitalReportDetails /> },
+          {
+            path: "hospital-report/:hosId",
+            element: <HospitalReportDetails />,
+          },
+          {
+            path: "/home-visit-report/:serviceId",
+            element: <HomeVisitReportPage />,
+          },
+          {
+            path: "/users-report/:userid",
+            element: <UserseportPage />,
+          },
           {
             path: "doctors",
             children: [
@@ -213,7 +226,7 @@ const router = createBrowserRouter([
         path: "",
         element: <ChatLayout />,
         children: [
-          {  index: true, element: <ChatPage /> },
+          { index: true, element: <ChatPage /> },
           {
             path: "*",
             element: <NotFound />,

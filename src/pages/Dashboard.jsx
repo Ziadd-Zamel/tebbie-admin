@@ -7,6 +7,8 @@ import DoctorReport from "../components/DashboardComponents/DoctorReport";
 import HospitalsReport from "../components/DashboardComponents/HospitalsReport";
 import UsersReport from "../components/DashboardComponents/UsersReport";
 import HomeVisitReporteport from "../components/DashboardComponents/HomeVisitReporteport";
+import PaymentReporte from "../components/DashboardComponents/paymentReport";
+
 import { useQuery } from "@tanstack/react-query";
 import {
   getAllHospitals,
@@ -75,7 +77,6 @@ const Dashboard = () => {
           >
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
               <CancelledReport
-              
                 doctorsData={DoctorsData}
                 usersData={usersData}
                 hospitalsData={hospitalsData}
@@ -86,7 +87,6 @@ const Dashboard = () => {
                 hospitalsData={hospitalsData}
                 doctorsData={DoctorsData}
                 usersData={usersData}
-              
               />
             </div>
           </div>
@@ -108,6 +108,11 @@ const Dashboard = () => {
               />
             </div>
           </div>
+          <PaymentReporte
+            hospitalsData={hospitalsData}
+            doctorsData={DoctorsData}
+            usersData={usersData}
+          />
         </div>
       </section>
     </>

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
 import { FaUsers } from "react-icons/fa";
-import DocotrReportTable from "./DocotrReportTable";
+import UserReportTable from "./usersReportTable";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -38,7 +38,6 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     toDate: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const statesPerPage = 10;
 
   const [rawSearchTerm, setRawSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(rawSearchTerm, 300);
@@ -48,7 +47,7 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
   }, [debouncedSearchTerm]);
 
   const {
-    data: reviewData = [],
+    data: reviewData,
     isLoading,
     error,
   } = useQuery({
@@ -60,6 +59,7 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
       filters.selectedHospital,
       filters.fromDate,
       filters.toDate,
+      currentPage,
     ],
     queryFn: () =>
       getUsersReport({
@@ -69,11 +69,10 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
         hospital_id: filters.selectedHospital,
         from_date: filters.fromDate,
         to_date: filters.toDate,
+        page: currentPage,
       }),
     enabled: !!token,
   });
-
-  // Fetch auxiliary data (users, hospitals, doctors)
 
   const userOptions = useMemo(
     () => usersData.map((user) => ({ value: user.id, label: user.name })),
@@ -95,11 +94,10 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     [hospitalsData]
   );
 
-  // Memoize filtered data
   const filteredData = useMemo(() => {
-    if (!Array.isArray(reviewData)) return [];
+    if (!reviewData?.data || !Array.isArray(reviewData.data)) return [];
 
-    return reviewData.filter((review) => {
+    return reviewData.data.filter((review) => {
       const matchesSearch =
         !filters.searchTerm ||
         review.user_name
@@ -111,15 +109,8 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     });
   }, [reviewData, filters.searchTerm, filters.selectedUser]);
 
-  const totalPages = Math.ceil(filteredData.length / statesPerPage) || 1;
-  const currentStates = useMemo(
-    () =>
-      filteredData.slice(
-        (currentPage - 1) * statesPerPage,
-        currentPage * statesPerPage
-      ),
-    [filteredData, currentPage]
-  );
+  const totalPages = reviewData?.last_page || 1;
+  const totalRecords = reviewData?.total || 0;
 
   const handlePageChange = useCallback((newPage) => {
     setCurrentPage(newPage);
@@ -226,23 +217,24 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
           </button>
         </div>
       </div>
-      <DocotrReportTable
+      <UserReportTable
         translation="users"
-        currentStates={currentStates}
+        currentStates={filteredData}
         isLoading={isLoading}
       />
-      <div className="flex justify-between items-end mt-4">
-       {filteredData.length> 10 && (  <div className="flex justify-between items-end mt-4">
+      <div className="flex justify-between items-end mt-4 w-full">
+        {totalPages > 1 && (
+          <div className="flex justify-between items-end mt-4 w-full">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
             <p className="text-2xl text-gray-500 text-end">
-              {t("Total")}: {filteredData.length}
+              {t("Total")}: {totalRecords}
             </p>
-          </div>)}
-    
+          </div>
+        )}
       </div>
     </div>
   );

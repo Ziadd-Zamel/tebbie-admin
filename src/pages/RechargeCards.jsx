@@ -29,10 +29,11 @@ const useDebounce = (value, delay) => {
 const RechargeCards = () => {
   const token = localStorage.getItem("authToken");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isValid, setIsValid] = useState(undefined); 
+  const [isValid, setIsValid] = useState(undefined);
   const [expireDate, setExpireDate] = useState("");
+  const [price, setPrice] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const debouncedSearchTerm = useDebounce(searchTerm, 500); 
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const itemsPerPage = 100;
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
@@ -49,6 +50,7 @@ const RechargeCards = () => {
       debouncedSearchTerm,
       isValid,
       expireDate,
+      price,
     ],
     queryFn: () =>
       getRechargeCards({
@@ -57,6 +59,7 @@ const RechargeCards = () => {
         card_number: debouncedSearchTerm,
         is_valid: isValid,
         expire_date: expireDate,
+        price: price,
       }),
   });
 
@@ -65,25 +68,32 @@ const RechargeCards = () => {
       ...(debouncedSearchTerm && { card_number: debouncedSearchTerm }),
       ...(isValid !== undefined && { is_valid: isValid }),
       ...(expireDate && { expire_date: expireDate }),
+      ...(price && { price: price }),
     });
+    console.log(params.json());
     const url = `https://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
     window.open(url, "_blank");
   };
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handleIsValidChange = (e) => {
     const value = e.target.value;
-    setIsValid(value === "" ? undefined : Number(value)); 
-    setCurrentPage(1); 
+    setIsValid(value === "" ? undefined : Number(value));
+    setCurrentPage(1);
   };
 
   const handleExpireDateChange = (e) => {
     setExpireDate(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
+  };
+
+  const handlePriceChange = (e) => {
+    setPrice(e.target.value);
+    setCurrentPage(1);
   };
 
   if (error) {
@@ -143,6 +153,16 @@ const RechargeCards = () => {
             className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
           />
         </div>
+        <div className="flex-1">
+          <input
+            type="number"
+            id="price"
+            value={price}
+            onChange={handlePriceChange}
+            placeholder={t("price")}
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
       </div>
       <div className="overflow-x-auto md:w-full w-[90vw] h-[70vh] overflow-auto">
         <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
@@ -151,21 +171,25 @@ const RechargeCards = () => {
               <th className="py-3 px-6 text-start">#</th>
               <th className="py-3 px-6 text-left">{t("cardNumber")}</th>
               <th className="py-3 px-6 text-left">{t("validatity")}</th>
-              <th className="py-3 px-6 text-left  whitespace-nowrap">{t("expireDate")}</th>
-              <th className="py-3 px-6 text-left whitespace-nowrap">{t("price")}</th>
+              <th className="py-3 px-6 text-left  whitespace-nowrap">
+                {t("expireDate")}
+              </th>
+              <th className="py-3 px-6 text-left whitespace-nowrap">
+                {t("price")}
+              </th>
             </tr>
           </thead>
           <tbody className="text-gray-600 md:text-lg text-md font-light">
             {isLoading ? (
               <tr>
-                <td colSpan="4" className="text-center py-4">
+                <td colSpan="5" className="text-center py-4">
                   <Loader />
                 </td>
               </tr>
             ) : cardData?.data?.length === 0 ? (
               <tr>
                 <td
-                  colSpan="4"
+                  colSpan="5"
                   className="text-center py-4 text-gray-500 text-lg"
                 >
                   {t("noCardsFound")}
@@ -177,7 +201,7 @@ const RechargeCards = () => {
                   key={card.id}
                   className="border-b border-gray-200 hover:bg-gray-100"
                 >
-                  <td className="py-3 sostenuto: px-6 text-left flex items-center gap-3">
+                  <td className="py-3 px-6 text-left flex items-center gap-3">
                     {index + 1 + startIndex}
                     <IoCardOutline size={30} className="text-gray-500" />
                   </td>

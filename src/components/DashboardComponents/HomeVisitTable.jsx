@@ -3,15 +3,28 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../pages/Loader";
 import { useNavigate } from "react-router-dom";
 
-const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
+const HomeVisitTable = ({ currentStates, isLoading, translation }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const handleRowClick = (data) => {
+    if (translation === "hospital") {
+      navigate(`/hospital-report/${data.hospital_id}`);
+    } else {
+      navigate(
+        `/home-visit-report/${
+          data.service_id || data.id || data.hospital_id || data.doctor_id
+        }`
+      );
+    }
+    window.scrollTo(0, 0);
+  };
 
   return (
     <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
       <thead>
         <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-          <th className="py-3 px-6 text-center">{t(`${translation}`)}</th>
+          <th className="py-3 px-6 text-center">{t(`services`)}</th>
           <th className="py-3 px-6 text-center">{t("total_bookings")}</th>
         </tr>
       </thead>
@@ -26,16 +39,8 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
           currentStates?.map((data, index) => (
             <tr
               key={index}
-              onClick={
-                translation === "hospital"
-                  ? () => navigate(`/hospital-report/${data.hospital_id}`)
-                  : undefined
-              }
-              className={`border-b border-gray-200 ${
-                translation === "hospital"
-                  ? "hover:bg-gray-100 cursor-pointer"
-                  : ""
-              }`}
+              onClick={() => handleRowClick(data)}
+              className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
             >
               <td className="py-2 px-6 text-center">
                 {data?.doctor_name ||
@@ -60,4 +65,4 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
   );
 };
 
-export default DocotrReportTable;
+export default HomeVisitTable;

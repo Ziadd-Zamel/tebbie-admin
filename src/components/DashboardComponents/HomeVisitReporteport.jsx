@@ -5,9 +5,8 @@ import ErrorMessage from "../../pages/ErrorMessage";
 import { getHomeVisitReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
-import OneSelectDropdown from "../OneSelectDropdown";
 import { FaHome } from "react-icons/fa";
-import DocotrReportTable from "./DocotrReportTable";
+import HomeVisitTable from "./HomeVisitTable";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -24,8 +23,7 @@ const useDebounce = (value, delay) => {
 
   return debouncedValue;
 };
-
-const HomeVisitReporteport = ({ hospitalsData, usersData, doctorsData }) => {
+const HomeVisitReporteport = () => {
   const token = localStorage.getItem("authToken");
   const { t } = useTranslation();
 
@@ -72,28 +70,28 @@ const HomeVisitReporteport = ({ hospitalsData, usersData, doctorsData }) => {
       }),
     enabled: !!token,
   });
-
+  console.log(reviewData);
   // Fetch auxiliary data (users, hospitals, doctors)
 
-  const userOptions = useMemo(
-    () => usersData.map((user) => ({ value: user.id, label: user.name })),
-    [usersData]
-  );
+  // const userOptions = useMemo(
+  //   () => usersData.map((user) => ({ value: user.id, label: user.name })),
+  //   [usersData]
+  // );
 
-  const doctorOptions = useMemo(
-    () =>
-      doctorsData.map((doctor) => ({ value: doctor.id, label: doctor.name })),
-    [doctorsData]
-  );
+  // const doctorOptions = useMemo(
+  //   () =>
+  //     doctorsData.map((doctor) => ({ value: doctor.id, label: doctor.name })),
+  //   [doctorsData]
+  // );
 
-  const hospitalOptions = useMemo(
-    () =>
-      hospitalsData.map((hospital) => ({
-        value: hospital.id,
-        label: hospital.name,
-      })),
-    [hospitalsData]
-  );
+  // const hospitalOptions = useMemo(
+  //   () =>
+  //     hospitalsData.map((hospital) => ({
+  //       value: hospital.id,
+  //       label: hospital.name,
+  //     })),
+  //   [hospitalsData]
+  // );
 
   // Memoize filtered data
   const filteredData = useMemo(() => {
@@ -158,7 +156,7 @@ const HomeVisitReporteport = ({ hospitalsData, usersData, doctorsData }) => {
         onChange={(e) => setRawSearchTerm(e.target.value)}
         className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
-      <div className="flex xl:flex-row flex-col gap-4">
+      {/* <div className="flex xl:flex-row flex-col gap-4">
         <div className="xl:w-1/3 w-full">
           <OneSelectDropdown
             options={userOptions}
@@ -193,7 +191,7 @@ const HomeVisitReporteport = ({ hospitalsData, usersData, doctorsData }) => {
             fallbackMessage={t("noUsersFound")}
           />
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-1/3">
           <label className="block mb-1 text-sm font-medium">
@@ -226,7 +224,7 @@ const HomeVisitReporteport = ({ hospitalsData, usersData, doctorsData }) => {
           </button>
         </div>
       </div>
-      <DocotrReportTable
+      <HomeVisitTable
         translation="users"
         currentStates={currentStates}
         isLoading={isLoading}
