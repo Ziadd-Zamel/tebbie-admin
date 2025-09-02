@@ -94,20 +94,21 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     [hospitalsData]
   );
 
-  const filteredData = useMemo(() => {
-    if (!reviewData?.data || !Array.isArray(reviewData.data)) return [];
+  const filteredData =
+    !reviewData?.data || !Array.isArray(reviewData.data)
+      ? []
+      : reviewData.data.filter((review) => {
+          const matchesSearch =
+            !filters.searchTerm ||
+            review.user_name
+              ?.toLowerCase()
+              .includes(filters.searchTerm.toLowerCase());
 
-    return reviewData.data.filter((review) => {
-      const matchesSearch =
-        !filters.searchTerm ||
-        review.user_name
-          ?.toLowerCase()
-          .includes(filters.searchTerm.toLowerCase());
-      const matchesUser =
-        !filters.selectedUser || review.user_id === filters.selectedUser;
-      return matchesSearch && matchesUser;
-    });
-  }, [reviewData, filters.searchTerm, filters.selectedUser]);
+          const matchesUser =
+            !filters.selectedUser || review.user_id === filters.selectedUser;
+
+          return matchesSearch && matchesUser;
+        });
 
   const totalPages = reviewData?.last_page || 1;
   const totalRecords = reviewData?.total || 0;

@@ -62,6 +62,7 @@ import HospitalReportDetails from "./pages/HospitalReportDetails";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import HomeVisitReportPage from "./pages/HomeVisitReportPage";
 import UserseportPage from "./pages/UserReportPage";
+import WhatsappPage from "./pages/WhatsappPage";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
           {
             path: "hospital-report/:hosId",
             element: <HospitalReportDetails />,
+          },
+          {
+            path: "/whatsapp",
+            element: <WhatsappPage />,
           },
           {
             path: "/home-visit-report/:serviceId",

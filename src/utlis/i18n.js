@@ -353,6 +353,7 @@ const resources = {
       bookingCanceledSuccessfully:
         "The booking has been canceled successfully.",
     },
+    whatsapp: "Whatsapp",
   },
   ar: {
     translation: {
@@ -698,6 +699,7 @@ const resources = {
 
       time: "الوقت",
       human_type: "الجنس",
+      whatsapp: "واتساب",
 
       notes: "ملاحظات",
       male: "ذكر",

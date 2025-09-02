@@ -58,7 +58,7 @@ export const pageTranslations = {
     "/hospital-report/:hosId": "hospitals report",
     "/terms": "Terms & Conditions",
     "/home-visit-report/:serviceId": "Home visit report",
-
+    "/whatsapp": "whatsapp",
     default: "Unknown Page",
   },
   ar: {
@@ -120,6 +120,7 @@ export const pageTranslations = {
     "/hospital-report/:hosId": "تقرير المستشفيات",
     "/terms": "الشروط والأحكام",
     "/home-visit-report/:serviceId": "تقرير الزيارات المنزلية",
+    "/whatsapp": "واتساب",
 
     default: "الصفحة غير معروفة",
   },

@@ -70,7 +70,6 @@ const RechargeCards = () => {
       ...(expireDate && { expire_date: expireDate }),
       ...(price && { price: price }),
     });
-    console.log(params.json());
     const url = `https://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
     window.open(url, "_blank");
   };

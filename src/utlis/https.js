@@ -2769,6 +2769,7 @@ export const getDocotrReport = async ({
   hospital_id,
   from_date,
   to_date,
+  page,
 }) => {
   try {
     let url = `${API_URL}/dashboard/v1/get-doctor-report`;
@@ -2785,6 +2786,9 @@ export const getDocotrReport = async ({
     }
     if (to_date) {
       params.push(`to_date=${to_date}`);
+    }
+    if (page) {
+      params.push(`page=${page}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -2879,6 +2883,7 @@ export const getUsersReport = async ({
   hospital_id,
   from_date,
   to_date,
+  page,
 }) => {
   try {
     let url = `${API_URL}/dashboard/v1/get-user-report`;
@@ -2898,6 +2903,12 @@ export const getUsersReport = async ({
     }
     if (to_date) {
       params.push(`to_date=${to_date}`);
+    }
+    if (to_date) {
+      params.push(`to_date=${to_date}`);
+    }
+    if (page) {
+      params.push(`page=${page}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -3357,6 +3368,7 @@ export const getHospitalReport = async ({
   hospital_id,
   from_date,
   to_date,
+  status,
 }) => {
   try {
     let url = `${API_URL}/dashboard/v1/get-hospital-report-by-id`;
@@ -3370,6 +3382,12 @@ export const getHospitalReport = async ({
     }
     if (to_date) {
       params.push(`to_date=${to_date}`);
+    }
+    if (status === "cancelled") {
+      params.push(`deleted=${true}`);
+    }
+    if (status === "active") {
+      params.push(`deleted=${false}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -3445,6 +3463,52 @@ export const updatetermsAndConditions = async ({ token, term_condition }) => {
     return result.data;
   } catch (error) {
     console.error("Error:", error);
+    throw error;
+  }
+};
+export const updateWhatsapp = async ({ whatsapp, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/settings/whatsapp`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ whatsapp }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating WhatsApp:", error);
+    throw error;
+  }
+};
+export const getwhatsapp = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/settings/whatsapp`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
     throw error;
   }
 };

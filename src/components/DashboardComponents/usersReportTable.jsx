@@ -14,7 +14,6 @@ const UserReportTable = ({ currentStates, isLoading, translation }) => {
       navigate(`/users-report/${data.user_id}`);
     }
   };
-  console.log(currentStates);
   const isClickableRow =
     translation === "hospital" ||
     translation === "users" ||

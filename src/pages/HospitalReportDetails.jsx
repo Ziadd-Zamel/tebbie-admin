@@ -22,6 +22,7 @@ const HospitalReportDetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [activeTab, setActiveTab] = useState("active");
   const statesPerPage = 10;
 
   const {
@@ -29,13 +30,14 @@ const HospitalReportDetails = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["hospital-Report", token, hosId, fromDate, toDate],
+    queryKey: ["hospital-Report", token, hosId, fromDate, toDate, activeTab],
     queryFn: () =>
       getHospitalReport({
         token,
         hospital_id: hosId,
         from_date: fromDate,
         to_date: toDate,
+        status: activeTab,
       }),
     enabled: !!token,
     select: (data) => data,
@@ -55,6 +57,12 @@ const HospitalReportDetails = () => {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+  };
+
+  // Reset to first page when tab changes
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
   };
 
   const { mutate: CancelBooking } = useMutation({
@@ -116,7 +124,10 @@ const HospitalReportDetails = () => {
     );
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, "Hospital Report");
-    writeFile(workbook, `${hospitalData.hospital_name}_Report.xlsx`);
+    writeFile(
+      workbook,
+      `${hospitalData.hospital_name}_Report_${activeTab}.xlsx`
+    );
   };
 
   if (error) {
@@ -177,6 +188,31 @@ const HospitalReportDetails = () => {
             )}
           </div>
         </div>
+
+        {/* Tabs Section */}
+        <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+          <button
+            onClick={() => handleTabChange("active")}
+            className={`px-4 py-2 rounded-md transition ${
+              activeTab === "active"
+                ? "bg-[#3CAB8B] text-white shadow"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            الحجوزات النشطة
+          </button>
+          <button
+            onClick={() => handleTabChange("cancelled")}
+            className={`px-4 py-2 rounded-md transition ${
+              activeTab === "cancelled"
+                ? "bg-[#3CAB8B] text-white shadow"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            الحجوزات الملغية
+          </button>
+        </div>
+
         <div className="overflow-x-auto lg:w-full md:w-[100vw] w-[90vw] rounded-lg">
           <table
             className="w-full border border-gray-200 bg-white text-sm"
@@ -264,16 +300,20 @@ const HospitalReportDetails = () => {
                     <td className="py-3 px-3 text-center whitespace-nowrap">
                       {data.booking_date || t("Na")}
                     </td>
-                    <td className="whitespace-nowrap py-3 px-3">
-                      <button
-                        onClick={() =>
-                          handleCancelBookingConfirm(data.booking_id)
-                        }
-                        className="px-4 py-2 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm"
-                      >
-                        {t("cancel_booking")}
-                      </button>
-                    </td>
+                    {activeTab !== "cancelled" && (
+                      <td className="whitespace-nowrap py-3 px-3">
+                        {data.booking_status !== "cancelled" && (
+                          <button
+                            onClick={() =>
+                              handleCancelBookingConfirm(data.booking_id)
+                            }
+                            className="px-4 py-2 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm"
+                          >
+                            {t("cancel_booking")}
+                          </button>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
@@ -286,7 +326,7 @@ const HospitalReportDetails = () => {
             </tbody>
           </table>
         </div>
-        {hospitalData.bookings.length > 10 && (
+        {hospitalData.bookings.length > 1 && (
           <div className="flex justify-between items-end mt-4">
             <Pagination
               currentPage={currentPage}

@@ -8,6 +8,8 @@ import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
 import { FaUserDoctor } from "react-icons/fa6";
 import DocotrReportTable from "./DocotrReportTable";
+import { utils, writeFile } from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -38,7 +40,6 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
     toDate: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const statesPerPage = 10;
 
   const [rawSearchTerm, setRawSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(rawSearchTerm, 300);
@@ -48,7 +49,7 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
   }, [debouncedSearchTerm]);
 
   const {
-    data: doctorData = [],
+    data: doctorData,
     isLoading,
     error,
   } = useQuery({
@@ -59,6 +60,7 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
       filters.selectedHospital,
       filters.fromDate,
       filters.toDate,
+      currentPage,
     ],
     queryFn: () =>
       getDocotrReport({
@@ -67,10 +69,22 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
         hospital_id: filters.selectedHospital,
         from_date: filters.fromDate,
         to_date: filters.toDate,
+        page: currentPage,
       }),
     enabled: !!token,
   });
 
+  const exportToExcel = () => {
+    const worksheet = utils.json_to_sheet(
+      doctorData.data.map((data) => ({
+        [t("doctor")]: data.doctor_name || t("Na"),
+        [t("total_bookings")]: data.total_count || t("Na"),
+      }))
+    );
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Doctor Report");
+    writeFile(workbook, `Doctor_Report.xlsx`);
+  };
   const doctorOptions = useMemo(
     () =>
       doctorsData?.map((doctor) => ({ value: doctor.id, label: doctor.name })),
@@ -87,9 +101,9 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
   );
 
   const filteredData = useMemo(() => {
-    if (!Array.isArray(doctorData)) return [];
+    if (!doctorData?.data || !Array.isArray(doctorData.data)) return [];
 
-    return doctorData.filter((review) => {
+    return doctorData.data.filter((review) => {
       const matchesSearch =
         !filters.searchTerm ||
         review.doctor_name
@@ -101,15 +115,8 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
     });
   }, [doctorData, filters.searchTerm, filters.selectedUser]);
 
-  const totalPages = Math.ceil(filteredData.length / statesPerPage) || 1;
-  const currentStates = useMemo(
-    () =>
-      filteredData.slice(
-        (currentPage - 1) * statesPerPage,
-        currentPage * statesPerPage
-      ),
-    [filteredData, currentPage]
-  );
+  const totalPages = doctorData?.last_page || 1;
+  const totalRecords = doctorData?.total || 0;
 
   const handlePageChange = useCallback((newPage) => {
     setCurrentPage(newPage);
@@ -141,13 +148,29 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
         <FaUserDoctor size={30} className="text-[#3CAB8B]" />
         {t("doctorReport")}
       </p>
-      <input
-        type="text"
-        placeholder={t("search")}
-        value={rawSearchTerm}
-        onChange={(e) => setRawSearchTerm(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <div className="flex xl:flex-row flex-col gap-4">
+        <div className="xl:w-1/2 w-full">
+          <input
+            type="text"
+            placeholder={t("search")}
+            value={rawSearchTerm}
+            onChange={(e) => setRawSearchTerm(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="xl:w-1/2 w-full">
+          {filteredData.length > 0 && (
+            <button
+              onClick={exportToExcel}
+              className="px-6 h-10 w-full shrink-0 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
+              aria-label={t("Excel-Export")}
+            >
+              {t("Excel-Export")}
+              <FaFileExcel aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      </div>
       <div className="flex xl:flex-row flex-col gap-4">
         <div className="xl:w-1/2 w-full">
           <OneSelectDropdown
@@ -208,20 +231,23 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
       </div>
       <DocotrReportTable
         translation="doctor"
-        currentStates={currentStates}
+        currentStates={filteredData}
         isLoading={isLoading}
       />
-       {filteredData.length> 10 && (  <div className="flex justify-between items-end mt-4">
+      <div className="flex justify-between items-end mt-4 w-full">
+        {totalPages > 1 && (
+          <div className="flex justify-between items-end mt-4 w-full">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
             <p className="text-2xl text-gray-500 text-end">
-              {t("Total")}: {filteredData.length}
+              {t("Total")}: {totalRecords}
             </p>
-          </div>)}
-    
+          </div>
+        )}
+      </div>
     </div>
   );
 };
