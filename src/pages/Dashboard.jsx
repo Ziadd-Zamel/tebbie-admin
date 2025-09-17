@@ -17,6 +17,7 @@ import {
   getAllHomeVisit,
 } from "../utlis/https";
 import Loader from "./Loader";
+import UserWalletReport from "../components/DashboardComponents/UserWalletReport";
 const Dashboard = () => {
   const { i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
@@ -113,6 +114,7 @@ const Dashboard = () => {
             doctorsData={DoctorsData}
             usersData={usersData}
           />
+          <UserWalletReport />
         </div>
       </section>
     </>

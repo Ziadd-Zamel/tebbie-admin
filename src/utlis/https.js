@@ -1437,6 +1437,7 @@ export const addRechargeCards = async ({
   count,
   expire_date,
   price,
+  batch_number,
   token,
 }) => {
   const formdata = new FormData();
@@ -1444,6 +1445,7 @@ export const addRechargeCards = async ({
   formdata.append("count", count);
   formdata.append("expire_date", expire_date);
   formdata.append("price", price);
+  formdata.append("batch_number", batch_number);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/recharge`, {
@@ -2790,6 +2792,9 @@ export const getDocotrReport = async ({
     if (page) {
       params.push(`page=${page}`);
     }
+    if (page) {
+      params.push(`per_page=${10}`);
+    }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
     }
@@ -2909,6 +2914,9 @@ export const getUsersReport = async ({
     }
     if (page) {
       params.push(`page=${page}`);
+    }
+    if (page) {
+      params.push(`per_page=${10}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -3317,6 +3325,9 @@ export const fetchAdminUsersList = async ({ token, search, page }) => {
     if (page) {
       params.push(`page=${page}`);
     }
+    if (page) {
+      params.push(`per_page=${10}`);
+    }
 
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -3510,5 +3521,39 @@ export const getwhatsapp = async ({ token }) => {
     }
   } catch (error) {
     throw error;
+  }
+};
+export const getUserWalletReport = async ({ token, name = "" }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/users-with-wallets`;
+    const params = [];
+
+    if (name && name.trim()) {
+      params.push(`name=${encodeURIComponent(name.trim())}`);
+    }
+
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch user wallet report: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getUserWalletReport: ${error.message}`);
   }
 };

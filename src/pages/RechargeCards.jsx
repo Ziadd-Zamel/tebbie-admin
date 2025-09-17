@@ -100,7 +100,7 @@ const RechargeCards = () => {
   }
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-
+  console.log(cardData);
   return (
     <section dir={direction} className="container mx-auto lg:p-6 p-4 w-full">
       <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
@@ -176,6 +176,9 @@ const RechargeCards = () => {
               <th className="py-3 px-6 text-left whitespace-nowrap">
                 {t("price")}
               </th>
+              <th className="py-3 px-6 text-left whitespace-nowrap">
+                {t("batchNumber")}
+              </th>
             </tr>
           </thead>
           <tbody className="text-gray-600 md:text-lg text-md font-light">
@@ -220,6 +223,9 @@ const RechargeCards = () => {
                     {card.expire_date}
                   </td>
                   <td className="py-3 px-6 text-left">{card.price}</td>
+                  {card.batch_number && (
+                    <td className="py-3 px-6 text-left">{card.batch_number}</td>
+                  )}
                 </tr>
               ))
             )}
