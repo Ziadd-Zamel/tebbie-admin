@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -73,17 +74,52 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
       }),
     enabled: !!token,
   });
+  const {
+    data: allDoctorData,
+    refetch: refetchAllData,
+    isFetching: isExporting,
+  } = useQuery({
+    queryKey: [
+      "doctors-Report-all",
+      token,
+      filters.selectedDoctor,
+      filters.selectedHospital,
+      filters.fromDate,
+      filters.toDate,
+    ],
+    queryFn: () =>
+      getDocotrReport({
+        token,
+        doctor_id: filters.selectedDoctor,
+        hospital_id: filters.selectedHospital,
+        from_date: filters.fromDate,
+        to_date: filters.toDate,
+        // No page parameter - this will return all data
+      }),
+    enabled: false, // Don't run automatically
+  });
+  const exportToExcel = async () => {
+    try {
+      const result = await refetchAllData();
 
-  const exportToExcel = () => {
-    const worksheet = utils.json_to_sheet(
-      doctorData.data.map((data) => ({
-        [t("doctor")]: data.doctor_name || t("Na"),
-        [t("total_bookings")]: data.total_count || t("Na"),
-      }))
-    );
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, "Doctor Report");
-    writeFile(workbook, `Doctor_Report.xlsx`);
+      if (result.data && result.data.data) {
+        const worksheet = utils.json_to_sheet(
+          result.data.data.map((data) => ({
+            [t("doctor")]: data.doctor_name || t("Na"),
+            [t("total_bookings")]: data.total_count || t("Na"),
+          }))
+        );
+        const workbook = utils.book_new();
+        utils.book_append_sheet(workbook, worksheet, "Doctor Report");
+        writeFile(
+          workbook,
+          `Doctor_Report_All_${new Date().toISOString().split("T")[0]}.xlsx`
+        );
+      }
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert(t("export_failed") || "Export failed. Please try again.");
+    }
   };
   const doctorOptions = useMemo(
     () =>
@@ -141,7 +177,6 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
   }, []);
 
   if (error) return <ErrorMessage message={error.message} />;
-
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
@@ -162,10 +197,17 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
           {filteredData.length > 0 && (
             <button
               onClick={exportToExcel}
-              className="px-6 h-10 w-full shrink-0 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
+              disabled={isExporting}
+              className={`px-6 h-10 w-full shrink-0 flex items-center justify-center gap-2 ${
+                isExporting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] hover:from-[#2A8AA7] hover:to-[#2F8B6B]"
+              } text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg`}
               aria-label={t("Excel-Export")}
             >
-              {t("Excel-Export")}
+              {isExporting
+                ? t("exporting") || "Exporting..."
+                : t("Excel-Export")}
               <FaFileExcel aria-hidden="true" />
             </button>
           )}

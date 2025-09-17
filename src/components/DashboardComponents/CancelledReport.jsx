@@ -8,6 +8,8 @@ import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
 import { FaBan } from "react-icons/fa";
 import CancelledReportTable from "./CancelledReportTable";
+import { utils, writeFile } from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -72,6 +74,28 @@ const CancelledReport = ({ hospitalsData, usersData, doctorsData }) => {
       }),
     enabled: !!token,
   });
+
+  // Export function
+  const exportToExcel = () => {
+    if (!reviewData || reviewData.length === 0) return;
+
+    const worksheet = utils.json_to_sheet(
+      reviewData.map((data) => ({
+        [t("user_name")]: data.user_name || t("Na"),
+        [t("doctor")]: data.doctor_name || t("Na"),
+        [t("hospital")]: data.hospital_name || t("Na"),
+        [t("appointment_date")]: data.appointment_date || t("Na"),
+        [t("cancellation_reason")]: data.cancellation_reason || t("Na"),
+        [t("cancelled_at")]: data.cancelled_at || t("Na"),
+      }))
+    );
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Cancelled Report");
+    writeFile(
+      workbook,
+      `Cancelled_Report_${new Date().toISOString().split("T")[0]}.xlsx`
+    );
+  };
 
   const userOptions = useMemo(
     () => usersData.map((user) => ({ value: user.id, label: user.name })),
@@ -149,13 +173,31 @@ const CancelledReport = ({ hospitalsData, usersData, doctorsData }) => {
         <FaBan size={30} className="text-[#3CAB8B]" />
         {t("CancelledReport")}
       </p>
-      <input
-        type="text"
-        placeholder={t("search")}
-        value={rawSearchTerm}
-        onChange={(e) => setRawSearchTerm(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+
+      <div className="flex xl:flex-row flex-col gap-4">
+        <div className="xl:w-1/2 w-full">
+          <input
+            type="text"
+            placeholder={t("search")}
+            value={rawSearchTerm}
+            onChange={(e) => setRawSearchTerm(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="xl:w-1/2 w-full">
+          {filteredData.length > 0 && (
+            <button
+              onClick={exportToExcel}
+              className="px-6 h-10 w-full shrink-0 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
+              aria-label={t("Excel-Export")}
+            >
+              {t("Excel-Export")}
+              <FaFileExcel aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="flex xl:flex-row flex-col gap-4">
         <div className="xl:w-1/3 w-full">
           <OneSelectDropdown
@@ -192,6 +234,7 @@ const CancelledReport = ({ hospitalsData, usersData, doctorsData }) => {
           />
         </div>
       </div>
+
       <div className="flex flex-col md:flex-row gap-4">
         <div className="w-full md:w-1/3">
           <label className="block mb-1 text-sm font-medium">
@@ -224,10 +267,12 @@ const CancelledReport = ({ hospitalsData, usersData, doctorsData }) => {
           </button>
         </div>
       </div>
+
       <CancelledReportTable
         currentStates={currentStates}
         isLoading={isLoading}
       />
+
       <div className="flex justify-between items-end mt-4">
         {filteredData.length > 10 && (
           <div className="flex justify-between items-end mt-4">

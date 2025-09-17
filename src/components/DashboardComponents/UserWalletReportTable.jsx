@@ -3,31 +3,39 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../pages/Loader";
 import { useNavigate } from "react-router-dom";
 import { utils, writeFile } from "xlsx";
-import { MdOutlinePayment } from "react-icons/md";
+import { MdAccountBalanceWallet } from "react-icons/md";
 import { FaFileExcel } from "react-icons/fa6";
 
-const PaymentReportTable = ({ currentStates, isLoading, reviewData }) => {
+const UserWalletReportTable = ({ currentStates, isLoading, reviewData }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const formatDate = (dateString) => {
+    if (!dateString) return t("Na");
+    try {
+      return new Date(dateString).toISOString().split("T")[0];
+    } catch {
+      return t("Na");
+    }
+  };
 
   const exportToExcel = () => {
     if (!currentStates?.length) return;
 
     const worksheet = utils.json_to_sheet(
-      reviewData.data.map((data) => ({
-        [t("payment_method")]: data?.payment_method || t("Na"),
-        [t("user_name")]: data?.user_name || t("Na"),
-        [t("phone")]: data?.user_phone || t("Na"),
-        [t("price")]: data?.price ?? t("Na"),
-        [t("status")]: data?.status || t("Na"),
-        [t("description")]: data?.description || t("Na"),
-        [t("created_at")]: data?.created_at || t("Na"),
+      reviewData.map((data) => ({
+        [t("id")]: data?.id || t("Na"),
+        [t("user_name")]: data?.name || t("Na"),
+        [t("email")]: data?.email || t("Na"),
+        [t("phone")]: data?.phone || t("Na"),
+        [t("balance")]: data?.balance ?? t("Na"),
+        [t("wallet_updated_at")]: formatDate(data?.wallet_updated_at),
       }))
     );
 
     const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, "Payment Report");
-    writeFile(workbook, "Payment_Report.xlsx");
+    utils.book_append_sheet(workbook, worksheet, "User Wallet Report");
+    writeFile(workbook, "User_Wallet_Report.xlsx");
   };
 
   return (
@@ -35,8 +43,8 @@ const PaymentReportTable = ({ currentStates, isLoading, reviewData }) => {
       {!isLoading && currentStates?.length > 0 && (
         <div className="flex justify-between ">
           <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-            <MdOutlinePayment size={30} className="text-[#3CAB8B]" />
-            {t("paymentReport")}
+            <MdAccountBalanceWallet size={30} className="text-[#3CAB8B]" />
+            {t("userWalletReport")}
           </p>
           <button
             onClick={exportToExcel}
@@ -53,19 +61,17 @@ const PaymentReportTable = ({ currentStates, isLoading, reviewData }) => {
       <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
         <thead>
           <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
-            <th className="py-3 px-6 text-center">{t("payment_method")}</th>
             <th className="py-3 px-6 text-center">{t("user_name")}</th>
+            <th className="py-3 px-6 text-center">{t("email")}</th>
             <th className="py-3 px-6 text-center">{t("phone")}</th>
-            <th className="py-3 px-6 text-center">{t("price")}</th>
-            <th className="py-3 px-6 text-center">{t("status")}</th>
-            <th className="py-3 px-6 text-center">{t("description")}</th>
-            <th className="py-3 px-6 text-center">{t("created_at")}</th>
+            <th className="py-3 px-6 text-center">{t("balance")}</th>
+            <th className="py-3 px-6 text-center">{t("wallet_updated_at")}</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 md:text-lg text-md font-light">
           {isLoading ? (
             <tr>
-              <td colSpan="7" className="py-4 px-6 text-center">
+              <td colSpan="6" className="py-4 px-6 text-center">
                 <Loader />
               </td>
             </tr>
@@ -75,37 +81,31 @@ const PaymentReportTable = ({ currentStates, isLoading, reviewData }) => {
                 key={index}
                 className="border-b border-gray-200 hover:bg-gray-50"
                 onClick={() =>
-                  data.hospital_id
-                    ? navigate(`/hospital-report/${data.hospital_id}`)
+                  data.id
+                    ? navigate(`/user-wallet-report/${data.id}`)
                     : undefined
                 }
               >
                 <td className="py-2 px-6 text-center">
-                  {data?.payment_method || t("Na")}
+                  {data?.name || t("Na")}
                 </td>
                 <td className="py-2 px-6 text-center">
-                  {data?.user_name || t("Na")}
+                  {data?.email || t("Na")}
                 </td>
                 <td className="py-2 px-6 text-center">
-                  {data?.user_phone || t("Na")}
+                  {data?.phone || t("Na")}
                 </td>
                 <td className="py-2 px-6 text-center">
-                  {data?.price ?? t("Na")}
+                  {data?.balance ?? t("Na")}
                 </td>
                 <td className="py-2 px-6 text-center">
-                  {data?.status || t("Na")}
-                </td>
-                <td className="py-2 px-6 text-center">
-                  {data?.description || t("Na")}
-                </td>
-                <td className="py-2 px-6 text-center">
-                  {data?.created_at || t("Na")}
+                  {formatDate(data?.wallet_updated_at)}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="7" className="py-4 px-6 text-center text-gray-500">
+              <td colSpan="6" className="py-4 px-6 text-center text-gray-500">
                 {t("noData")}
               </td>
             </tr>
@@ -116,4 +116,4 @@ const PaymentReportTable = ({ currentStates, isLoading, reviewData }) => {
   );
 };
 
-export default PaymentReportTable;
+export default UserWalletReportTable;

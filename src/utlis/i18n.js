@@ -354,6 +354,10 @@ const resources = {
         "The booking has been canceled successfully.",
     },
     whatsapp: "Whatsapp",
+    batchNumber: "batch-number",
+    balance: "Balance",
+    wallet_updated_at: "Last Wallet Update",
+    userWalletReport: "User Wallet Report",
   },
   ar: {
     translation: {
@@ -595,7 +599,7 @@ const resources = {
       GDOP: "توزيع المرضى جغرافيا",
       selectUser: "حدد المستخدم",
       ReviewsReport: "تقرير التقييمات",
-      user_name: "الدكتور",
+      user_name: "المستخدم",
       total_reviews: "اجمالى التقيمات",
       reviews: "التقيمات",
       avg_rating: "متوسط التقيمات",
@@ -700,11 +704,14 @@ const resources = {
       time: "الوقت",
       human_type: "الجنس",
       whatsapp: "واتساب",
-
+      batchNumber: "رقم الدفعة",
       notes: "ملاحظات",
       male: "ذكر",
       female: "أنثى",
       homeVisitReport: "تقرير الزيارات المنزلية",
+      balance: "الرصيد",
+      wallet_updated_at: "تاريخ آخر تحديث للمحفظة",
+      userWalletReport: "تقرير الرصيد",
     },
   },
 };

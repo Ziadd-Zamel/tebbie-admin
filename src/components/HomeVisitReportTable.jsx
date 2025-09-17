@@ -5,14 +5,19 @@ import { utils, writeFile } from "xlsx";
 import { MdOutlineMedicalServices } from "react-icons/md";
 import { FaFileExcel } from "react-icons/fa6";
 
-const HomeVisitReportTable = ({ currentStates, isLoading, serviceName }) => {
+const HomeVisitReportTable = ({
+  currentStates,
+  isLoading,
+  serviceName,
+  visitData,
+}) => {
   const { t } = useTranslation();
 
   const exportToExcel = () => {
-    if (!currentStates?.length) return;
+    if (!visitData.data.data.length) return;
 
     const worksheet = utils.json_to_sheet(
-      currentStates.map((data) => ({
+      visitData.data.data.map((data) => ({
         [t("visit_id")]: data?.visit_id || t("Na"),
         [t("service_name")]: data?.service_name || t("Na"),
         [t("user_name")]: data?.user_name || t("Na"),

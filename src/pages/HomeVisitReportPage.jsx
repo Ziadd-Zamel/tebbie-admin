@@ -49,6 +49,7 @@ const HomeVisitReportPage = () => {
       <HomeVisitReportTable
         currentStates={currentStates}
         isLoading={isLoading}
+        visitData={visitData}
       />
 
       <div className="flex justify-between items-end mt-4 ">
