@@ -1217,18 +1217,211 @@ export const updateSliders = async ({
     throw error;
   }
 };
+export const getDoctorCommissions = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/doctor-commissions`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const addDoctorCommission = async ({
+  token,
+  hospital_id,
+  tabi_commission_percentage,
+}) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/doctor-commissions/store`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospital_id,
+          tabi_commission_percentage,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const updateDoctorCommission = async ({
+  token,
+  commissionId,
+  hospital_id,
+  tabi_commission_percentage,
+}) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/doctor-commissions/${commissionId}/update`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospital_id,
+          tabi_commission_percentage,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+// Home Visit Commission APIs
+export const getHomeVisitCommissions = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/homevisit-commissions`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const addHomeVisitCommission = async ({
+  token,
+  hospital_id,
+  tabi_commission_percentage,
+}) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/homevisit-commissions/store`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospital_id,
+          tabi_commission_percentage,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const updateHomeVisitCommission = async ({
+  token,
+  commissionId,
+  hospital_id,
+  tabi_commission_percentage,
+}) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/homevisit-commissions/${commissionId}/update`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospital_id,
+          tabi_commission_percentage,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 export const addSlider = async ({
   realtable_type,
   realtable_id,
   token,
   media,
+  external_link,
 }) => {
   const formdata = new FormData();
 
-  formdata.append("realtable_type", realtable_type);
-  formdata.append("realtable_id", realtable_id);
+  if (realtable_type) {
+    formdata.append("realtable_type", realtable_type);
+  }
+  if (realtable_id) {
+    formdata.append("realtable_id", realtable_id);
+  }
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);
+  }
+  if (external_link) {
+    formdata.append("external_link", external_link);
   }
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/sliders`, {

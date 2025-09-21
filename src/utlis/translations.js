@@ -63,6 +63,7 @@ export const pageTranslations = {
     "/terms": "Terms & Conditions",
     "/home-visit-report/:serviceId": "Home visit report",
     "/whatsapp": "whatsapp",
+    "/tebbie-communication": "Tebbie Commission",
     default: "Unknown Page",
   },
   ar: {
@@ -129,6 +130,7 @@ export const pageTranslations = {
     "/terms": "الشروط والأحكام",
     "/home-visit-report/:serviceId": "تقرير الزيارات المنزلية",
     "/whatsapp": "واتساب",
+    "/tebbie-communication": "عمولة طبي",
 
     default: "الصفحة غير معروفة",
   },

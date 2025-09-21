@@ -66,6 +66,7 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import HomeVisitReportPage from "./pages/HomeVisitReportPage";
 import UserseportPage from "./pages/UserReportPage";
 import WhatsappPage from "./pages/WhatsappPage";
+import TebbieCommunication from "./pages/TebbieCommunication";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
           {
             path: "/whatsapp",
             element: <WhatsappPage />,
+          },
+          {
+            path: "/tebbie-communication",
+            element: <TebbieCommunication />,
           },
           {
             path: "/home-visit-report/:serviceId",

@@ -31,6 +31,7 @@ import { BsCardText } from "react-icons/bs";
 import { FaStethoscope } from "react-icons/fa";
 import LogoutDialog from "./LogoutDialog";
 import { RiShieldCheckLine } from "react-icons/ri";
+import { MdChat } from "react-icons/md";
 
 export const sidebarLinks = [
   { path: "/", label: "dashboard", icon: <FaRegClock size={22} /> },
@@ -98,6 +99,11 @@ export const therestofSidebarLinks = [
     path: "/send-notification",
     label: "send notification",
     icon: <MdNotificationAdd size={22} />,
+  },
+  {
+    path: "/tebbie-communication",
+    label: "tebbie communication",
+    icon: <MdChat size={22} />,
   },
   {
     path: "/states",

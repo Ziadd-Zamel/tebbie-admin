@@ -30,6 +30,7 @@ const AddSlider = () => {
     media: null,
     realtable_type: "",
     realtable_id: "",
+    external_link: "",
   });
 
   const { mutate: handleAddSlider, isPending } = useMutation({
@@ -79,8 +80,15 @@ const AddSlider = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.media) {
-      toast.error("Please provide an image.");
+    // Check if we have external_link + media OR realtable_type + realtable_id + media
+    const hasExternalLink = formData.external_link && formData.media;
+    const hasRealtableData =
+      formData.realtable_type && formData.realtable_id && formData.media;
+
+    if (!hasExternalLink && !hasRealtableData) {
+      toast.error(
+        "يرجى تقديم إما: (رابط خارجي + وسائط) أو (اختر النوع + اختر العنصر + وسائط)"
+      );
       return;
     }
 
@@ -93,6 +101,7 @@ const AddSlider = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto"
       >
+        {/* Media Upload Section */}
         <div className="mb-4">
           <div className="flex justify-center items-center my-6">
             <div className="relative">
@@ -122,6 +131,30 @@ const AddSlider = () => {
               />
             </div>
           </div>
+        </div>
+
+        {/* External Link Section */}
+        <div className="px-3 my-6 md:mb-0">
+          <label
+            htmlFor="external_link"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            External Link (Optional)
+          </label>
+          <input
+            type="url"
+            id="external_link"
+            name="external_link"
+            value={formData.external_link}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                external_link: e.target.value,
+              }))
+            }
+            placeholder="https://example.com"
+            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+          />
         </div>
 
         <div className="px-3 my-6 md:mb-0">
