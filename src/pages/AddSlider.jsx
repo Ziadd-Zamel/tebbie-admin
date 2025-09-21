@@ -48,6 +48,7 @@ const AddSlider = () => {
     queryKey: ["doctorsData"],
     queryFn: () => getDoctors({ token }),
   });
+  console.log(doctorsData);
   const { data: hospitalData } = useQuery({
     queryKey: ["hospitalData", token],
     queryFn: () => getHospitals({ token }),
@@ -160,7 +161,7 @@ const AddSlider = () => {
               className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
             >
               <option value="">Select Doctor</option>
-              {doctorsData?.map((data) => (
+              {doctorsData?.data.map((data) => (
                 <option key={data.id} value={data.id}>
                   {data.name}
                 </option>

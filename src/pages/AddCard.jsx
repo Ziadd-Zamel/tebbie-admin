@@ -11,9 +11,10 @@ const AddCard = () => {
     count: "",
     expire_date: "",
     price: "",
+    batch_number: "",
   });
   const [message, setMessage] = useState("");
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { mutate, isPending } = useMutation({
@@ -22,11 +23,12 @@ const navigate = useNavigate()
         count: formData.count,
         expire_date: formData.expire_date,
         price: formData.price,
+        batch_number: formData.batch_number,
         token,
       }),
     onSuccess: () => {
       toast.success(t("successfully_added"));
-      navigate("/recharge-card")
+      navigate("/recharge-card");
       setMessage("");
     },
     onError: (error) => {
@@ -46,7 +48,7 @@ const navigate = useNavigate()
     e.preventDefault();
     mutate();
   };
-
+  console.log(formData);
   return (
     <section dir={direction} className="container mx-auto p-6">
       <form
@@ -90,6 +92,20 @@ const navigate = useNavigate()
             type="number"
             id="price"
             value={formData.price}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="batch_number" className="block text-gray-600 mb-2">
+            {t("batchNumber")}
+          </label>
+          <input
+            type="text"
+            id="batch_number"
+            value={formData.batch_number}
             onChange={handleChange}
             required
             className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary"

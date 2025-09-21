@@ -43,6 +43,9 @@ import Employees from "./pages/Employees";
 import UpdateEmployee from "./pages/UpdateEmployee";
 import RequestForm from "./pages/RequestForm";
 import Services from "./pages/Services";
+import HospitalServices from "./pages/HospitalServices";
+import AddHospitalService from "./pages/AddHospitalService";
+import UpdateHospitalService from "./pages/UpdateHospitalService";
 import AddService from "./pages/AddService";
 import UpdateService from "./pages/UpdateService";
 import { UserProvider } from "./chatcontext/UserContext";
@@ -60,6 +63,9 @@ import SendNotification from "./pages/SendNotification";
 import AdminChat from "./pages/AdminChat";
 import HospitalReportDetails from "./pages/HospitalReportDetails";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import HomeVisitReportPage from "./pages/HomeVisitReportPage";
+import UserseportPage from "./pages/UserReportPage";
+import WhatsappPage from "./pages/WhatsappPage";
 
 const queryClient = new QueryClient();
 
@@ -73,7 +79,22 @@ const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: "hospital-report/:hosId", element: <HospitalReportDetails /> },
+          {
+            path: "hospital-report/:hosId",
+            element: <HospitalReportDetails />,
+          },
+          {
+            path: "/whatsapp",
+            element: <WhatsappPage />,
+          },
+          {
+            path: "/home-visit-report/:serviceId",
+            element: <HomeVisitReportPage />,
+          },
+          {
+            path: "/users-report/:userid",
+            element: <UserseportPage />,
+          },
           {
             path: "doctors",
             children: [
@@ -105,6 +126,14 @@ const router = createBrowserRouter([
               { index: true, element: <Services /> },
               { path: ":servId", element: <UpdateService /> },
               { path: "add-service", element: <AddService /> },
+            ],
+          },
+          {
+            path: "hospital-services",
+            children: [
+              { index: true, element: <HospitalServices /> },
+              { path: "add", element: <AddHospitalService /> },
+              { path: ":id", element: <UpdateHospitalService /> },
             ],
           },
           {
@@ -213,7 +242,7 @@ const router = createBrowserRouter([
         path: "",
         element: <ChatLayout />,
         children: [
-          {  index: true, element: <ChatPage /> },
+          { index: true, element: <ChatPage /> },
           {
             path: "*",
             element: <NotFound />,

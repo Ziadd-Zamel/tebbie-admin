@@ -3,9 +3,21 @@ import { useTranslation } from "react-i18next";
 import Loader from "../../pages/Loader";
 import { useNavigate } from "react-router-dom";
 
-const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
+const UserReportTable = ({ currentStates, isLoading, translation }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const handleRowClick = (data) => {
+    if (translation === "hospital") {
+      navigate(`/hospital-report/${data.hospital_id}`);
+    } else if (translation === "users" || translation === "user") {
+      navigate(`/users-report/${data.user_id}`);
+    }
+  };
+  const isClickableRow =
+    translation === "hospital" ||
+    translation === "users" ||
+    translation === "user";
 
   return (
     <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
@@ -26,15 +38,9 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
           currentStates?.map((data, index) => (
             <tr
               key={index}
-              onClick={
-                translation === "hospital"
-                  ? () => navigate(`/hospital-report/${data.hospital_id}`)
-                  : undefined
-              }
+              onClick={isClickableRow ? () => handleRowClick(data) : undefined}
               className={`border-b border-gray-200 ${
-                translation === "hospital"
-                  ? "hover:bg-gray-100 cursor-pointer"
-                  : ""
+                isClickableRow ? "hover:bg-gray-100 cursor-pointer" : ""
               }`}
             >
               <td className="py-2 px-6 text-center">
@@ -60,4 +66,4 @@ const DocotrReportTable = ({ currentStates, isLoading, translation }) => {
   );
 };
 
-export default DocotrReportTable;
+export default UserReportTable;

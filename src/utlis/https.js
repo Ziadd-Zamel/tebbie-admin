@@ -26,14 +26,14 @@ export const updateUserData = async ({
   phone,
   address,
   media_url,
-  password
+  password,
 }) => {
   const formdata = new FormData();
   formdata.append("name", name);
   formdata.append("email", email);
   formdata.append("phone", phone);
   formdata.append("address", address);
-  if(password){
+  if (password) {
     formdata.append("password", password);
   }
   if (media_url) {
@@ -58,20 +58,29 @@ export const updateUserData = async ({
   return result.data;
 };
 //doctors
-export const getDoctors = async ({ token, page = 1, search = "", isSpecial = "", isVisitor = "" }) => {
+export const getDoctors = async ({
+  token,
+  page = 1,
+  search = "",
+  isSpecial = "",
+  isVisitor = "",
+}) => {
   try {
     const queryParams = new URLSearchParams({ page });
     if (search) queryParams.append("name", search);
     if (isSpecial) queryParams.append("is_special", isSpecial);
     if (isVisitor) queryParams.append("is_visitor", isVisitor);
 
-    const response = await fetch(`${API_URL}/dashboard/v1/doctors?${queryParams.toString()}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/doctors?${queryParams.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -329,7 +338,7 @@ export const newHospital = async ({
   doctor_ids = [],
   specialization_id = [],
   start_visit_from,
-  end_visit_at
+  end_visit_at,
 }) => {
   const formdata = new FormData();
 
@@ -338,14 +347,13 @@ export const newHospital = async ({
   if (bio) {
     formdata.append("bio", bio);
   }
-  if(end_visit_at){
+  if (end_visit_at) {
     formdata.append("start_visit_from", start_visit_from);
   }
-  if(start_visit_from){
+  if (start_visit_from) {
     formdata.append("end_visit_at", end_visit_at);
   }
-  
-  
+
   formdata.append("description", description);
   formdata.append("password", password);
   formdata.append("email", email);
@@ -1429,6 +1437,7 @@ export const addRechargeCards = async ({
   count,
   expire_date,
   price,
+  batch_number,
   token,
 }) => {
   const formdata = new FormData();
@@ -1436,6 +1445,7 @@ export const addRechargeCards = async ({
   formdata.append("count", count);
   formdata.append("expire_date", expire_date);
   formdata.append("price", price);
+  formdata.append("batch_number", batch_number);
 
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/recharge`, {
@@ -2278,6 +2288,53 @@ export const getServices = async ({ token }) => {
     throw error;
   }
 };
+export const getHomeVisitReportById = async ({ token, serviceId }) => {
+  try {
+    const url = `${API_URL}/dashboard/v1/get-home-visit-report/${serviceId}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit report: ${response.status} - ${errorText}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Error in getHomeVisitReport: ${error.message}`);
+  }
+};
+export const getUserReportById = async ({ token, userid }) => {
+  try {
+    const url = `${API_URL}/dashboard/v1/get-user-report-data/${userid}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit report: ${response.status} - ${errorText}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw new Error(`Error in getHomeVisitReport: ${error.message}`);
+  }
+};
+
 export const updateService = async ({
   token,
   name,
@@ -2380,6 +2437,139 @@ export const postServices = async ({ token, name, type }) => {
 
     if (!response.ok) {
       throw result;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+// hospital services (admin)
+export const getHospitalServices = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-services/all`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addHospitalService = async ({
+  token,
+  hospital_id,
+  name,
+  tabi_commission,
+  hospital_commission,
+  status,
+}) => {
+  const formdata = new FormData();
+  formdata.append("hospital_id", hospital_id);
+  formdata.append("name", name);
+  formdata.append("tabi_commission", tabi_commission);
+  formdata.append("hospital_commission", hospital_commission);
+  formdata.append("status", status);
+
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-services`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const updateHospitalService = async ({
+  token,
+  id,
+  hospital_id,
+  name,
+  tabi_commission,
+  hospital_commission,
+  status,
+}) => {
+  const formdata = new FormData();
+  if (hospital_id !== undefined) formdata.append("hospital_id", hospital_id);
+  if (name !== undefined) formdata.append("name", name);
+  if (tabi_commission !== undefined)
+    formdata.append("tabi_commission", tabi_commission);
+  if (hospital_commission !== undefined)
+    formdata.append("hospital_commission", hospital_commission);
+  if (status !== undefined) formdata.append("status", status);
+
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-services/update/${id}`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const deleteHospitalService = async ({ id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-services/delete/${id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while deleting the hospital service"
+      );
     }
 
     return result.data;
@@ -2714,6 +2904,7 @@ export const getDocotrReport = async ({
   hospital_id,
   from_date,
   to_date,
+  page,
 }) => {
   try {
     let url = `${API_URL}/dashboard/v1/get-doctor-report`;
@@ -2730,6 +2921,12 @@ export const getDocotrReport = async ({
     }
     if (to_date) {
       params.push(`to_date=${to_date}`);
+    }
+    if (page) {
+      params.push(`page=${page}`);
+    }
+    if (page) {
+      params.push(`per_page=${10}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -2824,6 +3021,7 @@ export const getUsersReport = async ({
   hospital_id,
   from_date,
   to_date,
+  page,
 }) => {
   try {
     let url = `${API_URL}/dashboard/v1/get-user-report`;
@@ -2843,6 +3041,15 @@ export const getUsersReport = async ({
     }
     if (to_date) {
       params.push(`to_date=${to_date}`);
+    }
+    if (to_date) {
+      params.push(`to_date=${to_date}`);
+    }
+    if (page) {
+      params.push(`page=${page}`);
+    }
+    if (page) {
+      params.push(`per_page=${10}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -2921,7 +3128,36 @@ export const getHomeVisitReport = async ({
     throw new Error(`Error in getReviewsReport: ${error.message}`);
   }
 };
+export const getPaymentReport = async ({ token }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/admin/payments/without-booking`;
+    const params = [];
 
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch reviews report: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getReviewsReport: ${error.message}`);
+  }
+};
 //customer service
 export const getAllCustomerService = async ({ token }) => {
   try {
@@ -3222,6 +3458,9 @@ export const fetchAdminUsersList = async ({ token, search, page }) => {
     if (page) {
       params.push(`page=${page}`);
     }
+    if (page) {
+      params.push(`per_page=${10}`);
+    }
 
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -3273,6 +3512,7 @@ export const getHospitalReport = async ({
   hospital_id,
   from_date,
   to_date,
+  status,
 }) => {
   try {
     let url = `${API_URL}/dashboard/v1/get-hospital-report-by-id`;
@@ -3286,6 +3526,12 @@ export const getHospitalReport = async ({
     }
     if (to_date) {
       params.push(`to_date=${to_date}`);
+    }
+    if (status === "cancelled") {
+      params.push(`deleted=${true}`);
+    }
+    if (status === "active") {
+      params.push(`deleted=${false}`);
     }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
@@ -3362,5 +3608,85 @@ export const updatetermsAndConditions = async ({ token, term_condition }) => {
   } catch (error) {
     console.error("Error:", error);
     throw error;
+  }
+};
+export const updateWhatsapp = async ({ whatsapp, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/settings/whatsapp`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ whatsapp }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error updating WhatsApp:", error);
+    throw error;
+  }
+};
+export const getwhatsapp = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/settings/whatsapp`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+export const getUserWalletReport = async ({ token, name = "" }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/users-with-wallets`;
+    const params = [];
+
+    if (name && name.trim()) {
+      params.push(`name=${encodeURIComponent(name.trim())}`);
+    }
+
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch user wallet report: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getUserWalletReport: ${error.message}`);
   }
 };

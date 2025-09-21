@@ -11,6 +11,7 @@ import Loader from "./Loader";
 import { useParams } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const HospitalReportDetails = () => {
   const token = localStorage.getItem("authToken");
@@ -19,8 +20,9 @@ const HospitalReportDetails = () => {
   const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [fromDate, setFromDate] = useState(""); // State for fromDate
-  const [toDate, setToDate] = useState(""); // State for toDate
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [activeTab, setActiveTab] = useState("active");
   const statesPerPage = 10;
 
   const {
@@ -28,13 +30,14 @@ const HospitalReportDetails = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["hospital-Report", token, hosId, fromDate, toDate], // Include fromDate and toDate in queryKey
+    queryKey: ["hospital-Report", token, hosId, fromDate, toDate, activeTab],
     queryFn: () =>
       getHospitalReport({
         token,
         hospital_id: hosId,
         from_date: fromDate,
         to_date: toDate,
+        status: activeTab,
       }),
     enabled: !!token,
     select: (data) => data,
@@ -56,6 +59,12 @@ const HospitalReportDetails = () => {
     setCurrentPage(newPage);
   };
 
+  // Reset to first page when tab changes
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    setCurrentPage(1);
+  };
+
   const { mutate: CancelBooking } = useMutation({
     mutationFn: async (id) => {
       return cancelBooking({ bookingId: id, token });
@@ -71,6 +80,29 @@ const HospitalReportDetails = () => {
 
   const handleCancelBooking = (id) => {
     CancelBooking(id);
+  };
+
+  const handleCancelBookingConfirm = (bookingId) => {
+    Swal.fire({
+      title: t("are_you_sure"),
+      text: t("cannotRestoreBookingAfterCancel"),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3CAB8B",
+      cancelButtonColor: "#d33",
+      confirmButtonText: t("cancel_booking"),
+      cancelButtonText: t("close"),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleCancelBooking(bookingId);
+        Swal.fire({
+          title: t("canceled"),
+          text: t("bookingCanceledSuccessfully"),
+          icon: "success",
+          confirmButtonColor: "#3CAB8B",
+        });
+      }
+    });
   };
 
   // Excel export function
@@ -92,7 +124,10 @@ const HospitalReportDetails = () => {
     );
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, "Hospital Report");
-    writeFile(workbook, `${hospitalData.hospital_name}_Report.xlsx`);
+    writeFile(
+      workbook,
+      `${hospitalData.hospital_name}_Report_${activeTab}.xlsx`
+    );
   };
 
   if (error) {
@@ -108,9 +143,15 @@ const HospitalReportDetails = () => {
       <div className="bg-white min-h-screen p-4 rounded-2xl w-full overflow-x-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center my-4 gap-4">
           <h1 className="font-bold md:text-xl text-lg lg:text-2xl flex items-center gap-2 text-gray-800">
-            <CiHospital1 size={35} className="text-[#3CAB8B]" aria-hidden="true" />
+            <CiHospital1
+              size={35}
+              className="text-[#3CAB8B]"
+              aria-hidden="true"
+            />
             {t("hospitalReport")}
-            {hospitalData.hospital_name ? `- ${hospitalData.hospital_name}` : ""}
+            {hospitalData.hospital_name
+              ? `- ${hospitalData.hospital_name}`
+              : ""}
           </h1>
           <div className="flex flex-col justify-end items-end md:flex-row gap-4">
             <div className="w-full">
@@ -135,17 +176,43 @@ const HospitalReportDetails = () => {
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            {currentStates.length > 0 && (<button
-              onClick={exportToExcel}
-              className="px-6 h-12 shrink-0 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
-              aria-label={t("Excel-Export")}
-            >
-              {t("Excel-Export")}
-              <FaFileExcel aria-hidden="true" />
-            </button>)}
-            
+            {currentStates.length > 0 && (
+              <button
+                onClick={exportToExcel}
+                className="px-6 h-12 shrink-0 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg"
+                aria-label={t("Excel-Export")}
+              >
+                {t("Excel-Export")}
+                <FaFileExcel aria-hidden="true" />
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Tabs Section */}
+        <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+          <button
+            onClick={() => handleTabChange("active")}
+            className={`px-4 py-2 rounded-md transition ${
+              activeTab === "active"
+                ? "bg-[#3CAB8B] text-white shadow"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            الحجوزات النشطة
+          </button>
+          <button
+            onClick={() => handleTabChange("cancelled")}
+            className={`px-4 py-2 rounded-md transition ${
+              activeTab === "cancelled"
+                ? "bg-[#3CAB8B] text-white shadow"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            الحجوزات الملغية
+          </button>
+        </div>
+
         <div className="overflow-x-auto lg:w-full md:w-[100vw] w-[90vw] rounded-lg">
           <table
             className="w-full border border-gray-200 bg-white text-sm"
@@ -233,14 +300,20 @@ const HospitalReportDetails = () => {
                     <td className="py-3 px-3 text-center whitespace-nowrap">
                       {data.booking_date || t("Na")}
                     </td>
-                    <td className="whitespace-nowrap py-3 px-3">
-                      <button
-                        onClick={() => handleCancelBooking(data.booking_id)}
-                        className="px-4 py-2 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm"
-                      >
-                        {t("cancel_booking")}
-                      </button>
-                    </td>
+                    {activeTab !== "cancelled" && (
+                      <td className="whitespace-nowrap py-3 px-3">
+                        {data.booking_status !== "cancelled" && (
+                          <button
+                            onClick={() =>
+                              handleCancelBookingConfirm(data.booking_id)
+                            }
+                            className="px-4 py-2 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm"
+                          >
+                            {t("cancel_booking")}
+                          </button>
+                        )}
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (
@@ -253,7 +326,7 @@ const HospitalReportDetails = () => {
             </tbody>
           </table>
         </div>
-        {hospitalData.bookings.length > 10 && (
+        {hospitalData.bookings.length > 1 && (
           <div className="flex justify-between items-end mt-4">
             <Pagination
               currentPage={currentPage}
