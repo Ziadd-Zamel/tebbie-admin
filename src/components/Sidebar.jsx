@@ -16,7 +16,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { AiFillCustomerService } from "react-icons/ai";
-import { MdNotificationAdd } from "react-icons/md";
+import { MdNotificationAdd, MdHomeWork } from "react-icons/md";
 
 import { useTranslation } from "react-i18next";
 import { pageTranslations } from "../utlis/translations";
@@ -31,7 +31,7 @@ import { BsCardText } from "react-icons/bs";
 import { FaStethoscope } from "react-icons/fa";
 import LogoutDialog from "./LogoutDialog";
 import { RiShieldCheckLine } from "react-icons/ri";
-import { MdChat } from "react-icons/md";
+import { MdChat, MdAccountBalanceWallet } from "react-icons/md";
 
 export const sidebarLinks = [
   { path: "/", label: "dashboard", icon: <FaRegClock size={22} /> },
@@ -104,6 +104,21 @@ export const therestofSidebarLinks = [
     path: "/tebbie-communication",
     label: "tebbie communication",
     icon: <MdChat size={22} />,
+  },
+  {
+    path: "/tebbie-wallet",
+    label: "tebbie wallet",
+    icon: <MdAccountBalanceWallet size={22} />,
+  },
+  {
+    path: "/hospital-wallet",
+    label: "hospital wallets",
+    icon: <MdAccountBalanceWallet size={22} />,
+  },
+  {
+    path: "/home-visit-services",
+    label: "home visit services",
+    icon: <MdHomeWork size={22} />,
   },
   {
     path: "/states",

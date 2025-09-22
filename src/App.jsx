@@ -67,6 +67,9 @@ import HomeVisitReportPage from "./pages/HomeVisitReportPage";
 import UserseportPage from "./pages/UserReportPage";
 import WhatsappPage from "./pages/WhatsappPage";
 import TebbieCommunication from "./pages/TebbieCommunication";
+import TebbieWallet from "./pages/TebbieWallet";
+import HospitalWallet from "./pages/HospitalWallet";
+import HomeVisitServices from "./pages/HomeVisitServices";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +94,18 @@ const router = createBrowserRouter([
           {
             path: "/tebbie-communication",
             element: <TebbieCommunication />,
+          },
+          {
+            path: "/tebbie-wallet",
+            element: <TebbieWallet />,
+          },
+          {
+            path: "/hospital-wallet",
+            element: <HospitalWallet />,
+          },
+          {
+            path: "/home-visit-services",
+            element: <HomeVisitServices />,
           },
           {
             path: "/home-visit-report/:serviceId",

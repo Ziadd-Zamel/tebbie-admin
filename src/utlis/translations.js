@@ -64,6 +64,9 @@ export const pageTranslations = {
     "/home-visit-report/:serviceId": "Home visit report",
     "/whatsapp": "whatsapp",
     "/tebbie-communication": "Tebbie Commission",
+    "/tebbie-wallet": "Tebbie Wallet",
+    "/hospital-wallet": "Hospital Wallets",
+    "/home-visit-services": "Home Visit Services",
     default: "Unknown Page",
   },
   ar: {
@@ -131,6 +134,9 @@ export const pageTranslations = {
     "/home-visit-report/:serviceId": "تقرير الزيارات المنزلية",
     "/whatsapp": "واتساب",
     "/tebbie-communication": "عمولة طبي",
+    "/tebbie-wallet": "محفظة طبي",
+    "/hospital-wallet": "محفظة المستشفيات",
+    "/home-visit-services": "خدمات الزيارات المنزلية",
 
     default: "الصفحة غير معروفة",
   },

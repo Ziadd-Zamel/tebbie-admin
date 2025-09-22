@@ -1402,6 +1402,53 @@ export const updateHomeVisitCommission = async ({
   }
 };
 
+export const getWallet = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/get-wallet`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const getHospitalWallet = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/get-wallet-hospital`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 export const addSlider = async ({
   realtable_type,
   realtable_id,
@@ -3881,5 +3928,104 @@ export const getUserWalletReport = async ({ token, name = "" }) => {
     return data.data || [];
   } catch (error) {
     throw new Error(`Error in getUserWalletReport: ${error.message}`);
+  }
+};
+
+// Home Visit Services APIs
+export const getHomeVisitServices = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/home-visit-services`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const addHomeVisitService = async ({
+  token,
+  hospital_id,
+  name,
+  type,
+}) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/home-visit-services`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospital_id,
+          name,
+          type,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const updateHomeVisitService = async ({
+  token,
+  serviceId,
+  hospital_id,
+  name,
+  type,
+  status,
+}) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/home-visit-services/update/${serviceId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospital_id,
+          name,
+          type,
+          status,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
   }
 };
