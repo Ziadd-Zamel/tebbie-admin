@@ -9,17 +9,22 @@ import ErrorMessage from "./ErrorMessage";
 const HomeVisitServices = () => {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
+  const [hospitalFilter, setHospitalFilter] = useState("");
   const token = localStorage.getItem("authToken");
   const statesPerPage = 10;
 
-  // Fetch home visit services data
+  // Fetch home visit services data with hospital filter
   const {
     data: servicesData = { data: [] },
     isLoading: servicesLoading,
     error: servicesError,
   } = useQuery({
-    queryKey: ["home-visit-services", token],
-    queryFn: () => getHomeVisitServices({ token }),
+    queryKey: ["home-visit-services", token, hospitalFilter],
+    queryFn: () =>
+      getHomeVisitServices({
+        token,
+        hospital_id: hospitalFilter || undefined,
+      }),
     enabled: !!token,
   });
 
@@ -39,6 +44,11 @@ const HomeVisitServices = () => {
     setCurrentPage(newPage);
   }, []);
 
+  const handleFilterChange = useCallback((newHospitalFilter) => {
+    setHospitalFilter(newHospitalFilter);
+    setCurrentPage(1); // Reset to first page when filter changes
+  }, []);
+
   return (
     <div className="container mx-auto py-8">
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -52,6 +62,7 @@ const HomeVisitServices = () => {
                 currentStates={currentStates}
                 isLoading={servicesLoading}
                 servicesData={servicesData}
+                onFilterChange={handleFilterChange}
               />
 
               {servicesData.data?.length > 0 && (

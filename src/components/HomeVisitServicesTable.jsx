@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../pages/Loader";
@@ -17,7 +17,12 @@ import {
   Button,
 } from "@mui/material";
 
-const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
+const HomeVisitServicesTable = ({
+  currentStates,
+  isLoading,
+  servicesData,
+  onFilterChange,
+}) => {
   const { t } = useTranslation();
   const token = localStorage.getItem("authToken");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -30,13 +35,11 @@ const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
     queryFn: () => getHospitals({ token }),
   });
 
-  // Filter current states based on hospital filter
-  const filteredStates = useMemo(() => {
-    if (!hospitalFilter) return currentStates;
-    return currentStates.filter(
-      (service) => service?.hospital?.id?.toString() === hospitalFilter
-    );
-  }, [currentStates, hospitalFilter]);
+  // Handle hospital filter change
+  const handleHospitalFilterChange = (value) => {
+    setHospitalFilter(value);
+    onFilterChange(value);
+  };
 
   // Get type display text
   const getTypeText = (type) => {
@@ -94,7 +97,7 @@ const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
               <FaPlus aria-hidden="true" />
               {t("add_service")}
             </button>
-            {currentStates?.length > 0 && (
+            {servicesData?.data?.length > 0 && (
               <button
                 onClick={exportToExcel}
                 className="px-6 h-10 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm whitespace-nowrap"
@@ -113,7 +116,7 @@ const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
       )}
 
       {/* Hospital Filter */}
-      {!isLoading && currentStates?.length > 0 && (
+      {!isLoading && (
         <Box
           sx={{
             mb: 2,
@@ -127,7 +130,7 @@ const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
             <Button
               variant="outlined"
               size="small"
-              onClick={() => setHospitalFilter("")}
+              onClick={() => handleHospitalFilterChange("")}
               sx={{ minWidth: "auto" }}
             >
               {t("clear_filters")}
@@ -141,7 +144,7 @@ const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
               labelId="hospital-filter-label"
               value={hospitalFilter}
               label={t("filter_by_hospital")}
-              onChange={(e) => setHospitalFilter(e.target.value)}
+              onChange={(e) => handleHospitalFilterChange(e.target.value)}
               sx={{ direction: "rtl" }}
             >
               <MenuItem value="">
@@ -187,8 +190,8 @@ const HomeVisitServicesTable = ({ currentStates, isLoading, servicesData }) => {
                     <Loader />
                   </td>
                 </tr>
-              ) : filteredStates?.length > 0 ? (
-                filteredStates.map((data, index) => (
+              ) : currentStates?.length > 0 ? (
+                currentStates.map((data, index) => (
                   <tr
                     key={data.id || index}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors"

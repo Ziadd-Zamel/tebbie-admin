@@ -3956,18 +3956,24 @@ export const getUserWalletReport = async ({ token, name = "" }) => {
 };
 
 // Home Visit Services APIs
-export const getHomeVisitServices = async ({ token }) => {
+export const getHomeVisitServices = async ({ token, hospital_id }) => {
   try {
-    const response = await fetch(
-      `${API_URL}/dashboard/v1/admin/home-visit-services`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (hospital_id) params.append("hospital_id", hospital_id);
+
+    const queryString = params.toString();
+    const url = `${API_URL}/dashboard/v1/admin/home-visit-services${
+      queryString ? `?${queryString}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
