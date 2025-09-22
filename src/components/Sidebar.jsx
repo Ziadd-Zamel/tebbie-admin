@@ -43,7 +43,7 @@ export const sidebarLinks = [
   },
   { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
   { path: "/clinics", label: "clinic", icon: <IoMdPeople size={22} /> },
-  { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
+  // { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
   {
     path: "/hospital-services",
     label: "hospital services",

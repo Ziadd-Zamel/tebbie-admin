@@ -42,12 +42,10 @@ import Coupons from "./pages/Coupons";
 import Employees from "./pages/Employees";
 import UpdateEmployee from "./pages/UpdateEmployee";
 import RequestForm from "./pages/RequestForm";
-import Services from "./pages/Services";
 import HospitalServices from "./pages/HospitalServices";
 import AddHospitalService from "./pages/AddHospitalService";
 import UpdateHospitalService from "./pages/UpdateHospitalService";
-import AddService from "./pages/AddService";
-import UpdateService from "./pages/UpdateService";
+
 import { UserProvider } from "./chatcontext/UserContext";
 import HospitalLayout from "./pages/HospitalLayout";
 import Refunds from "./pages/Refunds";
@@ -140,14 +138,14 @@ const router = createBrowserRouter([
               { path: "add-hospital", element: <AddHospital /> },
             ],
           },
-          {
-            path: "services",
-            children: [
-              { index: true, element: <Services /> },
-              { path: ":servId", element: <UpdateService /> },
-              { path: "add-service", element: <AddService /> },
-            ],
-          },
+          // {
+          //   path: "services",
+          //   children: [
+          //     { index: true, element: <Services /> },
+          //     { path: ":servId", element: <UpdateService /> },
+          //     { path: "add-service", element: <AddService /> },
+          //   ],
+          // },
           {
             path: "hospital-services",
             children: [
