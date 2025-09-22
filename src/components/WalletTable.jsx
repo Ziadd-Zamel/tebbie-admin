@@ -6,6 +6,16 @@ import PropTypes from "prop-types";
 import Loader from "../pages/Loader";
 import { useQuery } from "@tanstack/react-query";
 import { getHospitals } from "../utlis/https";
+import {
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  TextField,
+  Box,
+  Button,
+  Grid,
+} from "@mui/material";
 
 const WalletTable = ({
   currentStates,
@@ -23,20 +33,17 @@ const WalletTable = ({
     date_to: "",
   });
 
-  // Fetch hospitals for the select dropdown
   const { data: hospitalsData } = useQuery({
     queryKey: ["hospitals"],
     queryFn: () => getHospitals({ token }),
   });
 
-  // Get unique hospitals from wallet data as fallback
   const uniqueHospitals = useMemo(() => {
     if (!walletData?.data) return [];
     const hospitals = walletData.data
       .map((item) => item.hospital)
       .filter((hospital) => hospital && hospital.id && hospital.name);
 
-    // Remove duplicates based on hospital ID
     const unique = hospitals.filter(
       (hospital, index, self) =>
         index === self.findIndex((h) => h.id === hospital.id)
@@ -44,7 +51,6 @@ const WalletTable = ({
     return unique;
   }, [walletData?.data]);
 
-  // Handle filter changes
   const handleFilterChange = (key, value) => {
     const newFilters = { ...filters, [key]: value };
     setFilters(newFilters);
@@ -53,7 +59,6 @@ const WalletTable = ({
     }
   };
 
-  // Clear all filters
   const clearFilters = () => {
     const clearedFilters = {
       hospital_id: "",
@@ -99,10 +104,10 @@ const WalletTable = ({
           <h2 className="text-2xl font-bold text-gray-800">
             {t("wallet_data")}
           </h2>
-          {showTotal && walletData?.total && (
+          {showTotal && (
             <div className="text-right">
               <p className="text-xl font-bold text-green-600">
-                {t(totalLabel)}: ${walletData.total}
+                {t(totalLabel)}: {walletData?.total || 0} د.ل
               </p>
             </div>
           )}
@@ -110,69 +115,90 @@ const WalletTable = ({
       </div>
 
       {/* Filters */}
-      <div
-        style={{ direction: "rtl" }}
-        className="bg-gray-50 p-4 rounded-lg mb-4"
+      <Box
+        sx={{
+          direction: "rtl",
+          bgcolor: "grey.50",
+          p: 2,
+          borderRadius: 2,
+          mb: 2,
+        }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Grid container spacing={2} alignItems="end">
           {/* Hospital Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t("filter_by_hospital")}
-            </label>
-            <select
-              value={filters.hospital_id}
-              onChange={(e) =>
-                handleFilterChange("hospital_id", e.target.value)
-              }
-              className="w-full p-2 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="">{t("all_hospitals")}</option>
-              {(hospitalsData || uniqueHospitals)?.map((hospital) => (
-                <option key={hospital.id} value={hospital.id}>
-                  {hospital.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Grid item xs={12} md={3}>
+            <FormControl fullWidth size="small">
+              <InputLabel id="hospital-filter-label">
+                {t("filter_by_hospital")}
+              </InputLabel>
+              <Select
+                labelId="hospital-filter-label"
+                value={filters.hospital_id}
+                label={t("filter_by_hospital")}
+                onChange={(e) =>
+                  handleFilterChange("hospital_id", e.target.value)
+                }
+                sx={{ direction: "rtl" }}
+              >
+                <MenuItem value="">
+                  <em>{t("all_hospitals")}</em>
+                </MenuItem>
+                {(hospitalsData || uniqueHospitals)?.map((hospital) => (
+                  <MenuItem key={hospital.id} value={hospital.id}>
+                    {hospital.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
 
           {/* Date From Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t("date_from")}
-            </label>
-            <input
+          <Grid item xs={12} md={3}>
+            <TextField
+              fullWidth
+              size="small"
               type="date"
+              label={t("date_from")}
               value={filters.date_from}
               onChange={(e) => handleFilterChange("date_from", e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              sx={{ direction: "rtl" }}
             />
-          </div>
+          </Grid>
 
           {/* Date To Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t("date_to")}
-            </label>
-            <input
+          <Grid item xs={12} md={3}>
+            <TextField
+              fullWidth
+              size="small"
               type="date"
+              label={t("date_to")}
               value={filters.date_to}
               onChange={(e) => handleFilterChange("date_to", e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              sx={{ direction: "rtl" }}
             />
-          </div>
+          </Grid>
 
           {/* Clear Filters Button */}
-          <div className="flex items-end">
-            <button
+          <Grid item xs={12} md={3}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="secondary"
               onClick={clearFilters}
-              className="w-full px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              size="small"
+              sx={{ height: "40px" }}
             >
               {t("clear_filters")}
-            </button>
-          </div>
-        </div>
-      </div>
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
 
       {/* Scrollable table container */}
       <div className="w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">

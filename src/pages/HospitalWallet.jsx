@@ -17,51 +17,30 @@ const HospitalWallet = () => {
   });
   const itemsPerPage = 10;
 
-  // Fetch hospital wallet data
+  // Fetch hospital wallet data with filters
   const {
     data: walletData,
     isLoading: walletLoading,
     error: walletError,
   } = useQuery({
-    queryKey: ["hospital-wallet-data"],
-    queryFn: () => getHospitalWallet({ token }),
+    queryKey: ["hospital-wallet-data", filters],
+    queryFn: () =>
+      getHospitalWallet({
+        token,
+        hospital_id: filters.hospital_id || undefined,
+        date_from: filters.date_from || undefined,
+        date_to: filters.date_to || undefined,
+      }),
   });
 
-  // Filter data based on filters
-  const filteredData = useMemo(() => {
-    if (!walletData?.data) return [];
-
-    return walletData.data.filter((item) => {
-      // Filter by hospital
-      if (
-        filters.hospital_id &&
-        item.hospital?.id !== parseInt(filters.hospital_id)
-      ) {
-        return false;
-      }
-
-      // Filter by date range
-      if (filters.date_from && item.date < filters.date_from) {
-        return false;
-      }
-
-      if (filters.date_to && item.date > filters.date_to) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [walletData?.data, filters]);
-
-  // Pagination logic
-  const totalPages = Math.ceil((filteredData?.length || 0) / itemsPerPage);
+  const totalPages = Math.ceil((walletData?.data?.length || 0) / itemsPerPage);
 
   const currentStates = useMemo(() => {
-    if (!filteredData) return [];
+    if (!walletData?.data) return [];
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return filteredData.slice(startIndex, endIndex);
-  }, [filteredData, currentPage, itemsPerPage]);
+    return walletData.data.slice(startIndex, endIndex);
+  }, [walletData?.data, currentPage, itemsPerPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -69,10 +48,9 @@ const HospitalWallet = () => {
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   };
 
-  // Current data for display
   const currentData = walletData;
   const currentLoading = walletLoading;
   const currentError = walletError;
@@ -92,7 +70,7 @@ const HospitalWallet = () => {
               showTotal={true}
               totalLabel="total_hospital_wallet"
             />
-            {filteredData?.length > 0 && (
+            {walletData?.data?.length > 0 && (
               <div className="flex justify-between items-end mt-4">
                 <Pagination
                   currentPage={currentPage}
@@ -100,7 +78,7 @@ const HospitalWallet = () => {
                   onPageChange={handlePageChange}
                 />
                 <p className="lg:text-2xl md:text-xl text-lg text-gray-500 text-end">
-                  {t("Total")}: {filteredData.length}
+                  {t("Total")}: {walletData.data.length}
                 </p>
               </div>
             )}

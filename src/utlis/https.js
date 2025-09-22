@@ -1402,9 +1402,20 @@ export const updateHomeVisitCommission = async ({
   }
 };
 
-export const getWallet = async ({ token }) => {
+export const getWallet = async ({ token, hospital_id, date_from, date_to }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/admin/get-wallet`, {
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (hospital_id) params.append("hospital_id", hospital_id);
+    if (date_from) params.append("date_from", date_from);
+    if (date_to) params.append("date_to", date_to);
+
+    const queryString = params.toString();
+    const url = `${API_URL}/dashboard/v1/admin/get-wallet${
+      queryString ? `?${queryString}` : ""
+    }`;
+
+    const response = await fetch(url, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -1424,18 +1435,31 @@ export const getWallet = async ({ token }) => {
   }
 };
 
-export const getHospitalWallet = async ({ token }) => {
+export const getHospitalWallet = async ({
+  token,
+  hospital_id,
+  date_from,
+  date_to,
+}) => {
   try {
-    const response = await fetch(
-      `${API_URL}/dashboard/v1/admin/get-wallet-hospital`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Build query parameters
+    const params = new URLSearchParams();
+    if (hospital_id) params.append("hospital_id", hospital_id);
+    if (date_from) params.append("date_from", date_from);
+    if (date_to) params.append("date_to", date_to);
+
+    const queryString = params.toString();
+    const url = `${API_URL}/dashboard/v1/admin/get-wallet-hospital${
+      queryString ? `?${queryString}` : ""
+    }`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
