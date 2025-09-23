@@ -74,6 +74,9 @@ const HomeVisitServicesTable = ({
         [t("hospital_name")]: data?.hospital?.name || t("Na"),
         [t("service_name")]: data?.name || t("Na"),
         [t("service_type")]: getTypeText(data?.type),
+        [t("price")]: data?.price
+          ? `$${parseFloat(data.price).toFixed(2)}`
+          : t("Na"),
         [t("status")]: getStatusText(data?.status),
       }))
     );
@@ -176,6 +179,9 @@ const HomeVisitServicesTable = ({
                   {t("service_type")}
                 </th>
                 <th className="py-3 px-4 text-center whitespace-nowrap border-b border-gray-200">
+                  {t("price")}
+                </th>
+                <th className="py-3 px-4 text-center whitespace-nowrap border-b border-gray-200">
                   {t("status")}
                 </th>
                 <th className="py-3 px-4 text-center whitespace-nowrap border-b border-gray-200">
@@ -186,7 +192,7 @@ const HomeVisitServicesTable = ({
             <tbody className="text-gray-600 md:text-lg text-md font-light">
               {isLoading ? (
                 <tr>
-                  <td colSpan="5" className="py-8 px-6 text-center">
+                  <td colSpan="6" className="py-8 px-6 text-center">
                     <Loader />
                   </td>
                 </tr>
@@ -209,6 +215,13 @@ const HomeVisitServicesTable = ({
                     <td className="py-3 px-4 text-center whitespace-nowrap">
                       <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm font-medium">
                         {getTypeText(data?.type)}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-center whitespace-nowrap">
+                      <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm font-medium">
+                        {data?.price
+                          ? `$${parseFloat(data.price).toFixed(2)}`
+                          : t("Na")}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center whitespace-nowrap">
@@ -237,7 +250,7 @@ const HomeVisitServicesTable = ({
               ) : (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="py-8 px-6 text-center text-gray-500"
                   >
                     {t("noData")}

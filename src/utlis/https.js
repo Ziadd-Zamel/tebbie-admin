@@ -3992,6 +3992,7 @@ export const addHomeVisitService = async ({
   hospital_id,
   name,
   type,
+  price,
 }) => {
   try {
     const response = await fetch(
@@ -4006,6 +4007,7 @@ export const addHomeVisitService = async ({
           hospital_id,
           name,
           type,
+          price,
         }),
       }
     );
@@ -4028,6 +4030,7 @@ export const updateHomeVisitService = async ({
   hospital_id,
   name,
   type,
+  price,
   status,
 }) => {
   try {
@@ -4043,6 +4046,7 @@ export const updateHomeVisitService = async ({
           hospital_id,
           name,
           type,
+          price,
           status,
         }),
       }

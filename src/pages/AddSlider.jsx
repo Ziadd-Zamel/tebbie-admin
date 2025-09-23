@@ -25,6 +25,7 @@ const AddSlider = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const [activeTab, setActiveTab] = useState("external"); // "external" or "type"
   const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     media: null,
@@ -80,16 +81,21 @@ const AddSlider = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if we have external_link + media OR realtable_type + realtable_id + media
-    const hasExternalLink = formData.external_link && formData.media;
-    const hasRealtableData =
-      formData.realtable_type && formData.realtable_id && formData.media;
-
-    if (!hasExternalLink && !hasRealtableData) {
-      toast.error(
-        "يرجى تقديم إما: (رابط خارجي + وسائط) أو (اختر النوع + اختر العنصر + وسائط)"
-      );
-      return;
+    // Validate based on active tab
+    if (activeTab === "external") {
+      if (!formData.external_link || !formData.media) {
+        toast.error("Please provide both external link and media");
+        return;
+      }
+    } else if (activeTab === "type") {
+      if (
+        !formData.realtable_type ||
+        !formData.realtable_id ||
+        !formData.media
+      ) {
+        toast.error("Please provide type, select an item, and media");
+        return;
+      }
     }
 
     handleAddSlider(formData);
@@ -97,209 +103,300 @@ const AddSlider = () => {
 
   return (
     <div className="container mx-auto py-8">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-6 max-w-lg mx-auto"
-      >
-        {/* Media Upload Section */}
-        <div className="mb-4">
-          <div className="flex justify-center items-center my-6">
-            <div className="relative">
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Slider Preview"
-                  className="w-32 h-32 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-32 h-32 rounded-full bg-gray-200 flex justify-center items-center">
-                  <FaCamera size={24} className="text-gray-500" />
-                </div>
-              )}
-              <label
-                htmlFor="imageUpload"
-                className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer"
-              >
-                <FaCamera />
-              </label>
-              <input
-                type="file"
-                id="imageUpload"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* External Link Section */}
-        <div className="px-3 my-6 md:mb-0">
-          <label
-            htmlFor="external_link"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            External Link (Optional)
-          </label>
-          <input
-            type="url"
-            id="external_link"
-            name="external_link"
-            value={formData.external_link}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                external_link: e.target.value,
-              }))
-            }
-            placeholder="https://example.com"
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          />
-        </div>
-
-        <div className="px-3 my-6 md:mb-0">
-          <select
-            name="realtable_type"
-            id="realtable_type"
-            value={formData.realtable_type}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                realtable_type: e.target.value,
-                realtable_id: "",
-              }))
-            }
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          >
-            <option value="">Select Type</option>
-            {realtableType?.map((data) => (
-              <option key={data.id} value={data.name}>
-                {data.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {formData.realtable_type === "doctor" && (
-          <div className="px-3 my-6 md:mb-0">
-            <select
-              name="doctor"
-              value={formData.realtable_id}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  realtable_id: e.target.value,
-                }))
-              }
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-            >
-              <option value="">Select Doctor</option>
-              {doctorsData?.data.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {formData.realtable_type === "hospital" && (
-          <div className="px-3 my-6 md:mb-0">
-            <select
-              name="hospital"
-              value={formData.realtable_id}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  realtable_id: e.target.value,
-                }))
-              }
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-            >
-              <option value="">Select Hospital</option>
-              {hospitalData?.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {formData.realtable_type === "xray" && (
-          <div className="px-3 my-6 md:mb-0">
-            <select
-              name="xray"
-              value={formData.realtable_id}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  realtable_id: e.target.value,
-                }))
-              }
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-            >
-              <option value="">Select X-ray</option>
-              {xraysData?.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {formData.realtable_type === "lab" && (
-          <div className="px-3 my-6 md:mb-0">
-            <select
-              name="lab"
-              value={formData.realtable_id}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  realtable_id: e.target.value,
-                }))
-              }
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-            >
-              <option value="">Select Lab</option>
-              {labsData?.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {formData.realtable_type === "specialization" && (
-          <div className="px-3 my-6 md:mb-0">
-            <select
-              name="lab"
-              value={formData.realtable_id}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  realtable_id: e.target.value,
-                }))
-              }
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-            >
-              <option value="">Select Lab</option>
-              {specializationData?.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        <div className="flex justify-center items-center my-4">
+      <div className="bg-white shadow-md rounded-lg p-6 max-w-2xl mx-auto">
+        {/* Tab Navigation */}
+        <div className="flex border-b border-gray-200 mb-6">
           <button
-            type="submit"
-            disabled={isPending}
-            className=" flex justify-center items-center text-xl gap-2 bg-primary hover:bg-[#5CB2AF] text-white py-2 px-4 rounded-lg w-44  focus:outline-none my-4"
+            type="button"
+            onClick={() => setActiveTab("external")}
+            className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "external"
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
           >
-            {isPending ? "Adding Slider..." : "Add Slider"}
+            رابط خارجي + وسائط
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("type")}
+            className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "type"
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            اختيار النوع + وسائط
           </button>
         </div>
-      </form>
+
+        <form onSubmit={handleSubmit}>
+          {/* Media Upload Section - Common for both tabs */}
+          <div className="mb-6">
+            <div className="flex justify-center items-center">
+              <div className="relative">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Slider Preview"
+                    className="w-32 h-32 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-200 flex justify-center items-center">
+                    <FaCamera size={24} className="text-gray-500" />
+                  </div>
+                )}
+                <label
+                  htmlFor="imageUpload"
+                  className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full cursor-pointer"
+                >
+                  <FaCamera />
+                </label>
+                <input
+                  type="file"
+                  id="imageUpload"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+            <p className="text-center text-sm text-gray-500 mt-2">
+              رفع صورة الشريط (مطلوب)
+            </p>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === "external" && (
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="external_link"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  الرابط الخارجي
+                </label>
+                <input
+                  type="url"
+                  id="external_link"
+                  name="external_link"
+                  value={formData.external_link}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      external_link: e.target.value,
+                    }))
+                  }
+                  placeholder="https://example.com"
+                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {activeTab === "type" && (
+            <div className="space-y-4">
+              <div>
+                <label
+                  htmlFor="realtable_type"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  اختر النوع
+                </label>
+                <select
+                  name="realtable_type"
+                  id="realtable_type"
+                  value={formData.realtable_type}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      realtable_type: e.target.value,
+                      realtable_id: "",
+                    }))
+                  }
+                  className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                  required
+                >
+                  <option value="">اختر النوع</option>
+                  {realtableType?.map((data) => (
+                    <option key={data.id} value={data.name}>
+                      {data.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Dynamic content based on selected type */}
+              {formData.realtable_type === "doctor" && (
+                <div>
+                  <label
+                    htmlFor="doctor"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    اختر الطبيب
+                  </label>
+                  <select
+                    name="doctor"
+                    id="doctor"
+                    value={formData.realtable_id}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        realtable_id: e.target.value,
+                      }))
+                    }
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    required
+                  >
+                    <option value="">اختر الطبيب</option>
+                    {doctorsData?.data.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {formData.realtable_type === "hospital" && (
+                <div>
+                  <label
+                    htmlFor="hospital"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    اختر المستشفى
+                  </label>
+                  <select
+                    name="hospital"
+                    id="hospital"
+                    value={formData.realtable_id}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        realtable_id: e.target.value,
+                      }))
+                    }
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    required
+                  >
+                    <option value="">اختر المستشفى</option>
+                    {hospitalData?.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {formData.realtable_type === "xray" && (
+                <div>
+                  <label
+                    htmlFor="xray"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    اختر الأشعة
+                  </label>
+                  <select
+                    name="xray"
+                    id="xray"
+                    value={formData.realtable_id}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        realtable_id: e.target.value,
+                      }))
+                    }
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    required
+                  >
+                    <option value="">اختر الأشعة</option>
+                    {xraysData?.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {formData.realtable_type === "lab" && (
+                <div>
+                  <label
+                    htmlFor="lab"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    اختر المختبر
+                  </label>
+                  <select
+                    name="lab"
+                    id="lab"
+                    value={formData.realtable_id}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        realtable_id: e.target.value,
+                      }))
+                    }
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    required
+                  >
+                    <option value="">اختر المختبر</option>
+                    {labsData?.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {formData.realtable_type === "specialization" && (
+                <div>
+                  <label
+                    htmlFor="specialization"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Select Specialization
+                  </label>
+                  <select
+                    name="specialization"
+                    id="specialization"
+                    value={formData.realtable_id}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        realtable_id: e.target.value,
+                      }))
+                    }
+                    className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+                    required
+                  >
+                    <option value="">Select Specialization</option>
+                    {specializationData?.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <div className="flex justify-center items-center mt-8">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="flex justify-center items-center text-xl gap-2 bg-primary hover:bg-[#5CB2AF] text-white py-2 px-4 rounded-lg w-44 focus:outline-none disabled:opacity-50"
+            >
+              {isPending ? "Adding Slider..." : "Add Slider"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
