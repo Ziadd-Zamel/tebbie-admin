@@ -358,7 +358,7 @@ const AddSlider = () => {
                     htmlFor="specialization"
                     className="block text-sm font-medium text-gray-700 mb-2"
                   >
-                    Select Specialization
+                    اختر التخصص
                   </label>
                   <select
                     name="specialization"
@@ -373,7 +373,7 @@ const AddSlider = () => {
                     className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
                     required
                   >
-                    <option value="">Select Specialization</option>
+                    <option value="">اختر التخصص</option>
                     {specializationData?.map((data) => (
                       <option key={data.id} value={data.id}>
                         {data.name}
@@ -392,7 +392,7 @@ const AddSlider = () => {
               disabled={isPending}
               className="flex justify-center items-center text-xl gap-2 bg-primary hover:bg-[#5CB2AF] text-white py-2 px-4 rounded-lg w-44 focus:outline-none disabled:opacity-50"
             >
-              {isPending ? "Adding Slider..." : "Add Slider"}
+              {isPending ? "جاري الإضافة..." : "إضافة شريط"}
             </button>
           </div>
         </form>
