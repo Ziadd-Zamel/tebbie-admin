@@ -18,13 +18,13 @@ import {
   TextField,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { 
-  FaMapMarkerAlt, 
-  FaFileAlt, 
-  FaUserMd, 
-  FaEnvelope, 
-  FaCheckCircle 
-} from 'react-icons/fa';
+import {
+  FaMapMarkerAlt,
+  FaFileAlt,
+  FaUserMd,
+  FaEnvelope,
+  FaCheckCircle,
+} from "react-icons/fa";
 
 const token = localStorage.getItem("authToken");
 
@@ -34,6 +34,8 @@ const HospitalDetails = () => {
   const { HospitalId } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const doctorsPerPage = 20;
 
   const {
     data: hospital,
@@ -64,9 +66,27 @@ const HospitalDetails = () => {
     handleCloseModal();
   };
 
-  const filteredDoctors = hospital?.doctors.data.filter((doc) =>
+  // Remove duplicates based on doctor ID first
+  const uniqueDoctors =
+    hospital?.doctors.data?.filter(
+      (doc, index, self) => index === self.findIndex((d) => d.id === doc.id)
+    ) || [];
+
+  const filteredDoctors = uniqueDoctors.filter((doc) =>
     doc.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Pagination logic
+  const totalPages = Math.ceil((filteredDoctors?.length || 0) / doctorsPerPage);
+  const startIndex = (currentPage - 1) * doctorsPerPage;
+  const endIndex = startIndex + doctorsPerPage;
+  const paginatedDoctors = filteredDoctors?.slice(startIndex, endIndex) || [];
+
+  // Reset to first page when search term changes
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
 
   if (isLoading || isDeleting) return <Loader />;
   if (error) return <div className="text-red-500">{t("errorLoadingData")}</div>;
@@ -103,10 +123,26 @@ const HospitalDetails = () => {
             className="lg:col-span-2 space-y-6"
           >
             <div className="bg-gray-50/50 p-6 rounded-xl border border-gray-100 ">
-              <InfoItem label="address" displayLabel={t("address")} value={hospital.address} />
-              <InfoItem label="description" displayLabel={t("description")} value={hospital.description} />
-              <InfoItem label="bio" displayLabel={t("bio")} value={hospital.bio} />
-              <InfoItem label="email" displayLabel={t("email")} value={hospital.email} />
+              <InfoItem
+                label="address"
+                displayLabel={t("address")}
+                value={hospital.address}
+              />
+              <InfoItem
+                label="description"
+                displayLabel={t("description")}
+                value={hospital.description}
+              />
+              <InfoItem
+                label="bio"
+                displayLabel={t("bio")}
+                value={hospital.bio}
+              />
+              <InfoItem
+                label="email"
+                displayLabel={t("email")}
+                value={hospital.email}
+              />
               <InfoItem
                 label="status"
                 displayLabel={t("status")}
@@ -130,7 +166,7 @@ const HospitalDetails = () => {
             </div>
 
             {/* Doctors */}
-            <div>
+            <div className="min-h-[50vh]">
               <h3 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
                 <FaUserMd className="text-[#33A9C7] me-2" />
                 {t("AvilableDoctors")}
@@ -140,22 +176,56 @@ const HospitalDetails = () => {
                 variant="outlined"
                 fullWidth
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
                 sx={{ mb: 4 }}
               />
+
+              {/* Pagination info and controls */}
+              <div className="flex justify-between items-center mb-4">
+                {totalPages > 1 && (
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                      disabled={currentPage === 1}
+                    >
+                      السابق
+                    </Button>
+                    <span className="text-sm text-gray-600 pr-2">
+                      صفحة {currentPage} من {totalPages}
+                    </span>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                    >
+                      التالي
+                    </Button>
+                  </div>
+                )}
+                <p className="text-gray-600">
+                  عرض {startIndex + 1}-
+                  {Math.min(endIndex, filteredDoctors?.length || 0)} من{" "}
+                  {filteredDoctors?.length || 0} طبيب
+                </p>
+              </div>
+
               <div className="flex flex-wrap gap-3">
-                {filteredDoctors?.length > 0 ? (
-                  filteredDoctors.map((doc) => (
+                {paginatedDoctors?.length > 0 ? (
+                  paginatedDoctors.map((doc) => (
                     <motion.span
                       key={doc.id}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       className="px-4 py-2 bg-gradient-to-br from-[#33A9C7] to-[#3AAB95] text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
                     >
-                      <Link to={`/doctors/${doc.id}`}>
-                      {doc.name}
-                      </Link>
-                     
+                      <Link to={`/doctors/${doc.id}`}>{doc.name}</Link>
                     </motion.span>
                   ))
                 ) : (
@@ -287,16 +357,16 @@ const HospitalDetails = () => {
 
 const InfoItem = ({ label, displayLabel, value }) => {
   const getIcon = (label) => {
-    switch(label.toLowerCase()) {
-      case 'address':
+    switch (label.toLowerCase()) {
+      case "address":
         return <FaMapMarkerAlt className="text-[#33A9C7] me-2 shrink-0" />;
-      case 'description':
+      case "description":
         return <FaFileAlt className="text-[#33A9C7] me-2 shrink-0" />;
-      case 'bio':
+      case "bio":
         return <FaUserMd className="text-[#33A9C7] me-2 shrink-0" />;
-      case 'email':
+      case "email":
         return <FaEnvelope className="text-[#33A9C7] me-2 shrink-0" />;
-      case 'status':
+      case "status":
         return <FaCheckCircle className="text-[#33A9C7] me-2 shrink-0" />;
       default:
         return null;
@@ -312,7 +382,10 @@ const InfoItem = ({ label, displayLabel, value }) => {
     >
       <span className="flex items-center shrink-0 my-4">
         {getIcon(label)}
-        <strong className="text-gray-800 font-semibold"> {displayLabel} : </strong>
+        <strong className="text-gray-800 font-semibold">
+          {" "}
+          {displayLabel} :{" "}
+        </strong>
       </span>
       <span className="break-words ml-2"> {value} </span>
     </motion.p>
