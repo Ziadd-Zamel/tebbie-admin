@@ -241,10 +241,15 @@ const UpdateHospital = () => {
     );
   }
   const doctorsOptions =
-    doctors?.map((data) => ({
-      value: data.id,
-      label: data.name,
-    })) || [];
+    doctors
+      ?.filter(
+        (doctor, index, self) =>
+          index === self.findIndex((d) => d.id === doctor.id)
+      )
+      ?.map((data) => ({
+        value: data.id,
+        label: data.name,
+      })) || [];
 
   const specializationOptions =
     specializationsData?.map((data) => ({
