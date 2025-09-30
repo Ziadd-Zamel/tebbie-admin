@@ -15,7 +15,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
-  const login = async (email, password,fcmToken ) => {
+  const login = async (email, password, fcmToken) => {
     try {
       const response = await fetch(LOGIN_URL, {
         method: "POST",
@@ -23,10 +23,10 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ email, password,fcm_token: fcmToken }),
+        body: JSON.stringify({ email, password, fcm_token: fcmToken }),
       });
 
-      const data = await response.json(); 
+      const data = await response.json();
 
       if (!response.ok) {
         const error = new Error(data.message || "خطأ في تسجيل الدخول");
@@ -34,9 +34,13 @@ export const AuthProvider = ({ children }) => {
         throw error;
       }
       if (data.data) {
-        localStorage.setItem("authToken", data.data);
-     
-      }else {
+        localStorage.setItem("authToken", data.data.token);
+        localStorage.setItem("role", data.data.role);
+        localStorage.setItem(
+          "permissions",
+          JSON.stringify(data.data.role.permissions)
+        );
+      } else {
         throw new Error(data.message || "خطأ في تسجيل الدخول");
       }
     } catch (error) {
@@ -52,10 +56,10 @@ export const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({ email, password , fcm_token: fcmToken }),
+        body: JSON.stringify({ email, password, fcm_token: fcmToken }),
       });
 
-      const data = await response.json(); 
+      const data = await response.json();
 
       if (!response.ok) {
         const error = new Error(data.message || "خطأ في تسجيل الدخول");
@@ -65,7 +69,7 @@ export const AuthProvider = ({ children }) => {
       if (data.data) {
         localStorage.setItem("authToken", data.data.token);
         localStorage.setItem("wss_token", data.data.customer_service.wss_token);
-      }else {
+      } else {
         throw new Error(data.message || "خطأ في تسجيل الدخول");
       }
     } catch (error) {
@@ -95,7 +99,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
   const logout = async () => {
-
     try {
       const token = localStorage.getItem("authToken");
 
