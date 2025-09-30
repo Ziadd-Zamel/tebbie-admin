@@ -96,7 +96,7 @@ const UpdateHospital = () => {
         description: hospital.description || "",
         state_id: hospital.state_id || "",
         city_id: hospital.city_id || "",
-        doctor_ids: doctorIds,
+        doctor_ids: [...new Set(doctorIds)].sort((a, b) => a - b),
         media: hospital.media_url || [],
         specialization_id: specializationIds || [],
         active: hospital.active,
@@ -129,9 +129,14 @@ const UpdateHospital = () => {
   };
 
   const handleDoctorChange = (selectedDoctorIds) => {
+    // Remove duplicates from selected doctor IDs and sort them
+    const uniqueDoctorIds = [...new Set(selectedDoctorIds)].sort(
+      (a, b) => a - b
+    );
+
     setHospitalData((prev) => ({
       ...prev,
-      doctor_ids: selectedDoctorIds,
+      doctor_ids: uniqueDoctorIds,
     }));
   };
 
@@ -152,9 +157,14 @@ const UpdateHospital = () => {
 
   const mutation = useMutation({
     mutationFn: (userData) => {
-      const { email, ...otherData } = userData;
+      const { email, doctor_ids, ...otherData } = userData;
+
+      // Remove duplicate doctor IDs and sort them
+      const uniqueDoctorIds = [...new Set(doctor_ids)].sort((a, b) => a - b);
+
       const payload = {
         ...otherData,
+        doctor_ids: uniqueDoctorIds,
         ...(email !== hospital?.email && { email }),
       };
       return updateHospital({ token, ...payload });
