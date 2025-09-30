@@ -1,5 +1,10 @@
 /* eslint-disable no-useless-catch */
 const API_URL = import.meta.env.VITE_APP_API_URL;
+
+// Helper function to get token from localStorage
+const getToken = () => {
+  return localStorage.getItem("authToken");
+};
 //admin
 export const getUser = async ({ token }) => {
   try {
@@ -2987,8 +2992,13 @@ export const cancelBooking = async ({ bookingId, token }) => {
 //dashboard
 export const getAllUsers = async () => {
   try {
+    const token = getToken();
     const response = await fetch(`${API_URL}/dashboard/v1/get-all-users`, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (response.ok) {
@@ -3001,8 +3011,13 @@ export const getAllUsers = async () => {
 };
 export const getAllHospitals = async () => {
   try {
+    const token = getToken();
     const response = await fetch(`${API_URL}/dashboard/v1/get-all-hospitals`, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (response.ok) {
@@ -3015,8 +3030,13 @@ export const getAllHospitals = async () => {
 };
 export const getAllDoctors = async () => {
   try {
+    const token = getToken();
     const response = await fetch(`${API_URL}/dashboard/v1/get-all-doctors`, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (response.ok) {
@@ -3029,10 +3049,15 @@ export const getAllDoctors = async () => {
 };
 export const getAllHomeVisit = async () => {
   try {
+    const token = getToken();
     const response = await fetch(
       `${API_URL}/dashboard/v1/get-all-home-visit-services`,
       {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -3263,10 +3288,15 @@ export const getHospitalsReport = async ({
 };
 export const getGeneralStatistics = async () => {
   try {
+    const token = getToken();
     const response = await fetch(
       `${API_URL}/dashboard/v1/get-general-statistics`,
       {
         method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
