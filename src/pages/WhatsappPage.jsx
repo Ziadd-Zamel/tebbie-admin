@@ -7,6 +7,10 @@ import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const token = localStorage.getItem("authToken");
 
@@ -39,11 +43,21 @@ const WhatsappPage = () => {
   });
 
   const handleEditClick = () => {
+    if (!hasPermission("viewAnySettingWhatsapp")) {
+      const displayName = getPermissionDisplayName("viewAnySettingWhatsapp");
+      alert(`ليس لديك صلاحية لعرض إعدادات الواتساب (${displayName})`);
+      return;
+    }
     setPhone(whatsapp?.whatsapp || "");
     setIsDialogOpen(true);
   };
 
   const handleSave = () => {
+    if (!hasPermission("updateSettingWhatsapp")) {
+      const displayName = getPermissionDisplayName("updateSettingWhatsapp");
+      alert(`ليس لديك صلاحية لتحديث إعدادات الواتساب (${displayName})`);
+      return;
+    }
     if (phone.trim()) {
       updateMutation.mutate(phone.trim());
     }

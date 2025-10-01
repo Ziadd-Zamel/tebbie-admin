@@ -6,6 +6,7 @@ import { utils, writeFile } from "xlsx";
 import { FaFileExcel } from "react-icons/fa6";
 import { FaHome, FaPlus, FaEdit } from "react-icons/fa";
 import AddHomeVisitCommissionDialog from "./AddHomeVisitCommissionDialog";
+import { hasPermission } from "../utlis/permissionUtils";
 
 const HomeVisitCommissionTable = ({
   currentStates,
@@ -38,26 +39,29 @@ const HomeVisitCommissionTable = ({
       {!isLoading && (
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-10 mb-5">
           <div className="flex gap-3">
-            <button
-              onClick={() => setIsDialogOpen(true)}
-              className="px-6 h-10 flex items-center justify-center gap-2 bg-gradient-to-br from-[#10B981] to-[#059669] text-white rounded-lg hover:from-[#0D9B6B] hover:to-[#047857] focus:outline-none focus:ring-2 focus:ring-[#10B981] transition-colors text-sm whitespace-nowrap"
-              aria-label={t("add_commission")}
-              type="button"
-            >
-              <FaPlus aria-hidden="true" />
-              {t("add_commission")}
-            </button>
-            {currentStates?.length > 0 && (
+            {hasPermission("homevisit-commissions-store") && (
               <button
-                onClick={exportToExcel}
-                className="px-6 h-10 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm whitespace-nowrap"
-                aria-label={t("Excel-Export")}
+                onClick={() => setIsDialogOpen(true)}
+                className="px-6 h-10 flex items-center justify-center gap-2 bg-gradient-to-br from-[#10B981] to-[#059669] text-white rounded-lg hover:from-[#0D9B6B] hover:to-[#047857] focus:outline-none focus:ring-2 focus:ring-[#10B981] transition-colors text-sm whitespace-nowrap"
+                aria-label={t("add_commission")}
                 type="button"
               >
-                <FaFileExcel aria-hidden="true" />
-                {t("Excel-Export")}
+                <FaPlus aria-hidden="true" />
+                {t("add_commission")}
               </button>
             )}
+            {currentStates?.length > 0 &&
+              hasPermission("homevisit-commissions-index") && (
+                <button
+                  onClick={exportToExcel}
+                  className="px-6 h-10 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm whitespace-nowrap"
+                  aria-label={t("Excel-Export")}
+                  type="button"
+                >
+                  <FaFileExcel aria-hidden="true" />
+                  {t("Excel-Export")}
+                </button>
+              )}
           </div>
           <p className="font-bold text-xl md:text-2xl flex gap-2 items-center">
             {t("home_visit_commissions")}
@@ -110,16 +114,18 @@ const HomeVisitCommissionTable = ({
                       </span>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <button
-                        onClick={() => {
-                          setEditData(data);
-                          setIsDialogOpen(true);
-                        }}
-                        className="text-blue-600 hover:text-blue-800 transition-colors"
-                        title={t("edit")}
-                      >
-                        <FaEdit size={16} />
-                      </button>
+                      {hasPermission("homevisit-commissions-update") && (
+                        <button
+                          onClick={() => {
+                            setEditData(data);
+                            setIsDialogOpen(true);
+                          }}
+                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          title={t("edit")}
+                        >
+                          <FaEdit size={16} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))

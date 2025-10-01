@@ -5,6 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { addSettings, updateSetting } from "../utlis/https";
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const SettingsForm = ({ initialData = {}, mode = "add" }) => {
   const { settingId } = useParams();
@@ -64,6 +68,17 @@ const SettingsForm = ({ initialData = {}, mode = "add" }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Check permission based on mode
+    const requiredPermission =
+      mode === "add" ? "createSetting" : "updateSetting";
+
+    if (!hasPermission(requiredPermission)) {
+      const displayName = getPermissionDisplayName(requiredPermission);
+      const actionName = mode === "add" ? "إنشاء إعداد" : "تحديث إعداد";
+      alert(`ليس لديك صلاحية لـ ${actionName} (${displayName})`);
+      return;
+    }
 
     const dataToSubmit = {
       ...formState,

@@ -45,6 +45,9 @@ import RequestForm from "./pages/RequestForm";
 import HospitalServices from "./pages/HospitalServices";
 import AddHospitalService from "./pages/AddHospitalService";
 import UpdateHospitalService from "./pages/UpdateHospitalService";
+import AddHospitalMainService from "./pages/AddHospitalMainService";
+import UpdateHospitalMainService from "./pages/UpdateHospitalMainService";
+import HospitalSubServices from "./pages/HospitalSubServices";
 
 import { UserProvider } from "./chatcontext/UserContext";
 import HospitalLayout from "./pages/HospitalLayout";
@@ -64,10 +67,12 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import HomeVisitReportPage from "./pages/HomeVisitReportPage";
 import UserseportPage from "./pages/UserReportPage";
 import WhatsappPage from "./pages/WhatsappPage";
+import PermissionWrapper from "./utlis/PermissionWrapper";
 import TebbieCommunication from "./pages/TebbieCommunication";
 import TebbieWallet from "./pages/TebbieWallet";
 import HospitalWallet from "./pages/HospitalWallet";
 import HomeVisitServices from "./pages/HomeVisitServices";
+import EmployeeRoles from "./pages/EmployeeRoles";
 
 const queryClient = new QueryClient();
 
@@ -80,47 +85,118 @@ const router = createBrowserRouter([
         path: "",
         element: <RootLayout />,
         children: [
-          { index: true, element: <Dashboard /> },
+          {
+            index: true,
+            element: <Dashboard />,
+          },
           {
             path: "hospital-report/:hosId",
-            element: <HospitalReportDetails />,
+            element: (
+              <PermissionWrapper
+                permissionName="HospitalBookingsReport"
+                hideOnNoPermission={true}
+              >
+                <HospitalReportDetails />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/whatsapp",
-            element: <WhatsappPage />,
+            element: (
+              <PermissionWrapper
+                permissionName="viewAnySettingWhatsapp"
+                hideOnNoPermission={true}
+              >
+                <WhatsappPage />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/tebbie-communication",
-            element: <TebbieCommunication />,
+            element: (
+              <PermissionWrapper permissionName="homevisit-commissions-index">
+                <TebbieCommunication />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/tebbie-wallet",
-            element: <TebbieWallet />,
+            element: (
+              <PermissionWrapper permissionName="get-wallet">
+                <TebbieWallet />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/hospital-wallet",
-            element: <HospitalWallet />,
+            element: (
+              <PermissionWrapper permissionName="get-wallet-hospital">
+                <HospitalWallet />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/home-visit-services",
-            element: <HomeVisitServices />,
+            element: (
+              <PermissionWrapper permissionName="home-visit-services-show">
+                <HomeVisitServices />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/home-visit-report/:serviceId",
-            element: <HomeVisitReportPage />,
+            element: (
+              <PermissionWrapper permissionName="HomeVisitReport">
+                <HomeVisitReportPage />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "/users-report/:userid",
-            element: <UserseportPage />,
+            element: (
+              <PermissionWrapper permissionName="UserDetails">
+                <UserseportPage />
+              </PermissionWrapper>
+            ),
           },
           {
             path: "doctors",
             children: [
               { index: true, element: <Doctors /> },
               { path: ":doctorId", element: <DoctorDetails /> },
-              { path: "update-doctor/:doctorId", element: <UpdateDoctor /> },
-              { path: "add-doctor", element: <AddDoctor /> },
-              { path: "trashed-doctors", element: <TrashedDoctor /> },
+              {
+                path: "update-doctor/:doctorId",
+                element: (
+                  <PermissionWrapper
+                    permissionName="restoreDoctors"
+                    hideOnNoPermission={true}
+                  >
+                    <UpdateDoctor />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "add-doctor",
+                element: (
+                  <PermissionWrapper
+                    permissionName="restoreDoctors"
+                    hideOnNoPermission={true}
+                  >
+                    <AddDoctor />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "trashed-doctors",
+                element: (
+                  <PermissionWrapper
+                    permissionName="trashedDoctors"
+                    hideOnNoPermission={true}
+                  >
+                    <TrashedDoctor />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
           {
@@ -128,13 +204,43 @@ const router = createBrowserRouter([
             element: <HospitalLayout />,
 
             children: [
-              { index: true, element: <Hospitals /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper
+                    permissionName="ViewAnyHospitalDoctors"
+                    hideOnNoPermission={true}
+                  >
+                    <Hospitals />
+                  </PermissionWrapper>
+                ),
+              },
               {
                 path: "update-hospital/:HospitalId",
                 element: <UpdateHospital />,
               },
-              { path: ":HospitalId", element: <HospitalDetails /> },
-              { path: "trashed-hospitals", element: <TrashedHospital /> },
+              {
+                path: ":HospitalId",
+                element: (
+                  <PermissionWrapper
+                    permissionName="ViewAnyHospitalDoctors"
+                    hideOnNoPermission={true}
+                  >
+                    <HospitalDetails />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "trashed-hospitals",
+                element: (
+                  <PermissionWrapper
+                    permissionName="trashedHospital"
+                    hideOnNoPermission={true}
+                  >
+                    <TrashedHospital />
+                  </PermissionWrapper>
+                ),
+              },
               { path: "add-hospital", element: <AddHospital /> },
             ],
           },
@@ -149,36 +255,128 @@ const router = createBrowserRouter([
           {
             path: "hospital-services",
             children: [
-              { index: true, element: <HospitalServices /> },
+              {
+                index: true,
+                element: <HospitalServices />,
+              },
               { path: "add", element: <AddHospitalService /> },
               { path: ":id", element: <UpdateHospitalService /> },
+              {
+                path: "main-services/add",
+                element: <AddHospitalMainService />,
+              },
+              {
+                path: "main-services/:id",
+                element: <UpdateHospitalMainService />,
+              },
+              {
+                path: "main-services/:mainServiceId/sub-services",
+                element: <HospitalSubServices />,
+              },
             ],
           },
           {
             path: "clinics",
             children: [
-              { index: true, element: <Employees /> },
-              { path: ":clinId", element: <UpdateEmployee /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper permissionName="employees-index">
+                    <Employees />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: ":clinId",
+                element: (
+                  <PermissionWrapper permissionName="employees-update">
+                    <UpdateEmployee />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
-          { path: "admin-chat", element: <AdminChat /> },
+          {
+            path: "employee-roles",
+            element: <EmployeeRoles />,
+          },
+          {
+            path: "admin-chat",
+            element: (
+              <PermissionWrapper
+                permissionName="viewAnyChat"
+                hideOnNoPermission={true}
+              >
+                <AdminChat />
+              </PermissionWrapper>
+            ),
+          },
           {
             path: "specializations",
             children: [
-              { index: true, element: <Specializations /> },
-              { path: ":spId", element: <UpdateSpecial /> },
-              { path: "add", element: <AddSpecial /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper permissionName="viewAnyHospitalSpecialization">
+                    <Specializations />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: ":spId",
+                element: (
+                  <PermissionWrapper permissionName="restoreSpecialization">
+                    <UpdateSpecial />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "add",
+                element: (
+                  <PermissionWrapper permissionName="restoreSpecialization">
+                    <AddSpecial />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
-          { path: "/send-notification", element: <SendNotification /> },
+          {
+            path: "/send-notification",
+            element: (
+              <PermissionWrapper permissionName="sendNotification">
+                <SendNotification />
+              </PermissionWrapper>
+            ),
+          },
 
-          { path: "coupons", element: <Coupons /> },
+          {
+            path: "coupons",
+            element: (
+              <PermissionWrapper permissionName="coupons-index">
+                <Coupons />
+              </PermissionWrapper>
+            ),
+          },
           { path: "financial", element: <Financial /> },
           {
             path: "recharge-card",
             children: [
-              { index: true, element: <RechargeCards /> },
-              { path: "add-card", element: <AddCard /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper permissionName="recharges-index">
+                    <RechargeCards />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "add-card",
+                element: (
+                  <PermissionWrapper permissionName="recharges-store">
+                    <AddCard />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
           {
@@ -195,7 +393,17 @@ const router = createBrowserRouter([
               { index: true, element: <Cities /> },
               { path: ":cityId", element: <UpdateCity /> },
               { path: "add-city", element: <AddCity /> },
-              { path: "trashed-cities", element: <TrashedCity /> },
+              {
+                path: "trashed-cities",
+                element: (
+                  <PermissionWrapper
+                    permissionName="trashedCity"
+                    hideOnNoPermission={true}
+                  >
+                    <TrashedCity />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
           {
@@ -210,33 +418,101 @@ const router = createBrowserRouter([
           {
             path: "sliders",
             children: [
-              { index: true, element: <Sliders /> },
-              { path: ":sliderId", element: <UpdateSlider /> },
-              { path: "add-slider", element: <AddSlider /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper permissionName="sliders-index">
+                    <Sliders />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: ":sliderId",
+                element: (
+                  <PermissionWrapper permissionName="sliders-update">
+                    <UpdateSlider />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "add-slider",
+                element: (
+                  <PermissionWrapper permissionName="sliders-store">
+                    <AddSlider />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
           {
             path: "states",
             children: [
               { index: true, element: <States /> },
-              { path: "trashed-state", element: <TrashedState /> },
+              {
+                path: "trashed-state",
+                element: (
+                  <PermissionWrapper
+                    permissionName="trashedStates"
+                    hideOnNoPermission={true}
+                  >
+                    <TrashedState />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
           {
             path: "settings",
             children: [
-              { index: true, element: <Settings /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper
+                    permissionName="viewAnySetting"
+                    hideOnNoPermission={true}
+                  >
+                    <Settings />
+                  </PermissionWrapper>
+                ),
+              },
               { path: ":settingId", element: <EditSetting /> },
               { path: "add", element: <AddSetting /> },
             ],
           },
-          { path: "request-Form", element: <RequestForm /> },
+          {
+            path: "request-Form",
+            element: (
+              <PermissionWrapper permissionName="viewAnyRequestForm">
+                <RequestForm />
+              </PermissionWrapper>
+            ),
+          },
           { path: "terms", element: <TermsAndConditions /> },
           {
             path: "refunds",
             children: [
-              { index: true, element: <Refunds /> },
-              { path: ":refundsId", element: <RefundsDetails /> },
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper
+                    permissionName="viewAnyRefundBooking"
+                    hideOnNoPermission={true}
+                  >
+                    <Refunds />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: ":refundsId",
+                element: (
+                  <PermissionWrapper
+                    permissionName="viewRefundBooking"
+                    hideOnNoPermission={true}
+                  >
+                    <RefundsDetails />
+                  </PermissionWrapper>
+                ),
+              },
             ],
           },
           {
@@ -260,7 +536,17 @@ const router = createBrowserRouter([
         path: "",
         element: <ChatLayout />,
         children: [
-          { index: true, element: <ChatPage /> },
+          {
+            index: true,
+            element: (
+              <PermissionWrapper
+                permissionName="viewChat"
+                hideOnNoPermission={true}
+              >
+                <ChatPage />
+              </PermissionWrapper>
+            ),
+          },
           {
             path: "*",
             element: <NotFound />,

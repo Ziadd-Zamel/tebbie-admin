@@ -1,16 +1,23 @@
 import Loader from "./Loader";
-import {  getTrashedSpecializations, restorespecializations } from "../utlis/https";
+import {
+  getTrashedSpecializations,
+  restorespecializations,
+} from "../utlis/https";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaUndo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const token = localStorage.getItem("authToken");
 
 const TrashedSpecialization = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const {  i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const {
@@ -23,11 +30,17 @@ const TrashedSpecialization = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (id) => restorespecializations({ token, id }),
+    mutationFn: (id) => {
+      if (!hasPermission("restoreSpecialization")) {
+        const displayName = getPermissionDisplayName("restoreSpecialization");
+        alert(`ليس لديك صلاحية لاسترجاع التخصص (${displayName})`);
+        return Promise.reject(new Error("No permission"));
+      }
+      return restorespecializations({ token, id });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["trashed-specialization"]);
       navigate("/specializations");
-
     },
   });
 
@@ -36,21 +49,23 @@ const TrashedSpecialization = () => {
   }
 
   if (error) {
-    return <div className="text-red-500 text-center py-4">حدث خطأ أثناء جلب البيانات. الرجاء المحاولة لاحقًا.</div>;
+    return (
+      <div className="text-red-500 text-center py-4">
+        حدث خطأ أثناء جلب البيانات. الرجاء المحاولة لاحقًا.
+      </div>
+    );
   }
 
-   if (!SpecializationData?.length) {
+  if (!SpecializationData?.length) {
     return (
       <div className="text-gray-600 text-center text-xl py-4 h-full flex justify-center items-center">
-        <p>
-        لا توجد مستشفيات محذوفة لعرضها.
-        </p>
+        <p>لا توجد مستشفيات محذوفة لعرضها.</p>
       </div>
     );
   }
 
   return (
-    <section dir={direction}  className="container mx-auto py-8">
+    <section dir={direction} className="container mx-auto py-8">
       <div className="rounded-3xl md:p-8 p-4 bg-white shadow-lg overflow-auto">
         <h2 className="text-2xl font-bold mb-6">المستشفيات المحذوفة</h2>
         <table className="max-w-[100vh] lg:w-full mx-auto border-collapse border border-gray-200">
@@ -67,7 +82,9 @@ const TrashedSpecialization = () => {
           <tbody>
             {SpecializationData.map((data, index) => (
               <tr key={data.id} className="hover:bg-gray-50">
-                <td className="border border-gray-200 p-2 text-center">{index + 1}</td>
+                <td className="border border-gray-200 p-2 text-center">
+                  {index + 1}
+                </td>
                 <td className="border border-gray-200 p-2 text-center">
                   {data.media_url?.length > 0 ? (
                     <img
@@ -80,8 +97,12 @@ const TrashedSpecialization = () => {
                   )}
                 </td>
                 <td className="border border-gray-200 p-2">{data.name}</td>
-                <td className="border border-gray-200 p-2">{data.description || "لا يوجد"}</td>
-                <td className="border border-gray-200 p-2">{data.address || "لا يوجد"}</td>
+                <td className="border border-gray-200 p-2">
+                  {data.description || "لا يوجد"}
+                </td>
+                <td className="border border-gray-200 p-2">
+                  {data.address || "لا يوجد"}
+                </td>
                 <td className="border border-gray-200 p-2 text-center">
                   <button
                     onClick={() => mutation.mutate(data.id)}

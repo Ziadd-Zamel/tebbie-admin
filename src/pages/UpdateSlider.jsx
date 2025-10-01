@@ -14,6 +14,10 @@ import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
 import ErrorMessage from "./ErrorMessage";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const realtableType = [
   { id: 1, name: "hospital" },
@@ -46,15 +50,25 @@ const UpdateSlider = () => {
   });
 
   const { mutate: handleUpdateSlider, isPending } = useMutation({
-    mutationFn: (newSlider) =>
-      updateSliders({ ...newSlider, token, id: sliderId }),
+    mutationFn: (newSlider) => {
+      if (!hasPermission("sliders-update")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "sliders-update"
+          )}`
+        );
+      }
+      return updateSliders({ ...newSlider, token, id: sliderId });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["sliderData", token]);
-      toast.success("Slider added successfully!");
+      toast.success("Slider updated successfully!");
       navigate("/sliders");
     },
-    onError: () => {
-      toast.error("Failed to add slider. Please try again.");
+    onError: (error) => {
+      toast.error(
+        error.message || "Failed to update slider. Please try again."
+      );
     },
   });
 

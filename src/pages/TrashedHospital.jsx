@@ -6,6 +6,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaUndo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/Pagination";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const token = localStorage.getItem("authToken");
 
@@ -31,7 +35,14 @@ const TrashedHospital = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (id) => restoreHospital({ token, id }),
+    mutationFn: (id) => {
+      if (!hasPermission("restoreHospital")) {
+        const displayName = getPermissionDisplayName("restoreHospital");
+        alert(`ليس لديك صلاحية لاسترجاع المستشفى (${displayName})`);
+        return Promise.reject(new Error("No permission"));
+      }
+      return restoreHospital({ token, id });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["trashed-hospital"]);
       navigate("/hospitals");

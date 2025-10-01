@@ -17,6 +17,10 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const token = localStorage.getItem("authToken");
 
@@ -44,7 +48,16 @@ const Employees = () => {
   });
 
   const { mutate: handleDelete } = useMutation({
-    mutationFn: ({ id }) => deleteEmployee({ id, token }),
+    mutationFn: ({ id }) => {
+      if (!hasPermission("employees-destroy")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "employees-destroy"
+          )}`
+        );
+      }
+      return deleteEmployee({ id, token });
+    },
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries(["employeesData", token]);
       const previousEmployees = queryClient.getQueryData([
@@ -64,7 +77,9 @@ const Employees = () => {
         ["employeesData", token],
         context.previousEmployees
       );
-      toast.error(t("employeeDeleteFailed", { error: error.message }));
+      toast.error(
+        error.message || t("employeeDeleteFailed", { error: error.message })
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries(["employeesData", token]);
@@ -133,15 +148,17 @@ const Employees = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-1/3 p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
             />
-            <div className="flex justify-end w-full md:w-1/3">
-              <button
-                onClick={handleOpenModal}
-                className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
-              >
-                {t("addEmployee")}
-                <IoMdPersonAdd className="w-5 h-5" />
-              </button>
-            </div>
+            {hasPermission("employees-store") && (
+              <div className="flex justify-end w-full md:w-1/3">
+                <button
+                  onClick={handleOpenModal}
+                  className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+                >
+                  {t("addEmployee")}
+                  <IoMdPersonAdd className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
           <div className="overflow-x-auto lg:w-full w-[90vw]">
             <table className="min-w-full bg-white rounded-lg border border-gray-200">
@@ -197,18 +214,24 @@ const Employees = () => {
                       </td>
                       <td className="py-3 px-6 text-center">
                         <div className="flex gap-4 justify-center">
-                          <button
-                            onClick={() => handleDeleteClick(employee.id)}
-                            className="text-red-500 hover:text-red-700 focus:outline-none"
-                          >
-                            <AiFillDelete size={25} />
-                          </button>
-                          <button
-                            onClick={() => navigate(`/clinics/${employee.id}`)}
-                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                          >
-                            <AiFillEdit size={25} />
-                          </button>
+                          {hasPermission("employees-destroy") && (
+                            <button
+                              onClick={() => handleDeleteClick(employee.id)}
+                              className="text-red-500 hover:text-red-700 focus:outline-none"
+                            >
+                              <AiFillDelete size={25} />
+                            </button>
+                          )}
+                          {hasPermission("employees-update") && (
+                            <button
+                              onClick={() =>
+                                navigate(`/clinics/${employee.id}`)
+                              }
+                              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                            >
+                              <AiFillEdit size={25} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

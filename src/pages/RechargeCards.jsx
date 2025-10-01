@@ -9,6 +9,11 @@ import { Link } from "react-router-dom";
 import { FaFileExcel } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import RechargeCardsPagination from "../components/RechargeCardsPagination";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
+import { toast } from "react-toastify";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -64,6 +69,14 @@ const RechargeCards = () => {
   });
 
   const handleExport = () => {
+    if (!hasPermission("exportRechargeCard")) {
+      toast.error(
+        `You don't have permission to ${getPermissionDisplayName(
+          "exportRechargeCard"
+        )}`
+      );
+      return;
+    }
     const params = new URLSearchParams({
       ...(debouncedSearchTerm && { card_number: debouncedSearchTerm }),
       ...(isValid !== undefined && { is_valid: isValid }),
@@ -104,20 +117,24 @@ const RechargeCards = () => {
   return (
     <section dir={direction} className="container mx-auto lg:p-6 p-4 w-full">
       <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
-        <Link
-          to={"/recharge-card/add-card"}
-          className="px-6 py-2 hover:bg-[#048c87] flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
-        >
-          {t("AddCard")}
-          <IoMdAddCircle />
-        </Link>
-        <button
-          onClick={handleExport}
-          className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2"
-        >
-          {t("Excel-Export")}
-          <FaFileExcel />
-        </button>
+        {hasPermission("recharges-store") && (
+          <Link
+            to={"/recharge-card/add-card"}
+            className="px-6 py-2 hover:bg-[#048c87] flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
+          >
+            {t("AddCard")}
+            <IoMdAddCircle />
+          </Link>
+        )}
+        {hasPermission("exportRechargeCard") && (
+          <button
+            onClick={handleExport}
+            className="px-6 py-2 border-[#048c87] border-2  text-[#048c87] text-lg rounded-[8px]  flex justify-center items-center gap-2"
+          >
+            {t("Excel-Export")}
+            <FaFileExcel />
+          </button>
+        )}
       </div>
       <div className="my-4 flex flex-col gap-4 md:flex-row md:items-center">
         <div className="flex-1">

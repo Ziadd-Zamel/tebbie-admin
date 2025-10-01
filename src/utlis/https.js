@@ -2716,18 +2716,24 @@ export const postServices = async ({ token, name, type }) => {
 };
 
 // hospital services (admin)
-export const getHospitalServices = async ({ token }) => {
+export const getHospitalServices = async ({ token, main_service_name }) => {
   try {
-    const response = await fetch(
-      `${API_URL}/dashboard/v1/admin/hospital-services/all`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    let url = `${API_URL}/dashboard/v1/admin/hospital-services/all`;
+    const params = [];
+    if (main_service_name) {
+      params.push(`main_service_name=${encodeURIComponent(main_service_name)}`);
+    }
+    if (params.length > 0) {
+      url += `?${params.join("&")}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -2745,6 +2751,7 @@ export const addHospitalService = async ({
   tabi_commission,
   hospital_commission,
   status,
+  hospital_main_service_id,
 }) => {
   const formdata = new FormData();
   formdata.append("hospital_id", hospital_id);
@@ -2752,6 +2759,9 @@ export const addHospitalService = async ({
   formdata.append("tabi_commission", tabi_commission);
   formdata.append("hospital_commission", hospital_commission);
   formdata.append("status", status);
+  if (hospital_main_service_id) {
+    formdata.append("hospital_main_service_id", hospital_main_service_id);
+  }
 
   try {
     const response = await fetch(
@@ -2786,6 +2796,7 @@ export const updateHospitalService = async ({
   tabi_commission,
   hospital_commission,
   status,
+  hospital_main_service_id,
 }) => {
   const formdata = new FormData();
   if (hospital_id !== undefined) formdata.append("hospital_id", hospital_id);
@@ -2795,6 +2806,8 @@ export const updateHospitalService = async ({
   if (hospital_commission !== undefined)
     formdata.append("hospital_commission", hospital_commission);
   if (status !== undefined) formdata.append("status", status);
+  if (hospital_main_service_id !== undefined)
+    formdata.append("hospital_main_service_id", hospital_main_service_id);
 
   try {
     const response = await fetch(
@@ -3741,6 +3754,110 @@ export const sendNotification = async ({ user_ids, title, body, token }) => {
   return result.data;
 };
 
+// Employee Roles API functions
+export const getEmployeeRoles = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin-roles`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch employee roles");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEmployeePermissions = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin-permissions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to fetch employee permissions");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createEmployeeRole = async ({
+  token,
+  hospital_id,
+  name,
+  display_name,
+  permissions,
+}) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin-roles`, {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        display_name,
+        permissions,
+        hospital_id,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Failed to create employee role");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateRolePermissions = async ({ token, roleId, permissions }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin-roles/${roleId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          permissions: permissions,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to update role permissions");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message || "An unexpected error occurred");
+  }
+};
+
 //admin chat
 export const fetchAdminUsersList = async ({ token, search, page }) => {
   try {
@@ -4088,6 +4205,130 @@ export const updateHomeVisitService = async ({
 
     const data = await response.json();
     return data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+// Hospital Main Services APIs
+export const getHospitalMainServices = async ({ token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-main-services/all`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addHospitalMainService = async ({
+  token,
+  hospital_id,
+  name,
+  status,
+}) => {
+  const formdata = new FormData();
+  formdata.append("hospital_id", hospital_id);
+  formdata.append("name", name);
+  formdata.append("status", status);
+
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-main-services`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const updateHospitalMainService = async ({
+  token,
+  id,
+  hospital_id,
+  name,
+  status,
+}) => {
+  const formdata = new FormData();
+  if (hospital_id !== undefined) formdata.append("hospital_id", hospital_id);
+  if (name !== undefined) formdata.append("name", name);
+  if (status !== undefined) formdata.append("status", status);
+
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-main-services/update/${id}`,
+      {
+        method: "POST",
+        body: formdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const deleteHospitalMainService = async ({ id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/hospital-main-services/delete/${id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg ||
+          "An error occurred while deleting the hospital main service"
+      );
+    }
+
+    return result.data;
   } catch (error) {
     console.error("Error:", error);
     throw error;

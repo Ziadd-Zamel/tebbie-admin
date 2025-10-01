@@ -68,6 +68,20 @@ const Navbar = () => {
     if (pathname.startsWith("/home-visit-report/")) {
       return pageTranslations[language]["/home-visit-report/:serviceId"];
     }
+    if (pathname.startsWith("/hospital-services/main-services/add")) {
+      return pageTranslations[language]["/hospital-services/main-services/add"];
+    }
+    if (
+      pathname.startsWith("/hospital-services/main-services/") &&
+      pathname.includes("/sub-services")
+    ) {
+      return pageTranslations[language][
+        "/hospital-services/main-services/:mainServiceId/sub-services"
+      ];
+    }
+    if (pathname.startsWith("/hospital-services/main-services/")) {
+      return pageTranslations[language]["/hospital-services/main-services/:id"];
+    }
 
     return (
       pageTranslations[language][pathname] || pageTranslations[language].default

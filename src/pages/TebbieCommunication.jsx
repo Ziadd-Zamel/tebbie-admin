@@ -6,6 +6,7 @@ import HospitalCommissionTable from "../components/HospitalCommissionTable";
 import HomeVisitCommissionTable from "../components/HomeVisitCommissionTable";
 import Pagination from "../components/Pagination";
 import ErrorMessage from "./ErrorMessage";
+import { hasPermission } from "../utlis/permissionUtils";
 
 const TebbieCommunication = () => {
   const { t } = useTranslation();
@@ -22,7 +23,10 @@ const TebbieCommunication = () => {
   } = useQuery({
     queryKey: ["doctor-commissions", token],
     queryFn: () => getDoctorCommissions({ token }),
-    enabled: !!token && activeTab === "hospital",
+    enabled:
+      !!token &&
+      activeTab === "hospital" &&
+      hasPermission("doctor-commissions-index"),
   });
 
   // Fetch home visit commissions data
@@ -33,7 +37,10 @@ const TebbieCommunication = () => {
   } = useQuery({
     queryKey: ["homevisit-commissions", token],
     queryFn: () => getHomeVisitCommissions({ token }),
-    enabled: !!token && activeTab === "home-service",
+    enabled:
+      !!token &&
+      activeTab === "home-service" &&
+      hasPermission("homevisit-commissions-index"),
   });
 
   // Get current data based on active tab
@@ -76,26 +83,30 @@ const TebbieCommunication = () => {
         {/* Tabs */}
         <div className="border-b border-gray-200 mb-6 flex justify-end">
           <nav className=" gap-10">
-            <button
-              onClick={() => handleTabChange("hospital")}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === "hospital"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-            >
-              {t("hospitals")}
-            </button>
-            <button
-              onClick={() => handleTabChange("home-service")}
-              className={`py-2 px-1 border-b-2 ml-8  font-medium text-sm ${
-                activeTab === "home-service"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
-            >
-              {t("home_service")}
-            </button>
+            {hasPermission("doctor-commissions-index") && (
+              <button
+                onClick={() => handleTabChange("hospital")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "hospital"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {t("hospitals")}
+              </button>
+            )}
+            {hasPermission("homevisit-commissions-index") && (
+              <button
+                onClick={() => handleTabChange("home-service")}
+                className={`py-2 px-1 border-b-2 ml-8  font-medium text-sm ${
+                  activeTab === "home-service"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {t("home_service")}
+              </button>
+            )}
           </nav>
         </div>
 

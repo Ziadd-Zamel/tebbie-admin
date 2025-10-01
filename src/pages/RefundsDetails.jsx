@@ -15,6 +15,10 @@ import { useState, useEffect } from "react";
 import Pagination from "../components/Pagination";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const RefundsDetails = () => {
   const token = localStorage.getItem("authToken");
@@ -81,6 +85,11 @@ const RefundsDetails = () => {
   };
 
   const handleOpenDialog = () => {
+    if (!hasPermission("createRefundBooking")) {
+      const displayName = getPermissionDisplayName("createRefundBooking");
+      alert(`ليس لديك صلاحية لإنشاء طلب استرداد (${displayName})`);
+      return;
+    }
     if (selectedRefunds.length > 0) setOpenDialog(true);
   };
 

@@ -32,6 +32,7 @@ import { FaStethoscope } from "react-icons/fa";
 import LogoutDialog from "./LogoutDialog";
 import { RiShieldCheckLine } from "react-icons/ri";
 import { MdChat, MdAccountBalanceWallet } from "react-icons/md";
+import { FaUserCog } from "react-icons/fa";
 
 export const sidebarLinks = [
   { path: "/", label: "dashboard", icon: <FaRegClock size={22} /> },
@@ -43,6 +44,11 @@ export const sidebarLinks = [
   },
   { path: "/doctors", label: "doctors", icon: <FaUserDoctor size={22} /> },
   { path: "/clinics", label: "clinic", icon: <IoMdPeople size={22} /> },
+  {
+    path: "/employee-roles",
+    label: "employee roles",
+    icon: <FaUserCog size={22} />,
+  },
   // { path: "/services", label: "services", icon: <FaStethoscope size={22} /> },
   {
     path: "/hospital-services",

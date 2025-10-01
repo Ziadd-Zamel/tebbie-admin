@@ -20,6 +20,10 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const token = localStorage.getItem("authToken");
 
@@ -56,8 +60,16 @@ const Coupons = () => {
   });
 
   const { mutate: handleUpdate } = useMutation({
-    mutationFn: ({ id, token, code, type, amount, originalCoupon }) =>
-      UpdateCoupon({ id, token, code, type, amount, originalCoupon }), // تمرير originalCoupon
+    mutationFn: ({ id, token, code, type, amount, originalCoupon }) => {
+      if (!hasPermission("coupons-update")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "coupons-update"
+          )}`
+        );
+      }
+      return UpdateCoupon({ id, token, code, type, amount, originalCoupon }); // تمرير originalCoupon
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["Coupons", token]);
       setEditingCoupon(null);
@@ -69,10 +81,17 @@ const Coupons = () => {
     },
   });
 
-
   const { mutate: handleAdd } = useMutation({
-    mutationFn: ({ code, type, amount }) =>
-      newCoupon({ code, type, amount, token }),
+    mutationFn: ({ code, type, amount }) => {
+      if (!hasPermission("coupons-store")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "coupons-store"
+          )}`
+        );
+      }
+      return newCoupon({ code, type, amount, token });
+    },
     onMutate: async ({ code, type, amount }) => {
       await queryClient.cancelQueries(["Coupons", token]);
       const previousCoupons = queryClient.getQueryData(["Coupons", token]);
@@ -97,7 +116,16 @@ const Coupons = () => {
   });
 
   const { mutate: handleDelete } = useMutation({
-    mutationFn: ({ id }) => deleteCoupon({ id, token }),
+    mutationFn: ({ id }) => {
+      if (!hasPermission("coupons-destroy")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "coupons-destroy"
+          )}`
+        );
+      }
+      return deleteCoupon({ id, token });
+    },
     onMutate: async ({ id }) => {
       await queryClient.cancelQueries(["Coupons", token]);
       const previousCoupons = queryClient.getQueryData(["Coupons", token]);
@@ -162,8 +190,8 @@ const Coupons = () => {
   };
 
   const handleSaveClick = (id) => {
-    const originalCoupon = couponData.find((coupon) => coupon.id === id); // العثور على الكوبون الأصلي
-    handleUpdate({ id, token, ...updatedCoupon, originalCoupon }); // تمرير original  originalCoupon
+    const originalCoupon = couponData.find((coupon) => coupon.id === id);
+    handleUpdate({ id, token, ...updatedCoupon, originalCoupon });
   };
   const filteredCoupons = useMemo(() => {
     if (!couponData) return [];
@@ -289,12 +317,14 @@ const Coupons = () => {
                     <div className="flex justify-center gap-4">
                       {editingCoupon === coupon.id ? (
                         <>
-                          <button
-                            onClick={() => handleSaveClick(coupon.id)}
-                            className="text-green-500 hover:text-green-700 focus:outline-none"
-                          >
-                            {t("save")}
-                          </button>
+                          {hasPermission("coupons-update") && (
+                            <button
+                              onClick={() => handleSaveClick(coupon.id)}
+                              className="text-green-500 hover:text-green-700 focus:outline-none"
+                            >
+                              {t("save")}
+                            </button>
+                          )}
                           <button
                             onClick={() => setEditingCoupon(null)}
                             className="text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -304,66 +334,72 @@ const Coupons = () => {
                         </>
                       ) : (
                         <>
-                          <button
-                            onClick={() => handleEditClick(coupon)}
-                            className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                          >
-                            <AiFillEdit size={28} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteClick(coupon.id)}
-                            className="text-red-500 hover:text-red-700 focus:outline-none"
-                          >
-                            <AiFillDelete size={28} />
-                          </button>
+                          {hasPermission("coupons-update") && (
+                            <button
+                              onClick={() => handleEditClick(coupon)}
+                              className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                            >
+                              <AiFillEdit size={28} />
+                            </button>
+                          )}
+                          {hasPermission("coupons-destroy") && (
+                            <button
+                              onClick={() => handleDeleteClick(coupon.id)}
+                              className="text-red-500 hover:text-red-700 focus:outline-none"
+                            >
+                              <AiFillDelete size={28} />
+                            </button>
+                          )}
                         </>
                       )}
                     </div>
                   </td>
                 </tr>
               ))}
-              <tr className="border-b border-gray-200 hover:bg-gray-100">
-                <td className="py-3 px-6 text-center">{t("new")}</td>
-                <td className="py-3 px-6 text-center shrink-0  min-w-48">
-                  <input
-                    type="text"
-                    name="code"
-                    placeholder={t("enterCode")}
-                    value={formState.code}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded p-2 w-full"
-                  />
-                </td>
-                <td className="py-3 px-6 text-center shrink-0  min-w-48">
-                  <select
-                    name="type"
-                    value={formState.type}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded p-2 w-full"
-                  >
-                    <option value="fixed">{t("fixed")}</option>
-                    <option value="percentage">{t("percentage")}</option>
-                  </select>
-                </td>
-                <td className="py-3 px-6 text-center shrink-0 min-w-48">
-                  <input
-                    type="number"
-                    name="amount"
-                    placeholder={t("enterAmount")}
-                    value={formState.amount}
-                    onChange={handleInputChange}
-                    className="border border-gray-300 rounded p-2 w-full"
-                  />
-                </td>
-                <td className="py-3 px-6 text-center shrink-0  min-w-48">
-                  <button
-                    onClick={handleAddClick}
-                    className="text-green-500 hover:text-green-700 focus:outline-none"
-                  >
-                    <AiFillPlusCircle size={28} />
-                  </button>
-                </td>
-              </tr>
+              {hasPermission("coupons-store") && (
+                <tr className="border-b border-gray-200 hover:bg-gray-100">
+                  <td className="py-3 px-6 text-center">{t("new")}</td>
+                  <td className="py-3 px-6 text-center shrink-0  min-w-48">
+                    <input
+                      type="text"
+                      name="code"
+                      placeholder={t("enterCode")}
+                      value={formState.code}
+                      onChange={handleInputChange}
+                      className="border border-gray-300 rounded p-2 w-full"
+                    />
+                  </td>
+                  <td className="py-3 px-6 text-center shrink-0  min-w-48">
+                    <select
+                      name="type"
+                      value={formState.type}
+                      onChange={handleInputChange}
+                      className="border border-gray-300 rounded p-2 w-full"
+                    >
+                      <option value="fixed">{t("fixed")}</option>
+                      <option value="percentage">{t("percentage")}</option>
+                    </select>
+                  </td>
+                  <td className="py-3 px-6 text-center shrink-0 min-w-48">
+                    <input
+                      type="number"
+                      name="amount"
+                      placeholder={t("enterAmount")}
+                      value={formState.amount}
+                      onChange={handleInputChange}
+                      className="border border-gray-300 rounded p-2 w-full"
+                    />
+                  </td>
+                  <td className="py-3 px-6 text-center shrink-0  min-w-48">
+                    <button
+                      onClick={handleAddClick}
+                      className="text-green-500 hover:text-green-700 focus:outline-none"
+                    >
+                      <AiFillPlusCircle size={28} />
+                    </button>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -24,7 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const token = localStorage.getItem("authToken");
 
-const HospitalServices = () => {
+const HospitalMainServices = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const queryClient = useQueryClient();
@@ -82,8 +82,10 @@ const HospitalServices = () => {
     setCurrentPage(newPage);
   };
 
-  const handleMainServiceClick = (service) => {
-    navigate(`/hospital-services/main-services/${service.id}/sub-services`);
+  const handleRowClick = (service) => {
+    navigate(
+      `/hospital-services?main_service_name=${encodeURIComponent(service.name)}`
+    );
   };
 
   const getHospitalName = (hospitalId) => {
@@ -132,11 +134,11 @@ const HospitalServices = () => {
             </Link>
           </div>
         </div>
-
         <div className="overflow-x-auto md:w-full w-[90vw]">
           <table className="min-w-full bg-white rounded-lg border border-gray-200">
             <thead>
               <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-center">#</th>
                 <th className="py-3 px-6 text-center">{t("الاسم")}</th>
                 <th className="py-3 px-6 text-center">{t("المستشفى")}</th>
                 <th className="py-3 px-6 text-center">{t("الحالة")}</th>
@@ -146,17 +148,20 @@ const HospitalServices = () => {
             <tbody className="text-gray-600 text-lg font-light">
               {current.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="text-center py-4">
+                  <td colSpan="5" className="text-center py-4">
                     {t("لا توجد بيانات")}
                   </td>
                 </tr>
               ) : (
-                current.map((row) => (
+                current.map((row, index) => (
                   <tr
                     key={row.id}
                     className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleMainServiceClick(row)}
+                    onClick={() => handleRowClick(row)}
                   >
+                    <td className="py-3 px-6 text-center whitespace-nowrap">
+                      {indexOfFirst + index + 1}
+                    </td>
                     <td className="py-3 px-6 text-center">{row.name}</td>
                     <td className="py-3 px-6 text-center">
                       {getHospitalName(row.hospital_id)}
@@ -210,9 +215,7 @@ const HospitalServices = () => {
           {t("تأكيد الحذف")}
         </DialogTitle>
         <DialogContent>
-          <p className="text-gray-600">
-            {t("هل أنت متأكد من حذف هذه الخدمة الرئيسية؟")}
-          </p>
+          <p className="text-gray-600">{t("هل أنت متأكد من حذف هذه الخدمة الرئيسية؟")}</p>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", gap: "16px" }}>
           <Button
@@ -245,4 +248,4 @@ const HospitalServices = () => {
   );
 };
 
-export default HospitalServices;
+export default HospitalMainServices;

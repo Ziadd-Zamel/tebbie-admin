@@ -15,6 +15,10 @@ import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import MultiSelectDropdown from "..//components/MultiSearchSelector";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const UpdateEmployee = () => {
   const token = localStorage.getItem("authToken");
@@ -23,7 +27,7 @@ const UpdateEmployee = () => {
   const { clinId } = useParams();
   const [imagePreview, setImagePreview] = useState(null);
   const queryClient = useQueryClient();
-const navigate= useNavigate()
+  const navigate = useNavigate();
   const { data: hospitalData } = useQuery({
     queryKey: ["hospitals"],
     queryFn: () => getHospitals({ token }),
@@ -113,7 +117,7 @@ const navigate= useNavigate()
       });
       setImagePreview(initialData.media_url || null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinId, initialData]);
 
   const handleImageChange = (e) => {
@@ -125,13 +129,26 @@ const navigate= useNavigate()
   };
 
   const mutation = useMutation({
-    mutationFn: (data) => updateEmployee({ ...data, token }),
+    mutationFn: (data) => {
+      if (!hasPermission("employees-update")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "employees-update"
+          )}`
+        );
+      }
+      return updateEmployee({ ...data, token });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employee"] });
-navigate("/clinics")
+      navigate("/clinics");
       toast.success("تم تعديل بيانات الموظف بنجاح");
     },
     onError: (error) => {
+      if (error.message && error.message.includes("permission")) {
+        toast.error(error.message);
+        return;
+      }
       if (error.errors) {
         const fieldErrors = error.errors;
 

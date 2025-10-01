@@ -11,6 +11,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import MultiSelectDropdown from "./MultiSearchSelector";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
   const [imagePreview, setImagePreview] = useState(null);
@@ -56,13 +60,26 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
       label: data.name,
     })) || [];
   const mutation = useMutation({
-    mutationFn: (userData) => newEmployee({ token, ...userData }),
+    mutationFn: (userData) => {
+      if (!hasPermission("employees-store")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "employees-store"
+          )}`
+        );
+      }
+      return newEmployee({ token, ...userData });
+    },
     onSuccess: () => {
       toast.success(t("employeeAddedSuccess"));
       query.invalidateQueries("employeesData");
       setIsModalOpen(false);
     },
     onError: (error) => {
+      if (error.message && error.message.includes("permission")) {
+        toast.error(error.message);
+        return;
+      }
       if (error.errors) {
         const fieldErrors = error.errors;
 
@@ -217,11 +234,10 @@ const Employeesmodal = ({ token, setIsModalOpen, isModalOpen }) => {
                   className="block almarai-semibold mb-4"
                   htmlFor="password"
                 >
-                {t("password")}
+                  {t("password")}
                 </label>
                 <Field
-                             type={showPassword ? "text" : "password"}
-
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder={t("password")}
                   className="border border-gray-100 rounded-xl py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"

@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const AddCard = () => {
   const token = localStorage.getItem("authToken");
@@ -18,21 +22,29 @@ const AddCard = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const { mutate, isPending } = useMutation({
-    mutationFn: () =>
-      addRechargeCards({
+    mutationFn: () => {
+      if (!hasPermission("recharges-store")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "recharges-store"
+          )}`
+        );
+      }
+      return addRechargeCards({
         count: formData.count,
         expire_date: formData.expire_date,
         price: formData.price,
         batch_number: formData.batch_number,
         token,
-      }),
+      });
+    },
     onSuccess: () => {
       toast.success(t("successfully_added"));
       navigate("/recharge-card");
       setMessage("");
     },
     onError: (error) => {
-      toast.error("حدث خطأ أثناء إضافة البطاقة.");
+      toast.error(error.message || "حدث خطأ أثناء إضافة البطاقة.");
       setMessage(error.message || "حدث خطأ أثناء إضافة البطاقة.");
     },
   });

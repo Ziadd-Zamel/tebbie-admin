@@ -31,7 +31,9 @@ const Settings = () => {
           <thead>
             <tr className="bg-gray-100">
               <th className="p-4">#</th>
-              <th className="p-4 whitespace-nowrap">{t("pointsForRegister")}</th>
+              <th className="p-4 whitespace-nowrap">
+                {t("pointsForRegister")}
+              </th>
               <th className="p-4 whitespace-nowrap">{t("pointsForReview")}</th>
               <th className="p-4 whitespace-nowrap">{t("pointsForBooking")}</th>
               <th className="p-4 whitespace-nowrap">{t("pointsValue")}</th>

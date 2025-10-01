@@ -9,6 +9,10 @@ import {
 import { toast } from "react-toastify";
 import { IoCloseCircle } from "react-icons/io5";
 import PropTypes from "prop-types";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const AddHomeVisitCommissionDialog = ({ isOpen, onClose, editData = null }) => {
   const { t } = useTranslation();
@@ -44,12 +48,26 @@ const AddHomeVisitCommissionDialog = ({ isOpen, onClose, editData = null }) => {
   const { mutate: saveCommission, isPending } = useMutation({
     mutationFn: (data) => {
       if (editData) {
+        if (!hasPermission("homevisit-commissions-update")) {
+          throw new Error(
+            `You don't have permission to ${getPermissionDisplayName(
+              "homevisit-commissions-update"
+            )}`
+          );
+        }
         return updateHomeVisitCommission({
           ...data,
           token,
           commissionId: editData.id,
         });
       } else {
+        if (!hasPermission("homevisit-commissions-store")) {
+          throw new Error(
+            `You don't have permission to ${getPermissionDisplayName(
+              "homevisit-commissions-store"
+            )}`
+          );
+        }
         return addHomeVisitCommission({ ...data, token });
       }
     },
@@ -63,6 +81,10 @@ const AddHomeVisitCommissionDialog = ({ isOpen, onClose, editData = null }) => {
       handleClose();
     },
     onError: (error) => {
+      if (error.message && error.message.includes("permission")) {
+        toast.error(error.message);
+        return;
+      }
       toast.error(
         error.message ||
           (editData

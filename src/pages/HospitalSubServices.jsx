@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  deleteHospitalMainService,
+  deleteHospitalService,
+  getHospitalServices,
   getHospitalMainServices,
   getHospitals,
 } from "../utlis/https";
@@ -10,7 +11,7 @@ import ErrorMessage from "./ErrorMessage";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { IoMdAddCircle } from "react-icons/io";
 import { useTranslation } from "react-i18next";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import {
   Dialog,
@@ -24,11 +25,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 const token = localStorage.getItem("authToken");
 
-const HospitalServices = () => {
+const HospitalSubServices = () => {
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { mainServiceId } = useParams();
 
   const servicesPerPage = 9;
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,11 +40,32 @@ const HospitalServices = () => {
 
   const {
     data: mainServicesData,
-    isLoading,
-    error,
+    isLoading: mainServicesLoading,
+    error: mainServicesError,
   } = useQuery({
     queryKey: ["hospital-main-services", token],
     queryFn: () => getHospitalMainServices({ token }),
+  });
+
+  const getMainServiceName = () => {
+    if (!mainServicesData || !mainServiceId) return "";
+    const mainService = mainServicesData.find(
+      (ms) => ms.id === parseInt(mainServiceId)
+    );
+    return mainService ? mainService.name : "";
+  };
+
+  const mainServiceName = getMainServiceName();
+
+  const {
+    data: servicesData,
+    isLoading: servicesLoading,
+    error: servicesError,
+  } = useQuery({
+    queryKey: ["hospital-services", token, mainServiceName],
+    queryFn: () =>
+      getHospitalServices({ token, main_service_name: mainServiceName }),
+    enabled: !!mainServiceName,
   });
 
   const { data: hospitalsData } = useQuery({
@@ -51,9 +74,9 @@ const HospitalServices = () => {
   });
 
   const { mutate: handleDelete } = useMutation({
-    mutationFn: ({ id }) => deleteHospitalMainService({ id, token }),
+    mutationFn: ({ id }) => deleteHospitalService({ id, token }),
     onSuccess: () => {
-      queryClient.invalidateQueries(["hospital-main-services", token]);
+      queryClient.invalidateQueries(["hospital-services", token]);
       toast.success(t("تم الحذف بنجاح"));
     },
     onError: () => {
@@ -82,10 +105,6 @@ const HospitalServices = () => {
     setCurrentPage(newPage);
   };
 
-  const handleMainServiceClick = (service) => {
-    navigate(`/hospital-services/main-services/${service.id}/sub-services`);
-  };
-
   const getHospitalName = (hospitalId) => {
     if (!hospitalsData) return "";
     const hospital = hospitalsData.find((h) => h.id === hospitalId);
@@ -93,11 +112,11 @@ const HospitalServices = () => {
   };
 
   const filteredServices = useMemo(() => {
-    if (!mainServicesData) return [];
-    return mainServicesData.filter((svc) =>
+    if (!servicesData) return [];
+    return servicesData.filter((svc) =>
       (svc?.name || "").toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [mainServicesData, searchTerm]);
+  }, [servicesData, searchTerm]);
 
   const indexOfLast = currentPage * servicesPerPage;
   const indexOfFirst = indexOfLast - servicesPerPage;
@@ -108,12 +127,27 @@ const HospitalServices = () => {
       ? Math.ceil(filteredServices.length / servicesPerPage)
       : 0;
 
+  const isLoading = servicesLoading || mainServicesLoading;
+  const error = servicesError || mainServicesError;
+
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
 
   return (
     <section dir={direction} className="container mx-auto md:p-4 p-0 w-full">
       <div className="bg-white rounded-3xl md:p-8 p-4 w-full">
+        <div className="mb-6 flex items-center gap-4">
+          <button
+            onClick={() => navigate("/hospital-services")}
+            className="text-blue-500 hover:text-blue-700 underline"
+          >
+            ← {t("العودة للخدمات الرئيسية")}
+          </button>
+          <h2 className="text-xl font-semibold">
+            {t("الخدمات الفرعية")} - {getMainServiceName()}
+          </h2>
+        </div>
+
         <div className="mb-6 flex flex-col md:flex-row justify-between items-center w-full gap-4">
           <input
             type="text"
@@ -124,7 +158,7 @@ const HospitalServices = () => {
           />
           <div className="flex justify-end w-full md:w-1/3">
             <Link
-              to="/hospital-services/main-services/add"
+              to={`/hospital-services/add?main_service_id=${mainServiceId}`}
               className="px-6 py-2 hover:bg-[#048c87] w-auto flex justify-center items-center text-white gap-2 bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-lg rounded-[8px] focus:outline-none text-center"
             >
               <IoMdAddCircle />
@@ -139,6 +173,8 @@ const HospitalServices = () => {
               <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-center">{t("الاسم")}</th>
                 <th className="py-3 px-6 text-center">{t("المستشفى")}</th>
+                <th className="py-3 px-6 text-center">{t("عمولة تبي")}</th>
+                <th className="py-3 px-6 text-center">{t("عمولة المستشفى")}</th>
                 <th className="py-3 px-6 text-center">{t("الحالة")}</th>
                 <th className="py-3 px-6 text-center">{t("الإجراءات")}</th>
               </tr>
@@ -146,7 +182,7 @@ const HospitalServices = () => {
             <tbody className="text-gray-600 text-lg font-light">
               {current.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="text-center py-4">
+                  <td colSpan="6" className="text-center py-4">
                     {t("لا توجد بيانات")}
                   </td>
                 </tr>
@@ -154,29 +190,30 @@ const HospitalServices = () => {
                 current.map((row) => (
                   <tr
                     key={row.id}
-                    className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleMainServiceClick(row)}
+                    className="border-b border-gray-200 hover:bg-gray-100"
                   >
                     <td className="py-3 px-6 text-center">{row.name}</td>
                     <td className="py-3 px-6 text-center">
                       {getHospitalName(row.hospital_id)}
+                    </td>
+                    <td className="py-3 px-6 text-center">
+                      {row.tabi_commission}
+                    </td>
+                    <td className="py-3 px-6 text-center">
+                      {row.hospital_commission}
                     </td>
                     <td className="py-3 px-6 text-center">{row.status}</td>
                     <td className="py-3 px-6 text-center">
                       <div className="flex justify-center items-center gap-4">
                         <button
                           className="text-red-500 hover:text-red-700 focus:outline-none"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteClick(row.id);
-                          }}
+                          onClick={() => handleDeleteClick(row.id)}
                         >
                           <AiFillDelete size={28} />
                         </button>
                         <Link
-                          to={`/hospital-services/main-services/${row.id}`}
+                          to={`/hospital-services/${row.id}`}
                           className="text-blue-500 hover:text-blue-700 focus:outline-none"
-                          onClick={(e) => e.stopPropagation()}
                         >
                           <AiFillEdit size={28} />
                         </Link>
@@ -211,7 +248,7 @@ const HospitalServices = () => {
         </DialogTitle>
         <DialogContent>
           <p className="text-gray-600">
-            {t("هل أنت متأكد من حذف هذه الخدمة الرئيسية؟")}
+            {t("هل أنت متأكد من حذف هذه الخدمة الفرعية؟")}
           </p>
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", gap: "16px" }}>
@@ -245,4 +282,4 @@ const HospitalServices = () => {
   );
 };
 
-export default HospitalServices;
+export default HospitalSubServices;

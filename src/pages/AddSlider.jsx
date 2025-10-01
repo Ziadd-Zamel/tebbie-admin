@@ -11,6 +11,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const realtableType = [
   { id: 1, name: "hospital" },
@@ -35,14 +39,23 @@ const AddSlider = () => {
   });
 
   const { mutate: handleAddSlider, isPending } = useMutation({
-    mutationFn: (newSlider) => addSlider({ ...newSlider, token }),
+    mutationFn: (newSlider) => {
+      if (!hasPermission("sliders-store")) {
+        throw new Error(
+          `You don't have permission to ${getPermissionDisplayName(
+            "sliders-store"
+          )}`
+        );
+      }
+      return addSlider({ ...newSlider, token });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["sliderData", token]);
       toast.success("Slider added successfully!");
       navigate("/sliders");
     },
-    onError: () => {
-      toast.error("Failed to add slider. Please try again.");
+    onError: (error) => {
+      toast.error(error.message || "Failed to add slider. Please try again.");
     },
   });
 

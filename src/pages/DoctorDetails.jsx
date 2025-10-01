@@ -14,6 +14,10 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const DoctorDetails = () => {
   const { t, i18n } = useTranslation();
@@ -33,7 +37,14 @@ const DoctorDetails = () => {
   });
 
   const { mutate: handleDelete } = useMutation({
-    mutationFn: () => deleteDoctor({ id: doctorId, token }),
+    mutationFn: () => {
+      if (!hasPermission("restoreDoctors")) {
+        const displayName = getPermissionDisplayName("restoreDoctors");
+        alert(`ليس لديك صلاحية لحذف الطبيب (${displayName})`);
+        return Promise.reject(new Error("No permission"));
+      }
+      return deleteDoctor({ id: doctorId, token });
+    },
     onSuccess: () => {
       navigate("/doctors");
     },
@@ -61,10 +72,8 @@ const DoctorDetails = () => {
 
   if (isError) {
     return (
-      <div className="text-red-500 text-center py-4 h-[60vh] flex justify-center items-center text-2xl"> 
-      <p>
-      {t("errorFetchingData")}
-      </p>
+      <div className="text-red-500 text-center py-4 h-[60vh] flex justify-center items-center text-2xl">
+        <p>{t("errorFetchingData")}</p>
       </div>
     );
   }

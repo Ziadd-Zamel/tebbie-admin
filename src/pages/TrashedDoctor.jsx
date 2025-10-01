@@ -6,6 +6,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { FaUndo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../components/Pagination";
+import {
+  hasPermission,
+  getPermissionDisplayName,
+} from "../utlis/permissionUtils";
 
 const token = localStorage.getItem("authToken");
 
@@ -31,7 +35,14 @@ const TrashedDoctor = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (id) => restoreDoctor({ token, id }),
+    mutationFn: (id) => {
+      if (!hasPermission("restoreDoctors")) {
+        const displayName = getPermissionDisplayName("restoreDoctors");
+        alert(`ليس لديك صلاحية لاسترجاع الطبيب (${displayName})`);
+        return Promise.reject(new Error("No permission"));
+      }
+      return restoreDoctor({ token, id });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["trashed-doctor"]);
       navigate("/doctors");
@@ -131,13 +142,15 @@ const TrashedDoctor = () => {
                     {indexOfFirstDoctor + index + 1}
                   </td>
                   <td className="p-4 text-center whitespace-nowrap">
-                  {doctor.phone}
+                    {doctor.phone}
                   </td>
                   <td className="p-4 text-center whitespace-nowrap">
                     {doctor.name}
                   </td>
                   <td className="p-4 text-center whitespace-nowrap">
-                    {doctor.hospitals.map(hospital => <p key={hospital.id}> {hospital.name} </p>) || t("none")}
+                    {doctor.hospitals.map((hospital) => (
+                      <p key={hospital.id}> {hospital.name} </p>
+                    )) || t("none")}
                   </td>
                   <td className="p-4 text-center whitespace-nowrap">
                     {doctor.address || t("none")}
