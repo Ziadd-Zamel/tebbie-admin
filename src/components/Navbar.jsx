@@ -79,7 +79,7 @@ const Navbar = () => {
         "/hospital-services/main-services/:mainServiceId/sub-services"
       ];
     }
-    if (pathname.startsWith("/hospital-services/main-services/")) {
+    if (pathname.startsWith("/hospital-services/")) {
       return pageTranslations[language]["/hospital-services/main-services/:id"];
     }
 
