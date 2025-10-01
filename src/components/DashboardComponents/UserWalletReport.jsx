@@ -11,7 +11,10 @@ const UserWalletReport = () => {
   const { t } = useTranslation();
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchName, setSearchName] = useState("");
+  const [filters, setFilters] = useState({
+    fromDate: "",
+    toDate: "",
+  });
   const statesPerPage = 10;
 
   const {
@@ -19,44 +22,82 @@ const UserWalletReport = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["user-wallet-report", token, searchName],
-    queryFn: () => getUserWalletReport({ token, name: searchName }),
+    queryKey: ["user-wallet-report", token, filters.fromDate, filters.toDate],
+    queryFn: () =>
+      getUserWalletReport({
+        token,
+        from_date: filters.fromDate,
+        to_date: filters.toDate,
+      }),
     enabled: !!token,
   });
 
-  const totalPages = Math.ceil(reviewData?.length / statesPerPage) || 1;
+  // No frontend filtering needed - backend handles it
+  const filteredData = reviewData || [];
+
+  const totalPages = Math.ceil(filteredData.length / statesPerPage) || 1;
 
   const currentStates = useMemo(
     () =>
-      reviewData?.slice(
+      filteredData.slice(
         (currentPage - 1) * statesPerPage,
         currentPage * statesPerPage
       ),
-    [reviewData, currentPage]
+    [filteredData, currentPage]
   );
 
   const handlePageChange = useCallback((newPage) => {
     setCurrentPage(newPage);
   }, []);
 
-  const handleSearchChange = useCallback((e) => {
-    setSearchName(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
+  const handleFilterChange = useCallback((key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setCurrentPage(1);
+  }, []);
+
+  const clearFilters = useCallback(() => {
+    setFilters({
+      fromDate: "",
+      toDate: "",
+    });
+    setCurrentPage(1);
   }, []);
 
   if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <div className="p-4 flex flex-col gap-4 font-sans bg-white rounded-[20px] shadow-sm">
-      {/* Search Input */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder={t("Search by name...")}
-          value={searchName}
-          onChange={handleSearchChange}
-          className="w-full md:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] focus:border-transparent"
-        />
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="w-full md:w-1/3">
+          <label className="block mb-1 text-sm font-medium">
+            {t("fromDate")}
+          </label>
+          <input
+            type="date"
+            value={filters.fromDate}
+            onChange={(e) => handleFilterChange("fromDate", e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="w-full md:w-1/3">
+          <label className="block mb-1 text-sm font-medium">
+            {t("toDate")}
+          </label>
+          <input
+            type="date"
+            value={filters.toDate}
+            onChange={(e) => handleFilterChange("toDate", e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="md:w-1/3 flex justify-end items-end">
+          <button
+            onClick={clearFilters}
+            className="text-xl bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] p-2 text-white rounded-xl font-semibold w-full max-w-48"
+          >
+            {t("clearFilter")}
+          </button>
+        </div>
       </div>
 
       <UserWalletReportTable
@@ -73,7 +114,7 @@ const UserWalletReport = () => {
           onPageChange={handlePageChange}
         />
         <p className="lg:text-2xl md:text-xl text-lg text-gray-500 text-end">
-          {t("Total")}: {reviewData?.length}
+          {t("Total")}: {filteredData.length}
         </p>
       </div>
     </div>

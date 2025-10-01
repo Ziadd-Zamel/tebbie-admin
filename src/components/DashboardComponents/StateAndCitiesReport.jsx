@@ -15,7 +15,7 @@ const StateAndCitiesReport = () => {
   const [expanded, setExpanded] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const statesPerPage = 10; 
+  const statesPerPage = 10;
 
   const toggleExpand = (id) => {
     setExpanded(expanded === id ? null : id);
@@ -41,7 +41,9 @@ const StateAndCitiesReport = () => {
   const indexOfFirstState = indexOfLastState - statesPerPage;
   const currentStates = filteredData.slice(indexOfFirstState, indexOfLastState);
   const totalPages =
-    filteredData.length > 0 ? Math.ceil(filteredData.length / statesPerPage) : 0;
+    filteredData.length > 0
+      ? Math.ceil(filteredData.length / statesPerPage)
+      : 0;
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -49,10 +51,10 @@ const StateAndCitiesReport = () => {
   if (isLoading) return <Loader />;
   if (error) return <ErrorMessage />;
   return (
-    <div className="p-4 flex flex-col gap-4 font-sans" >
-            <p className="font-bold  text-xl md:text-2xl mb-5 flex gap-2  items-center">
-            <MdLocationOn size={30} className="text-[#3CAB8B]" />
-        {t('GDOP')}
+    <div className="p-4 flex flex-col gap-4 font-sans">
+      <p className="font-bold  text-xl md:text-2xl mb-5 flex gap-2  items-center">
+        <MdLocationOn size={30} className="text-[#3CAB8B]" />
+        {t("GDOP")}
       </p>
       <div className="flex justify-start ">
         <input
@@ -89,7 +91,9 @@ const StateAndCitiesReport = () => {
                         onClick={() => toggleExpand(state.id)}
                         className="text-[#3CAB8B] hover:text-[#4db799]"
                         aria-label={
-                          expanded === state.id ? t("hideCities") : t("showCities")
+                          expanded === state.id
+                            ? t("hideCities")
+                            : t("showCities")
                         }
                       >
                         {expanded === state.id ? (
@@ -103,18 +107,18 @@ const StateAndCitiesReport = () => {
                 </tr>
                 {expanded === state.id && state.cities.length > 0 && (
                   <tr>
-                  <td colSpan="3" className="py-2 px-4 text-start bg-gray-50">
-                    {state.cities.map((city) => (
-                      <span
-                        className="flex gap-2 flex-wrap w-full"
-                        key={city.id}
-                      >
-                        {city.users_count} {t("noOfPatients")} {t("In")}{" "}
-                        {city.name}
-                      </span>
-                    ))}
-                  </td>
-                </tr>
+                    <td colSpan="3" className="py-2 px-4 text-start bg-gray-50">
+                      {state.cities.map((city) => (
+                        <span
+                          className="flex gap-2 flex-wrap w-full"
+                          key={city.id}
+                        >
+                          {city.users_count} {t("noOfPatients")} {t("In")}{" "}
+                          {city.name}
+                        </span>
+                      ))}
+                    </td>
+                  </tr>
                 )}
               </>
             ))
@@ -128,17 +132,18 @@ const StateAndCitiesReport = () => {
         </tbody>
       </table>
 
-      {filteredData.length> 10 && (  <div className="flex justify-between items-end mt-4">
-           <Pagination
-             currentPage={currentPage}
-             totalPages={totalPages}
-             onPageChange={handlePageChange}
-           />
-           <p className="text-2xl text-gray-500 text-end">
-             {t("Total")}: {filteredData.length}
-           </p>
-         </div>)}
-   
+      {filteredData.length > 10 && (
+        <div className="flex justify-between items-end mt-4">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+          <p className="text-2xl text-gray-500 text-end">
+            {t("Total")}: {filteredData.length}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

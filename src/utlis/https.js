@@ -3455,14 +3455,14 @@ export const getPaymentReport = async ({ token }) => {
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
-        `Failed to fetch reviews report: ${response.status} - ${errorText}`
+        `Failed to fetch payment report: ${response.status} - ${errorText}`
       );
     }
 
     const data = await response.json();
     return data.data || [];
   } catch (error) {
-    throw new Error(`Error in getReviewsReport: ${error.message}`);
+    throw new Error(`Error in getPaymentReport: ${error.message}`);
   }
 };
 //customer service
@@ -4067,13 +4067,24 @@ export const getwhatsapp = async ({ token }) => {
     throw error;
   }
 };
-export const getUserWalletReport = async ({ token, name = "" }) => {
+export const getUserWalletReport = async ({
+  token,
+  name = "",
+  from_date,
+  to_date,
+}) => {
   try {
     let url = `${API_URL}/dashboard/v1/users-with-wallets`;
     const params = [];
 
     if (name && name.trim()) {
       params.push(`name=${encodeURIComponent(name.trim())}`);
+    }
+    if (from_date) {
+      params.push(`from_date=${encodeURIComponent(from_date)}`);
+    }
+    if (to_date) {
+      params.push(`to_date=${encodeURIComponent(to_date)}`);
     }
 
     if (params.length > 0) {
