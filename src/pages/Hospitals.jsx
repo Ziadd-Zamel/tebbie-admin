@@ -26,7 +26,7 @@ const Hospitals = () => {
     error,
   } = useQuery({
     queryKey: ["hospitalData", token],
-    queryFn: () => getHospitals({ token }),
+    queryFn: () => getHospitals({ token: localStorage.getItem("authToken") }),
   });
 
   const indexOfLastHospital = currentPage * hospitalPerPage;

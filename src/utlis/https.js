@@ -1675,6 +1675,7 @@ export const getRechargeCards = async ({
   is_valid,
   expire_date,
   card_number,
+  batch_number,
 }) => {
   try {
     const params = new URLSearchParams({ page });
@@ -1682,6 +1683,7 @@ export const getRechargeCards = async ({
     if (is_valid !== undefined) params.append("is_valid", is_valid);
     if (expire_date) params.append("expire_date", expire_date);
     if (card_number) params.append("card_number", card_number);
+    if (batch_number) params.append("batch_number", batch_number);
 
     const response = await fetch(
       `${API_URL}/dashboard/v1/recharge?${params.toString()}`,
@@ -3898,6 +3900,134 @@ export const fetchAdminUsersList = async ({ token, search, page }) => {
     throw new Error(`Error in getReviewsReport: ${error.message}`);
   }
 };
+
+//admins
+export const getAdmins = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admins/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch admins: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getAdmins: ${error.message}`);
+  }
+};
+
+export const createAdmin = async ({
+  token,
+  name,
+  email,
+  password,
+  password_confirmation,
+  address,
+  phone,
+  media,
+  role,
+}) => {
+  try {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("password_confirmation", password_confirmation);
+    formData.append("address", address);
+    formData.append("phone", phone);
+    if (media) {
+      formData.append("media", media);
+    }
+    if (role) {
+      formData.append("role", role);
+    }
+
+    const response = await fetch(`${API_URL}/dashboard/v1/admins/store`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to create admin: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(`Error in createAdmin: ${error.message}`);
+  }
+};
+
+export const updateAdmin = async ({
+  token,
+  id,
+  name,
+  email,
+  password,
+  password_confirmation,
+  address,
+  phone,
+  media,
+  role,
+}) => {
+  try {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    if (password) {
+      formData.append("password", password);
+      formData.append("password_confirmation", password_confirmation);
+    }
+    formData.append("address", address);
+    formData.append("phone", phone);
+    if (media) {
+      formData.append("media", media);
+    }
+    if (role) {
+      formData.append("role", role);
+    }
+
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admins/update/${id}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to update admin: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(`Error in updateAdmin: ${error.message}`);
+  }
+};
+
 export const getAdminMessages = async ({ token, id }) => {
   try {
     const response = await fetch(`${API_URL}/dashboard/v1/admin/chat/${id}`, {

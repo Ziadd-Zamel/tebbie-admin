@@ -73,6 +73,9 @@ import TebbieWallet from "./pages/TebbieWallet";
 import HospitalWallet from "./pages/HospitalWallet";
 import HomeVisitServices from "./pages/HomeVisitServices";
 import EmployeeRoles from "./pages/EmployeeRoles";
+import Admins from "./pages/Admins";
+import AddAdmin from "./pages/AddAdmin";
+import UpdateAdmin from "./pages/UpdateAdmin";
 
 const queryClient = new QueryClient();
 
@@ -298,7 +301,40 @@ const router = createBrowserRouter([
           },
           {
             path: "employee-roles",
-            element: <EmployeeRoles />,
+            element: (
+              <PermissionWrapper permissionName="employees-store">
+                <EmployeeRoles />
+              </PermissionWrapper>
+            ),
+          },
+          {
+            path: "admins",
+            children: [
+              {
+                index: true,
+                element: (
+                  <PermissionWrapper permissionName="employees-store">
+                    <Admins />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: "add-admin",
+                element: (
+                  <PermissionWrapper permissionName="employees-store">
+                    <AddAdmin />
+                  </PermissionWrapper>
+                ),
+              },
+              {
+                path: ":adminId",
+                element: (
+                  <PermissionWrapper permissionName="employees-store">
+                    <UpdateAdmin />
+                  </PermissionWrapper>
+                ),
+              },
+            ],
           },
           {
             path: "admin-chat",

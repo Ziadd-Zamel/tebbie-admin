@@ -37,8 +37,10 @@ const RechargeCards = () => {
   const [isValid, setIsValid] = useState(undefined);
   const [expireDate, setExpireDate] = useState("");
   const [price, setPrice] = useState("");
+  const [batchNumber, setBatchNumber] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const debouncedBatchNumber = useDebounce(batchNumber, 500);
   const itemsPerPage = 100;
   const { t, i18n } = useTranslation();
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
@@ -56,6 +58,7 @@ const RechargeCards = () => {
       isValid,
       expireDate,
       price,
+      debouncedBatchNumber,
     ],
     queryFn: () =>
       getRechargeCards({
@@ -65,6 +68,7 @@ const RechargeCards = () => {
         is_valid: isValid,
         expire_date: expireDate,
         price: price,
+        batch_number: debouncedBatchNumber,
       }),
   });
 
@@ -82,6 +86,7 @@ const RechargeCards = () => {
       ...(isValid !== undefined && { is_valid: isValid }),
       ...(expireDate && { expire_date: expireDate }),
       ...(price && { price: price }),
+      ...(debouncedBatchNumber && { batch_number: debouncedBatchNumber }),
     });
     const url = `https://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
     window.open(url, "_blank");
@@ -105,6 +110,11 @@ const RechargeCards = () => {
 
   const handlePriceChange = (e) => {
     setPrice(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleBatchNumberChange = (e) => {
+    setBatchNumber(e.target.value);
     setCurrentPage(1);
   };
 
@@ -176,6 +186,16 @@ const RechargeCards = () => {
             value={price}
             onChange={handlePriceChange}
             placeholder={t("price")}
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
+        <div className="flex-1">
+          <input
+            type="text"
+            id="batchNumber"
+            value={batchNumber}
+            onChange={handleBatchNumberChange}
+            placeholder={t("searchByBatchNumber")}
             className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
           />
         </div>
