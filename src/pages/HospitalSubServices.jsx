@@ -173,7 +173,7 @@ const HospitalSubServices = () => {
               <tr className="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-center">{t("الاسم")}</th>
                 <th className="py-3 px-6 text-center">{t("المستشفى")}</th>
-                <th className="py-3 px-6 text-center">{t("عمولة تبي")}</th>
+                <th className="py-3 px-6 text-center">{t("عمولة طبي")}</th>
                 <th className="py-3 px-6 text-center">{t("عمولة المستشفى")}</th>
                 <th className="py-3 px-6 text-center">{t("الحالة")}</th>
                 <th className="py-3 px-6 text-center">{t("الإجراءات")}</th>

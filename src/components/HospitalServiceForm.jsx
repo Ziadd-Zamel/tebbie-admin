@@ -181,7 +181,7 @@ const HospitalServiceForm = ({
             name="tabi_commission"
             value={formData.tabi_commission}
             onChange={handleChange}
-            placeholder={t("عمولة تبي")}
+            placeholder={t("عمولة طبي")}
             className="border border-gray-300 rounded-lg px-4 bg-[#F7F8FA] py-3 focus:outline-none focus:border-primary md:w-[494px] w-[300px]"
           />
         </div>
