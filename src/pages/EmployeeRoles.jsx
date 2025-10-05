@@ -34,7 +34,22 @@ export default function EmployeeRoles() {
   });
 
   const roles = rolesData?.data || [];
-  const permissions = permissionsData?.data || [];
+  const rawPermissions = permissionsData?.data?.data || permissionsData?.data;
+  const isGroupedPermissions =
+    rawPermissions &&
+    !Array.isArray(rawPermissions) &&
+    typeof rawPermissions === "object";
+  const groupedPermissions = isGroupedPermissions
+    ? rawPermissions
+    : { الصلاحيات: Array.isArray(rawPermissions) ? rawPermissions : [] };
+  const flatPermissions = isGroupedPermissions
+    ? Object.entries(groupedPermissions)
+        .filter(
+          ([category]) => typeof category === "string" && category.trim() !== ""
+        )
+        .map(([, perms]) => perms)
+        .flat()
+    : groupedPermissions["الصلاحيات"];
 
   // Create role mutation
   const createRoleMutation = useMutation({
@@ -120,7 +135,7 @@ export default function EmployeeRoles() {
     // Convert permission IDs to permission names
     const permissionNames = formData.permissions
       .map((permissionId) => {
-        const permission = permissions.find((p) => p.id === permissionId);
+        const permission = flatPermissions.find((p) => p.id === permissionId);
         return permission?.name;
       })
       .filter(Boolean);
@@ -173,7 +188,7 @@ export default function EmployeeRoles() {
   //     </div>
   //   );
   // }
-
+  console.log(rawPermissions);
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-6xl mx-auto">
@@ -296,33 +311,53 @@ export default function EmployeeRoles() {
                       ))}
                     </div>
                   ) : (
-                    <div className="space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-md p-3">
-                      {permissions.map((permission) => (
-                        <label
-                          key={permission.id}
-                          className="flex items-center space-x-3 space-x-reverse p-2 hover:bg-gray-50 rounded cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={formData.permissions.includes(
-                              permission.id
-                            )}
-                            onChange={() =>
-                              handlePermissionToggle(permission.id)
-                            }
-                            disabled={
-                              createRoleMutation.isPending ||
-                              updateRoleMutation.isPending
-                            }
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                          />
-                          <div className="flex-1">
-                            <div className="text-sm font-medium text-gray-900">
-                              {permission.display_name || permission.name}
+                    <div className="space-y-4 max-h-64 overflow-y-auto border border-gray-200 rounded-md p-3">
+                      {Object.entries(groupedPermissions)
+                        .filter(
+                          ([category, perms]) =>
+                            typeof category === "string" &&
+                            category.trim() !== "" &&
+                            Array.isArray(perms) &&
+                            perms.length > 0
+                        )
+                        .map(([category, perms]) => {
+                          return (
+                            <div key={category} className="space-y-2">
+                              <div className="inline-block text-sm font-semibold text-white bg-gradient-to-r from-[#33A9C7] to-[#3AAB95] rounded-md px-2 py-1">
+                                {category}
+                              </div>
+                              <div className="space-y-1">
+                                {perms.map((permission) => (
+                                  <label
+                                    key={permission.id}
+                                    className="flex items-center space-x-3 space-x-reverse p-2 hover:bg-gray-50 rounded cursor-pointer"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={formData.permissions.includes(
+                                        permission.id
+                                      )}
+                                      onChange={() =>
+                                        handlePermissionToggle(permission.id)
+                                      }
+                                      disabled={
+                                        createRoleMutation.isPending ||
+                                        updateRoleMutation.isPending
+                                      }
+                                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                    />
+                                    <div className="flex-1">
+                                      <div className="text-sm font-medium text-gray-900">
+                                        {permission.display_name ||
+                                          permission.name}
+                                      </div>
+                                    </div>
+                                  </label>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        </label>
-                      ))}
+                          );
+                        })}
                     </div>
                   )}
 

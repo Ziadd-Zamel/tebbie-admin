@@ -68,18 +68,12 @@ const Dashboard = () => {
       <section className="container mx-auto ">
         <div dir={direction} className="w-full flex flex-col gap-4 ">
           <TodaySales />
-          <PermissionWrapper
-            permissionName="ReviewReport"
-            hideOnNoPermission={true}
-          >
-            <ReviewsReport
-              HomeVisitData={HomeVisitData}
-              DoctorsData={DoctorsData}
-              usersData={usersData}
-              HospitalsData={hospitalsData}
-            />
-          </PermissionWrapper>
-
+          <ReviewsReport
+            HomeVisitData={HomeVisitData}
+            DoctorsData={DoctorsData}
+            usersData={usersData}
+            HospitalsData={hospitalsData}
+          />
           <div
             className={`grid grid-cols-1 ${reverseSmallGridCols} gap-3 mt-6 p-4`}
           >

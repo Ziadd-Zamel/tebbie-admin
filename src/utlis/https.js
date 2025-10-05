@@ -143,7 +143,6 @@ export const updateDoctor = async ({
   name,
   bio,
   _method = "PATCH",
-  token,
   address,
   email,
   phone,
@@ -155,6 +154,7 @@ export const updateDoctor = async ({
   isAbleToCancel,
 }) => {
   const formdata = new FormData();
+  const token = getToken();
 
   formdata.append("name", name);
   formdata.append("_method", _method);
@@ -204,7 +204,6 @@ export const updateDoctor = async ({
 export const addDoctor = async ({
   name,
   bio,
-  token,
   address,
   email,
   phone,
@@ -216,7 +215,7 @@ export const addDoctor = async ({
   isAbleToCancel,
 }) => {
   const formdata = new FormData();
-
+  const token = getToken();
   formdata.append("name", name);
   formdata.append("bio", bio);
   formdata.append("address", address);
