@@ -76,6 +76,7 @@ import EmployeeRoles from "./pages/EmployeeRoles";
 import Admins from "./pages/Admins";
 import AddAdmin from "./pages/AddAdmin";
 import UpdateAdmin from "./pages/UpdateAdmin";
+import HospitalServicesDetails from "./pages/HospitalServicesDetails";
 
 const queryClient = new QueryClient();
 
@@ -151,6 +152,17 @@ const router = createBrowserRouter([
             element: (
               <PermissionWrapper permissionName="HomeVisitReport">
                 <HomeVisitReportPage />
+              </PermissionWrapper>
+            ),
+          },
+          {
+            path: "hospital-services-report/:hospitalId",
+            element: (
+              <PermissionWrapper
+                permissionName="HospitalBookingsReport"
+                hideOnNoPermission={true}
+              >
+                <HospitalServicesDetails />
               </PermissionWrapper>
             ),
           },

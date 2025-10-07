@@ -3436,6 +3436,78 @@ export const getHomeVisitReport = async ({
     throw new Error(`Error in getReviewsReport: ${error.message}`);
   }
 };
+/**
+ * Fetches hospitals that have service bookings summary.
+ * Returns an array of objects: { hospital_id, hospital_name, total_bookings }
+ */
+export const getHospitalsServiceBookingsSummary = async ({ token }) => {
+  try {
+    const url = `${API_URL}/dashboard/v1/hospitals-service-bookings-summary`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch hospitals bookings summary: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(
+      `Error in getHospitalsServiceBookingsSummary: ${error.message}`
+    );
+  }
+};
+
+// get hospital services report by hospital id
+export const getHospitalServiceReportById = async ({
+  token,
+  hospital_id,
+  from_date,
+  to_date,
+  status,
+  deleted,
+}) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/get-hospital-service-report-by-id`;
+    const params = [];
+    if (hospital_id) params.push(`hospital_id=${hospital_id}`);
+    if (from_date) params.push(`from_date=${from_date}`);
+    if (to_date) params.push(`to_date=${to_date}`);
+    if (status) params.push(`status=${status}`);
+    if (typeof deleted === "boolean") params.push(`deleted=${deleted}`);
+    if (params.length > 0) url += `?${params.join("&")}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch hospital services report: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || { hospital_name: "", bookings: [] };
+  } catch (error) {
+    throw new Error(`Error in getHospitalServiceReportById: ${error.message}`);
+  }
+};
 export const getPaymentReport = async ({ token }) => {
   try {
     let url = `${API_URL}/dashboard/v1/admin/payments/without-booking`;

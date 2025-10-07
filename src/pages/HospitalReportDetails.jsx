@@ -116,9 +116,9 @@ const HospitalReportDetails = () => {
         [t("payment_status")]: data.booking_status || t("Na"),
         [t("status")]: data.payment_status || t("Na"),
         [t("cancellation_reason")]: data.cancellation_reason || t("Na"),
-        [t("original_price")]: data.original_price || t("Na"),
+        [t("tabi_commission")]: data.tabi_commission || t("Na"),
+        [t("hospital_commission")]: data.hospital_commission || t("Na"),
         [t("final_price")]: data.final_price || t("Na"),
-        [t("discount_amount")]: data.discount_amount || t("Na"),
         [t("booking_date")]: data.booking_date || t("Na"),
       }))
     );
@@ -228,9 +228,9 @@ const HospitalReportDetails = () => {
                   "payment_status",
                   "status",
                   "cancellation_reason",
-                  "original_price",
+                  "tabi_commission",
+                  "hospital_commission",
                   "final_price",
-                  "discount_amount",
                   "booking_date",
                   "",
                 ].map((key) => (
@@ -289,13 +289,13 @@ const HospitalReportDetails = () => {
                       {data.cancellation_reason || t("Na")}
                     </td>
                     <td className="py-3 px-3 text-center">
-                      {data.original_price || t("Na")}
+                      {data.tabi_commission || t("Na")}
+                    </td>
+                    <td className="py-3 px-3 text-center">
+                      {data.hospital_commission || t("Na")}
                     </td>
                     <td className="py-3 px-3 text-center">
                       {data.final_price || t("Na")}
-                    </td>
-                    <td className="py-3 px-3 text-center">
-                      {data.discount_amount || t("Na")}
                     </td>
                     <td className="py-3 px-3 text-center whitespace-nowrap">
                       {data.booking_date || t("Na")}

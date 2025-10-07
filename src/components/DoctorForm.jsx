@@ -26,7 +26,10 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
   );
   const DoctorSchema = Yup.object().shape({
     name: Yup.string().required(t("name_required")),
-    email: Yup.string().email("invalid_email").required(t("email_required")),
+    email: Yup.string()
+      .transform((value) => (value === "" ? undefined : value))
+      .email("invalid_email")
+      .notRequired(),
     phone: Yup.string().required(t("phone_required")),
     hospital_ids: Yup.array()
       .of(Yup.number().required())
@@ -94,7 +97,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
         is_visitor: initialData.is_visitor === "yes" ? "yes" : "no",
         isAbleToCancel: initialData.isAbleToCancel === "yes" ? "yes" : "no",
         hospital_ids:
-        initialData.hospitals?.map((hospital) => hospital.id) || [],
+          initialData.hospitals?.map((hospital) => hospital.id) || [],
         media: initialData.image || null,
       }
     : {
@@ -226,8 +229,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="email"
                 >
-                  {" "}
-                  <span className="text-red-500">*</span> {t("email")}
+                  {t("email")}
                 </label>
                 <Field
                   type="text"
@@ -290,7 +292,7 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
               </div>
 
               <div className="px-3 my-6 md:mb-0 w-full">
-              <label
+                <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="phone"
                 >
@@ -311,16 +313,13 @@ const DoctorForm = ({ initialData, mode = "add", isLoading, error }) => {
               </div>
             </div>
 
-             
-
-              <div className="lg:flex w-full justify-center">
+            <div className="lg:flex w-full justify-center">
               <div className="px-3 my-6 md:mb-0 w-full">
                 <label
                   className="block text-md almarai-semibold mb-4"
                   htmlFor="specialization_id"
                 >
-                  <span className="text-red-500">*</span>{" "}
-                  {t("specializations")}
+                  <span className="text-red-500">*</span> {t("specializations")}
                 </label>
                 {specializationsLoading ? (
                   <div className="text-gray-500">{t("loading")}</div>
