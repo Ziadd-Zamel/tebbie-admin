@@ -153,7 +153,7 @@ export const pageTranslations = {
     "/tebbie-wallet": "محفظة طبي",
     "/hospital-wallet": "محفظة المستشفيات",
     "/home-visit-services": "خدمات الزيارات المنزلية",
-
+    "/hospital-services-report/:id": "تقرير خدمات المستشفي",
     default: "الصفحة غير معروفة",
   },
 };

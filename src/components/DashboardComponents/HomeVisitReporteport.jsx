@@ -86,7 +86,7 @@ const HomeVisitReporteport = () => {
     <div className="p-4 flex flex-col gap-4 font-sans">
       <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
         <FaHome size={30} className="text-[#3CAB8B]" />
-        {t("homevisitReport")}
+        تقرير خدمات المستشفي
       </p>
       <input
         type="text"
