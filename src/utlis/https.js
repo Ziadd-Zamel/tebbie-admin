@@ -3508,6 +3508,139 @@ export const getHospitalServiceReportById = async ({
     throw new Error(`Error in getHospitalServiceReportById: ${error.message}`);
   }
 };
+/**
+ * Fetches hospitals that have home visit bookings summary.
+ * Returns an array of objects: { hospital_id, hospital_name, total_bookings }
+ */
+export const getHomeVisitBookingsSummary = async ({ token }) => {
+  try {
+    const url = `${API_URL}/dashboard/v1/home-visit-bookings-summary`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit bookings summary: ${response.status} - ${errorText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    throw new Error(`Error in getHomeVisitBookingsSummary: ${error.message}`);
+  }
+};
+
+// get home visit bookings by service for a specific hospital
+export const getHomeVisitBookingsByService = async ({ token, hospital_id }) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/home-visit-bookings-by-service`;
+    const params = [];
+    if (hospital_id) params.push(`hospital_id=${hospital_id}`);
+    if (params.length > 0) url += `?${params.join("&")}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit bookings by service: ${response.status} - ${errorText}`
+      );
+    }
+
+    const result = await response.json();
+    // API returns data as an array of hospitals, get the first one (or filter by hospital_id)
+    const hospitalData =
+      Array.isArray(result.data) && result.data.length > 0
+        ? result.data[0]
+        : { hospital_name: "", services: [] };
+
+    return hospitalData;
+  } catch (error) {
+    throw new Error(`Error in getHomeVisitBookingsByService: ${error.message}`);
+  }
+};
+
+// get home visit bookings details for a specific service
+export const getHomeVisitServiceBookingDetails = async ({
+  token,
+  hospital_id,
+  service_id,
+}) => {
+  try {
+    let url = `${API_URL}/dashboard/v1/home-visit-bookings-by-service-details`;
+    const params = [];
+    if (hospital_id) params.push(`hospital_id=${hospital_id}`);
+    if (service_id) params.push(`service_id=${service_id}`);
+    if (params.length > 0) url += `?${params.join("&")}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `Failed to fetch home visit service booking details: ${response.status} - ${errorText}`
+      );
+    }
+
+    const result = await response.json();
+    return result.data || [];
+  } catch (error) {
+    throw new Error(
+      `Error in getHomeVisitServiceBookingDetails: ${error.message}`
+    );
+  }
+};
+
+// decrement user wallet balance
+export const decrementUserWallet = async ({ token, userId, newBalance }) => {
+  try {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("newBalance", newBalance);
+
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/decrement-users-wallets`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || result.success === false) {
+      throw new Error(result.message || "Failed to update user wallet");
+    }
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getPaymentReport = async ({ token }) => {
   try {
     let url = `${API_URL}/dashboard/v1/admin/payments/without-booking`;

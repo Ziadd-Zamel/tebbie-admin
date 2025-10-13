@@ -7,6 +7,7 @@ import DoctorReport from "../components/DashboardComponents/DoctorReport";
 import HospitalsReport from "../components/DashboardComponents/HospitalsReport";
 import UsersReport from "../components/DashboardComponents/UsersReport";
 import HomeVisitReporteport from "../components/DashboardComponents/HomeVisitReporteport";
+import HomeVisitBookingsSummary from "../components/DashboardComponents/HomeVisitBookingsSummary";
 import PaymentReporte from "../components/DashboardComponents/paymentReport";
 
 import { useQuery } from "@tanstack/react-query";
@@ -137,6 +138,14 @@ const Dashboard = () => {
                   usersData={usersData}
                   hospitalsData={hospitalsData}
                 />
+              </PermissionWrapper>
+            </div>
+            <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm">
+              <PermissionWrapper
+                permissionName="HomeVisitReport"
+                hideOnNoPermission={true}
+              >
+                <HomeVisitBookingsSummary />
               </PermissionWrapper>
             </div>
             <div className="col-span-1 xl:col-span-3 bg-white  rounded-[20px] shadow-sm ">

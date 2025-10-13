@@ -77,6 +77,8 @@ import Admins from "./pages/Admins";
 import AddAdmin from "./pages/AddAdmin";
 import UpdateAdmin from "./pages/UpdateAdmin";
 import HospitalServicesDetails from "./pages/HospitalServicesDetails";
+import HomeVisitBookingsDetails from "./pages/HomeVisitBookingsDetails";
+import HomeVisitServiceBookingDetails from "./pages/HomeVisitServiceBookingDetails";
 
 const queryClient = new QueryClient();
 
@@ -163,6 +165,28 @@ const router = createBrowserRouter([
                 hideOnNoPermission={true}
               >
                 <HospitalServicesDetails />
+              </PermissionWrapper>
+            ),
+          },
+          {
+            path: "home-visit-bookings-details/:hospitalId",
+            element: (
+              <PermissionWrapper
+                permissionName="HomeVisitReport"
+                hideOnNoPermission={true}
+              >
+                <HomeVisitBookingsDetails />
+              </PermissionWrapper>
+            ),
+          },
+          {
+            path: "home-visit-service-booking-details/:hospitalId/:serviceId",
+            element: (
+              <PermissionWrapper
+                permissionName="HomeVisitReport"
+                hideOnNoPermission={true}
+              >
+                <HomeVisitServiceBookingDetails />
               </PermissionWrapper>
             ),
           },
