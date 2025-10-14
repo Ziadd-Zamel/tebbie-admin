@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FaFileExcel } from "react-icons/fa";
+import { utils, writeFile } from "xlsx";
 import { useTranslation } from "react-i18next";
 import RechargeCardsPagination from "../components/RechargeCardsPagination";
 import {
@@ -53,7 +54,6 @@ const RechargeCards = () => {
     queryKey: [
       "recharge-card",
       token,
-      currentPage,
       debouncedSearchTerm,
       isValid,
       expireDate,
@@ -63,7 +63,6 @@ const RechargeCards = () => {
     queryFn: () =>
       getRechargeCards({
         token,
-        page: currentPage,
         card_number: debouncedSearchTerm,
         is_valid: isValid,
         expire_date: expireDate,
@@ -81,15 +80,33 @@ const RechargeCards = () => {
       );
       return;
     }
-    const params = new URLSearchParams({
-      ...(debouncedSearchTerm && { card_number: debouncedSearchTerm }),
-      ...(isValid !== undefined && { is_valid: isValid }),
-      ...(expireDate && { expire_date: expireDate }),
-      ...(price && { price: price }),
-      ...(debouncedBatchNumber && { batch_number: debouncedBatchNumber }),
-    });
-    const url = `https://tabi.evyx.lol/api/dashboard/v1/recharge-card-export?${params.toString()}`;
-    window.open(url, "_blank");
+
+    // Export ALL rows currently loaded client-side (not just the page slice)
+    const allRows = Array.isArray(cardData?.data) ? cardData.data : [];
+    if (!allRows.length) {
+      toast.error(t("noCardsFound"));
+      return;
+    }
+
+    try {
+      const worksheet = utils.json_to_sheet(
+        allRows.map((row) => ({
+          [t("cardNumber")]: row.card_number,
+          [t("validatity")]: row.is_valid === 1 ? t("valid") : t("invalid"),
+          [t("expireDate")]: row.expire_date || "",
+          [t("price")]: row.price ?? "",
+          [t("batchNumber")]: row.batch_number ?? "",
+        }))
+      );
+      const workbook = utils.book_new();
+      utils.book_append_sheet(workbook, worksheet, "Recharge Cards");
+      writeFile(
+        workbook,
+        `Recharge_Cards_${new Date().toISOString().slice(0, 10)}.xlsx`
+      );
+    } catch (e) {
+      toast.error(t("error") || "Export failed");
+    }
   };
 
   const handleSearchChange = (e) => {
@@ -122,8 +139,11 @@ const RechargeCards = () => {
     return <ErrorMessage />;
   }
 
+  const list = Array.isArray(cardData?.data) ? cardData.data : [];
+  const totalItems = list.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
-  console.log(cardData);
+  const currentItems = list.slice(startIndex, startIndex + itemsPerPage);
   return (
     <section dir={direction} className="container mx-auto lg:p-6 p-4 w-full">
       <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
@@ -225,7 +245,7 @@ const RechargeCards = () => {
                   <Loader />
                 </td>
               </tr>
-            ) : cardData?.data?.length === 0 ? (
+            ) : list.length === 0 ? (
               <tr>
                 <td
                   colSpan="5"
@@ -235,7 +255,7 @@ const RechargeCards = () => {
                 </td>
               </tr>
             ) : (
-              cardData?.data?.map((card, index) => (
+              currentItems.map((card, index) => (
                 <tr
                   key={card.id}
                   className="border-b border-gray-200 hover:bg-gray-100"
@@ -273,11 +293,11 @@ const RechargeCards = () => {
       <div className="flex justify-between items-end gap-4 flex-wrap p-4">
         <RechargeCardsPagination
           currentPage={currentPage}
-          totalPages={cardData?.pagination.total_pages || 1}
+          totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
         <p className="md:text-2xl text-xl text-gray-500 text-end">
-          {t("total")} : {cardData?.pagination.total || 0}
+          {t("total")} : {totalItems}
         </p>
       </div>
     </section>

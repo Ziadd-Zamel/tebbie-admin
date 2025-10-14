@@ -1,17 +1,22 @@
 /* eslint-disable react/prop-types */
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { MenuItem, Select, Checkbox, ListItemText } from "@mui/material";
 import { useTranslation } from "react-i18next";
 
-const MultiSelectDropdown = ({ doctors, selectedDoctors, handleDoctorChange ,translation }) => {
+const MultiSelectDropdown = ({
+  doctors,
+  selectedDoctors,
+  handleDoctorChange,
+  translation,
+}) => {
   const [selected, setSelected] = useState([]);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (selectedDoctors) {
-      setSelected(selectedDoctors); 
+      setSelected(selectedDoctors);
     }
-  }, [selectedDoctors]); 
+  }, [selectedDoctors]);
 
   const handleChange = (event) => {
     const {
@@ -20,27 +25,36 @@ const MultiSelectDropdown = ({ doctors, selectedDoctors, handleDoctorChange ,tra
 
     const selectedIds = typeof value === "string" ? value.split(",") : value;
     setSelected(selectedIds);
-    handleDoctorChange(selectedIds); 
+    handleDoctorChange(selectedIds);
   };
 
   return (
     <Select
+      style={{ direction: "rtl" }}
       multiple
-      value={selected} 
+      value={selected}
       onChange={handleChange}
-      renderValue={(selected) =>
-        selected
+      displayEmpty
+      renderValue={(selected) => {
+        if (selected.length === 0) {
+          return <span className="text-gray-400">{t(`${translation}`)}</span>;
+        }
+        return selected
           .map((id) => doctors.find((doctor) => doctor.id === id)?.name)
-          .join(", ")
-      }
+          .join(", ");
+      }}
       className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full z-50"
     >
-      <MenuItem disabled value="">
+      <MenuItem style={{ direction: "rtl" }} disabled value="">
         {t(`${translation}`)}
       </MenuItem>
       {doctors?.map((doctor) => (
-        <MenuItem key={doctor?.id} value={doctor?.id}>
-          <Checkbox checked={selected.includes(doctor.id)} /> 
+        <MenuItem
+          style={{ direction: "rtl" }}
+          key={doctor?.id}
+          value={doctor?.id}
+        >
+          <Checkbox checked={selected.includes(doctor.id)} />
           <ListItemText primary={doctor?.name} />
         </MenuItem>
       ))}

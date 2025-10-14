@@ -6,6 +6,7 @@ import ErrorMessage from "./ErrorMessage";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import "react-toastify/dist/ReactToastify.css";
 
 const token = localStorage.getItem("authToken");
@@ -17,7 +18,7 @@ const AddHospitalMainService = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    hospital_id: "",
+    hospital_id: [],
     name: "",
     status: "active",
   });
@@ -51,9 +52,16 @@ const AddHospitalMainService = () => {
     }));
   };
 
+  const handleHospitalChange = (selectedIds) => {
+    setFormData((prev) => ({
+      ...prev,
+      hospital_id: selectedIds,
+    }));
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!formData.hospital_id || !formData.name) {
+    if (!formData.hospital_id.length || !formData.name) {
       toast.error(t("يرجى ملء جميع الحقول المطلوبة"));
       return;
     }
@@ -87,21 +95,17 @@ const AddHospitalMainService = () => {
             >
               {t("المستشفى")} *
             </label>
-            <select
-              name="hospital_id"
-              id="hospital_id"
-              value={formData.hospital_id}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md px-6 bg-[#F7F8FA] py-3 focus:outline-none focus:border-primary md:w-[494px] w-[300px]"
-              required
+            <div
+              className="md:w-[494px] w-[300px]"
+              style={{ direction: "rtl" }}
             >
-              <option value="">{t("اختر المستشفى")}</option>
-              {hospitalsOptions.map((hospital) => (
-                <option key={hospital.id} value={hospital.id}>
-                  {hospital.name}
-                </option>
-              ))}
-            </select>
+              <MultiSelectDropdown
+                doctors={hospitalsOptions}
+                selectedDoctors={formData.hospital_id}
+                handleDoctorChange={handleHospitalChange}
+                translation="اختر المستشفيات"
+              />
+            </div>
           </div>
 
           <div className="px-3 my-4 md:mb-0">

@@ -1670,30 +1670,31 @@ export const addQuestion = async ({ question, answer, token }) => {
 //recharge card
 export const getRechargeCards = async ({
   token,
-  page = 1,
   is_valid,
   expire_date,
   card_number,
   batch_number,
 }) => {
   try {
-    const params = new URLSearchParams({ page });
+    const params = new URLSearchParams();
 
     if (is_valid !== undefined) params.append("is_valid", is_valid);
     if (expire_date) params.append("expire_date", expire_date);
     if (card_number) params.append("card_number", card_number);
     if (batch_number) params.append("batch_number", batch_number);
 
-    const response = await fetch(
-      `${API_URL}/dashboard/v1/recharge?${params.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const queryString = params.toString();
+    const url = queryString
+      ? `${API_URL}/dashboard/v1/recharge?${queryString}`
+      : `${API_URL}/dashboard/v1/recharge`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (response.ok) {
       const data = await response.json();
@@ -4586,7 +4587,16 @@ export const addHospitalMainService = async ({
   status,
 }) => {
   const formdata = new FormData();
-  formdata.append("hospital_id", hospital_id);
+
+  // Handle array of hospital IDs
+  if (Array.isArray(hospital_id)) {
+    hospital_id.forEach((id) => {
+      formdata.append("hospital_id[]", id);
+    });
+  } else {
+    formdata.append("hospital_id", hospital_id);
+  }
+
   formdata.append("name", name);
   formdata.append("status", status);
 
