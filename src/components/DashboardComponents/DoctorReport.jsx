@@ -74,37 +74,41 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
       }),
     enabled: !!token,
   });
-  const {
-    data: allDoctorData,
-    refetch: refetchAllData,
-    isFetching: isExporting,
-  } = useQuery({
-    queryKey: [
-      "doctors-Report-all",
-      token,
-      filters.selectedDoctor,
-      filters.selectedHospital,
-      filters.fromDate,
-      filters.toDate,
-    ],
-    queryFn: () =>
-      getDocotrReport({
+  const [exporting, setExporting] = useState(false);
+
+  const exportToExcel = async () => {
+    try {
+      setExporting(true);
+      // Fetch first page to get pagination info
+      const first = await getDocotrReport({
         token,
         doctor_id: filters.selectedDoctor,
         hospital_id: filters.selectedHospital,
         from_date: filters.fromDate,
         to_date: filters.toDate,
-        // No page parameter - this will return all data
-      }),
-    enabled: false, // Don't run automatically
-  });
-  const exportToExcel = async () => {
-    try {
-      const result = await refetchAllData();
+        page: 1,
+      });
 
-      if (result.data && result.data.data) {
+      const allRows = [...(Array.isArray(first?.data) ? first.data : [])];
+      const lastPage = first?.last_page || first?.pagination?.total_pages || 1;
+
+      for (let p = 2; p <= lastPage; p++) {
+        const res = await getDocotrReport({
+          token,
+          doctor_id: filters.selectedDoctor,
+          hospital_id: filters.selectedHospital,
+          from_date: filters.fromDate,
+          to_date: filters.toDate,
+          page: p,
+        });
+        if (Array.isArray(res?.data)) {
+          allRows.push(...res.data);
+        }
+      }
+
+      if (allRows.length) {
         const worksheet = utils.json_to_sheet(
-          result.data.data.map((data) => ({
+          allRows.map((data) => ({
             [t("doctor")]: data.doctor_name || t("Na"),
             [t("total_bookings")]: data.total_count || t("Na"),
           }))
@@ -119,6 +123,8 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
     } catch (error) {
       console.error("Export failed:", error);
       alert(t("export_failed") || "Export failed. Please try again.");
+    } finally {
+      setExporting(false);
     }
   };
   const doctorOptions = useMemo(
@@ -197,17 +203,15 @@ const DoctorReport = ({ hospitalsData, doctorsData }) => {
           {filteredData.length > 0 && (
             <button
               onClick={exportToExcel}
-              disabled={isExporting}
+              disabled={exporting}
               className={`px-6 h-10 w-full shrink-0 flex items-center justify-center gap-2 ${
-                isExporting
+                exporting
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] hover:from-[#2A8AA7] hover:to-[#2F8B6B]"
               } text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base sm:text-lg`}
               aria-label={t("Excel-Export")}
             >
-              {isExporting
-                ? t("exporting") || "Exporting..."
-                : t("Excel-Export")}
+              {exporting ? t("exporting") || "Exporting..." : t("Excel-Export")}
               <FaFileExcel aria-hidden="true" />
             </button>
           )}
