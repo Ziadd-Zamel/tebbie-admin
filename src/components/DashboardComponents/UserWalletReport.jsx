@@ -33,7 +33,10 @@ const UserWalletReport = () => {
   });
 
   // No frontend filtering needed - backend handles it
-  const filteredData = reviewData || [];
+  const filteredData = useMemo(
+    () => reviewData.users || [],
+    [reviewData?.users]
+  );
 
   const totalPages = Math.ceil(filteredData.length / statesPerPage) || 1;
 
@@ -113,9 +116,11 @@ const UserWalletReport = () => {
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-        <p className="lg:text-2xl md:text-xl text-lg text-gray-500 text-end">
-          {t("Total")}: {filteredData.length}
-        </p>
+        <div className="flex flex-col items-end">
+          <p className="lg:text-2xl md:text-xl text-lg text-gray-600 text-end">
+            {t("balance")}: {reviewData?.total_balance ?? 0}
+          </p>
+        </div>
       </div>
     </div>
   );
