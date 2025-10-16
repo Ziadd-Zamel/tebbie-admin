@@ -41,6 +41,19 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
     });
   };
 
+  const getTypeLabel = (reviewableType) => {
+    switch (reviewableType) {
+      case "App\\Models\\Hospital":
+        return t("hospital");
+      case "App\\Models\\Doctor":
+        return t("doctor");
+      case "App\\Models\\HomeVisit":
+        return t("homevisit");
+      default:
+        return reviewableType;
+    }
+  };
+
   return (
     <div className="overflow-x-auto md:w-full w-[90vw]">
       <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
@@ -96,40 +109,78 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
                 {expanded === Review.user_id && Review.reviews.length > 0 && (
                   <tr>
                     <td colSpan="4" className="py-4 px-6 bg-gray-50">
-                      <div className="space-y-4">
-                        {Review.reviews.map((review, index) => (
-                          <div
-                            key={index}
-                            className="flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow-sm font-semibold"
-                          >
-                              <div className="flex items-center justify-end">
-                                <span className="text-sm bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] p-2 text-white rounded-xl font-semibold">
-                                  {formatDateTime(review.created_at)}
-                                </span>
-                              </div>
+                      {(() => {
+                        const grouped = Review.reviews.reduce((acc, rev) => {
+                          const key = rev.reviewable_type || "Unknown";
+                          if (!acc[key]) acc[key] = [];
+                          acc[key].push(rev);
+                          return acc;
+                        }, {});
 
-                            <h2 className="mt-2 text-gray-700 text-2xl font-semibold my-2">
-                              {t("user_name")} : {Review.user_name}
-                            </h2>
-                          
-                            <div className="flex items-center justify-between my-2">
-                              <div className="flex items-center gap-2">
-                                {renderStars(review.rating)}
-                              </div>
+                        const typesOrder = [
+                          "App\\Models\\Hospital",
+                          "App\\Models\\Doctor",
+                          "App\\Models\\HomeVisit",
+                        ];
 
-                            
-                            </div>
-                            <p className="mt-2 text-gray-700">
-                              {review.comment}
-                            </p>
-                            {review.name && (
-                              <p className="mt-1 text-sm text-gray-600">
-                                - {review.name}
-                              </p>
-                            )}
+                        const orderedEntries = Object.entries(grouped).sort(
+                          ([a], [b]) =>
+                            (typesOrder.indexOf(a) === -1
+                              ? 999
+                              : typesOrder.indexOf(a)) -
+                            (typesOrder.indexOf(b) === -1
+                              ? 999
+                              : typesOrder.indexOf(b))
+                        );
+
+                        return (
+                          <div className="space-y-8">
+                            {orderedEntries.map(([type, reviews]) => (
+                              <div key={type} className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                  <h3 className="text-xl font-bold text-gray-800">
+                                    {getTypeLabel(type)}
+                                  </h3>
+                                  <span className="text-sm text-gray-500">
+                                    {reviews.length}
+                                  </span>
+                                </div>
+
+                                {reviews.map((review, index) => (
+                                  <div
+                                    key={`${type}-${index}`}
+                                    className="flex flex-col p-4 bg-white border border-gray-200 rounded-lg shadow-sm font-semibold"
+                                  >
+                                    <div className="flex items-center justify-end">
+                                      <span className="text-sm bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] p-2 text-white rounded-xl font-semibold">
+                                        {formatDateTime(review.created_at)}
+                                      </span>
+                                    </div>
+
+                                    <h2 className="mt-2 text-gray-700 text-2xl font-semibold my-2">
+                                      {t("user_name")} : {Review.user_name}
+                                    </h2>
+
+                                    <div className="flex items-center justify-between my-2">
+                                      <div className="flex items-center gap-2">
+                                        {renderStars(review.rating)}
+                                      </div>
+                                    </div>
+                                    <p className="mt-2 text-gray-700">
+                                      {review.comment}
+                                    </p>
+                                    {review.name && (
+                                      <p className="mt-1 text-sm text-gray-600">
+                                        - {review.name}
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        );
+                      })()}
                     </td>
                   </tr>
                 )}

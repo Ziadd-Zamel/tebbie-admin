@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-useless-catch */
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
@@ -71,7 +72,42 @@ export const getDoctors = async ({
   isVisitor = "",
 }) => {
   try {
-    const queryParams = new URLSearchParams({ page });
+    const queryParams = new URLSearchParams();
+    if (search) queryParams.append("name", search);
+    if (isSpecial) queryParams.append("is_special", isSpecial);
+    if (isVisitor) queryParams.append("is_visitor", isVisitor);
+    if (page) queryParams.append("page", page);
+
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/doctors?${queryParams.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+    throw new Error("Failed to fetch doctors");
+  } catch (error) {
+    throw error;
+  }
+};
+export const getDoctorSliders = async ({
+  token,
+  page = 1,
+  search = "",
+  isSpecial = "",
+  isVisitor = "",
+}) => {
+  try {
+    const queryParams = new URLSearchParams();
+    if (page) queryParams.append("page", String(page));
     if (search) queryParams.append("name", search);
     if (isSpecial) queryParams.append("is_special", isSpecial);
     if (isVisitor) queryParams.append("is_visitor", isVisitor);
@@ -1188,12 +1224,20 @@ export const updateSliders = async ({
   media,
   id,
   _method = "PATCH",
+  external_link,
 }) => {
   const formdata = new FormData();
 
-  formdata.append("realtable_type", realtable_type);
   formdata.append("_method", _method);
-  formdata.append("realtable_id", realtable_id);
+  if (realtable_type) {
+    formdata.append("realtable_type", realtable_type);
+  }
+  if (realtable_id) {
+    formdata.append("realtable_id", realtable_id);
+  }
+  if (external_link) {
+    formdata.append("external_link", external_link);
+  }
 
   if (media && !(typeof media === "string")) {
     formdata.append("media", media);
