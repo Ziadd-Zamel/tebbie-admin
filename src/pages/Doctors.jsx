@@ -29,7 +29,6 @@ const useDebounce = (value, delay) => {
 
 const token = localStorage.getItem("authToken");
 
-
 const Doctors = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,29 +45,49 @@ const Doctors = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["doctors", currentPage, debouncedSearchTerm, isSpecialFilter, isVisitorFilter],
-    queryFn: () => getDoctors({ token, page: currentPage, search: debouncedSearchTerm, isSpecial: isSpecialFilter, isVisitor: isVisitorFilter }),
+    queryKey: [
+      "doctors",
+      currentPage,
+      debouncedSearchTerm,
+      isSpecialFilter,
+      isVisitorFilter,
+    ],
+    queryFn: () =>
+      getDoctors({
+        token,
+        page: currentPage,
+        search: debouncedSearchTerm,
+        isSpecial: isSpecialFilter,
+        isVisitor: isVisitorFilter,
+      }),
   });
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handleSpecialFilter = (value) => {
     setIsSpecialFilter(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const handleVisitorFilter = (value) => {
     setIsVisitorFilter(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   if (isLoading) {
     return (
       <section dir={direction} className="container max-auto md:px-4 px-2">
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, justifyContent: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            justifyContent: "center",
+          }}
+        >
           {[...Array(8)].map((_, index) => (
             <Box
               key={index}
@@ -82,9 +101,22 @@ const Doctors = () => {
               }}
             >
               <Box sx={{ width: "40%", p: 2 }}>
-                <Skeleton variant="rectangular" width="100%" height={96} sx={{ borderRadius: 1 }} />
+                <Skeleton
+                  variant="rectangular"
+                  width="100%"
+                  height={96}
+                  sx={{ borderRadius: 1 }}
+                />
               </Box>
-              <Box sx={{ width: "60%", display: "flex", flexDirection: "column", gap: 1 ,p: 2  }}>
+              <Box
+                sx={{
+                  width: "60%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  p: 2,
+                }}
+              >
                 <Skeleton variant="text" width="60%" />
                 <Skeleton variant="text" width="90%" />
               </Box>
@@ -112,14 +144,26 @@ const Doctors = () => {
           />
           <div className="flex gap-2">
             <button
-              onClick={() => handleSpecialFilter(isSpecialFilter === "yes" ? "" : "yes")}
-              className={`px-3 py-2 rounded-lg w-20 ${isSpecialFilter === "yes" ? "bg-yellow-100 text-yellow-600 " : "bg-gray-100 text-gray-600 border-2  "}`}
+              onClick={() =>
+                handleSpecialFilter(isSpecialFilter === "yes" ? "" : "yes")
+              }
+              className={`px-3 py-2 rounded-lg w-20 ${
+                isSpecialFilter === "yes"
+                  ? "bg-yellow-100 text-yellow-600 "
+                  : "bg-gray-100 text-gray-600 border-2  "
+              }`}
             >
               {t("special")}
             </button>
             <button
-              onClick={() => handleVisitorFilter(isVisitorFilter === "yes" ? "" : "yes")}
-              className={`px-3 py-2 rounded-lg w-20 ${isVisitorFilter === "yes" ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-600 border-2 "}`}
+              onClick={() =>
+                handleVisitorFilter(isVisitorFilter === "yes" ? "" : "yes")
+              }
+              className={`px-3 py-2 rounded-lg w-20 ${
+                isVisitorFilter === "yes"
+                  ? "bg-green-100 text-green-600"
+                  : "bg-gray-100 text-gray-600 border-2 "
+              }`}
             >
               {t("visitor")}
             </button>

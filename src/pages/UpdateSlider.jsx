@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  getDoctors,
+  getDoctorSliders,
   getHospitals,
   getLabs,
   getSliderById,
@@ -31,6 +31,7 @@ const UpdateSlider = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState(null);
+  const [activeTab, setActiveTab] = useState("external");
 
   const { sliderId } = useParams();
 
@@ -46,6 +47,7 @@ const UpdateSlider = () => {
     media: null,
     realtable_type: "",
     realtable_id: "",
+    external_link: "",
     id: sliderId,
   });
 
@@ -74,7 +76,31 @@ const UpdateSlider = () => {
 
   const { data: doctorsData } = useQuery({
     queryKey: ["doctorsData"],
-    queryFn: () => getDoctors({ token }),
+    queryFn: async () => {
+      const first = await getDoctorSliders({
+        token,
+        page: 1,
+        isVisitor: "yes",
+      });
+      const lastPage = first?.last_page || 1;
+      if (lastPage <= 1) {
+        const onlyVisitors = (first?.data || []).filter(
+          (d) => d?.is_visitor === "yes"
+        );
+        return { data: onlyVisitors };
+      }
+      const pages = await Promise.all(
+        Array.from({ length: lastPage - 1 }, (_, i) =>
+          getDoctorSliders({ token, page: i + 2, isVisitor: "yes" })
+        )
+      );
+      const merged = [
+        ...(first?.data || []),
+        ...pages.flatMap((p) => p?.data || []),
+      ];
+      const onlyVisitors = merged.filter((d) => d?.is_visitor === "yes");
+      return { data: onlyVisitors };
+    },
   });
   const { data: hospitalData } = useQuery({
     queryKey: ["hospitalData", token],
@@ -94,19 +120,36 @@ const UpdateSlider = () => {
   });
   useEffect(() => {
     if (sliderData) {
-      // eslint-disable-next-line no-unused-vars
       const extractedType = sliderData.realtable_type
-        ? sliderData.realtable_type.split("\\").pop()
+        ? sliderData.realtable_type.split("\\").pop().toLowerCase()
         : "";
-      setFormData({
+
+      // Determine tab based on presence of external_link
+      const isExternal = Boolean(sliderData.external_link);
+      setActiveTab(isExternal ? "external" : "type");
+
+      // Determine selected id depending on type
+      let resolvedId = "";
+      if (extractedType === "doctor")
+        resolvedId = sliderData.doctor?.id || sliderData.realtable_id || "";
+      if (extractedType === "hospital")
+        resolvedId = sliderData.hospital?.id || sliderData.realtable_id || "";
+      if (extractedType === "xray")
+        resolvedId = sliderData.xray?.id || sliderData.realtable_id || "";
+      if (extractedType === "lab")
+        resolvedId = sliderData.lab?.id || sliderData.realtable_id || "";
+      if (extractedType === "specialization")
+        resolvedId =
+          sliderData.specialization?.id || sliderData.realtable_id || "";
+
+      setFormData((prev) => ({
+        ...prev,
         media: sliderData.media_url || null,
-        realtable_type: sliderData.realtable_type || "",
-        hospital: sliderData.hospital || "",
-        doctor: sliderData.doctor || "",
-        xray: sliderData.xray || "",
-        lab: sliderData.lab || "",
-      });
-      setImagePreview(sliderData.media_url);
+        realtable_type: extractedType, // keep simple type for selects
+        realtable_id: resolvedId,
+        external_link: sliderData.external_link || "",
+      }));
+      setImagePreview(sliderData.media_url || null);
     }
   }, [sliderData]);
 
@@ -123,12 +166,29 @@ const UpdateSlider = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.media) {
-      alert("Please provide an image.");
-      return;
+    // Validate based on active tab similar to Add
+    if (activeTab === "external") {
+      if (!formData.external_link) {
+        toast.error("Please provide external link");
+        return;
+      }
+    } else if (activeTab === "type") {
+      if (!formData.realtable_type || !formData.realtable_id) {
+        toast.error("Please select type and item");
+        return;
+      }
     }
 
-    handleUpdateSlider(formData);
+    // Map simple type to API expected when needed (API accepts same keys for update)
+    const payload = { ...formData };
+    if (activeTab === "external") {
+      payload.realtable_type = "";
+      payload.realtable_id = "";
+    } else {
+      payload.external_link = "";
+    }
+
+    handleUpdateSlider(payload);
   };
   if (isLoading) {
     return <Loader />;
@@ -175,29 +235,49 @@ const UpdateSlider = () => {
           </div>
         </div>
 
-        <div className="px-3 my-6 md:mb-0">
-          <select
-            name="realtable_type"
-            id="realtable_type"
-            value={formData.realtable_type}
-            onChange={(e) =>
-              setFormData((prev) => ({
-                ...prev,
-                realtable_type: e.target.value,
-                realtable_id: "",
-              }))
-            }
-            className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-          >
-            <option value="">Select Type</option>
-            {realtableType?.map((data) => (
-              <option key={data.id} value={data.name}>
-                {data.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {formData.realtable_type === "doctor" && (
+        {activeTab === "external" && (
+          <div className="px-3 my-6 md:mb-0">
+            <input
+              type="url"
+              name="external_link"
+              placeholder="https://example.com"
+              value={formData.external_link}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  external_link: e.target.value,
+                }))
+              }
+              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+            />
+          </div>
+        )}
+
+        {activeTab === "type" && (
+          <div className="px-3 my-6 md:mb-0">
+            <select
+              name="realtable_type"
+              id="realtable_type"
+              value={formData.realtable_type}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  realtable_type: e.target.value,
+                  realtable_id: "",
+                }))
+              }
+              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+            >
+              <option value="">Select Type</option>
+              {realtableType?.map((data) => (
+                <option key={data.id} value={data.name}>
+                  {data.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {activeTab === "type" && formData.realtable_type === "doctor" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="doctor"
@@ -211,7 +291,7 @@ const UpdateSlider = () => {
               className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
             >
               <option value="">Select Doctor</option>
-              {doctorsData?.map((data) => (
+              {doctorsData?.data?.map((data) => (
                 <option key={data.id} value={data.id}>
                   {data.name}
                 </option>
@@ -219,7 +299,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-        {formData.realtable_type === "hospital" && (
+        {activeTab === "type" && formData.realtable_type === "hospital" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="hospital"
@@ -241,7 +321,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-        {formData.realtable_type === "xray" && (
+        {activeTab === "type" && formData.realtable_type === "xray" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="xray"
@@ -263,7 +343,7 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-        {formData.realtable_type === "lab" && (
+        {activeTab === "type" && formData.realtable_type === "lab" && (
           <div className="px-3 my-6 md:mb-0">
             <select
               name="lab"
@@ -285,28 +365,29 @@ const UpdateSlider = () => {
             </select>
           </div>
         )}
-        {formData.realtable_type === "specialization" && (
-          <div className="px-3 my-6 md:mb-0">
-            <select
-              name="specialization"
-              value={formData.realtable_id}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  realtable_id: e.target.value,
-                }))
-              }
-              className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
-            >
-              <option value="">Select specialization</option>
-              {specializationData?.map((data) => (
-                <option key={data.id} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        {activeTab === "type" &&
+          formData.realtable_type === "specialization" && (
+            <div className="px-3 my-6 md:mb-0">
+              <select
+                name="specialization"
+                value={formData.realtable_id}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    realtable_id: e.target.value,
+                  }))
+                }
+                className="border border-gray-300 rounded-lg py-2 px-4 bg-[#F7F8FA] h-[50px] focus:outline-none focus:border-primary w-full"
+              >
+                <option value="">Select specialization</option>
+                {specializationData?.map((data) => (
+                  <option key={data.id} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         <button
           type="submit"
           disabled={isPending}

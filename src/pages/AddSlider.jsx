@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addSlider,
-  getDoctors,
+  getDoctorSliders,
   getHospitals,
   getLabs,
   getSpecializations,
@@ -61,9 +61,32 @@ const AddSlider = () => {
 
   const { data: doctorsData } = useQuery({
     queryKey: ["doctorsData"],
-    queryFn: () => getDoctors({ token }),
+    queryFn: async () => {
+      const first = await getDoctorSliders({
+        token,
+        page: 1,
+        isVisitor: "yes",
+      });
+      const lastPage = first?.last_page || 1;
+      if (lastPage <= 1) {
+        const onlyVisitors = (first?.data || []).filter(
+          (d) => d?.is_visitor === "yes"
+        );
+        return { data: onlyVisitors };
+      }
+      const pages = await Promise.all(
+        Array.from({ length: lastPage - 1 }, (_, i) =>
+          getDoctorSliders({ token, page: i + 2, isVisitor: "yes" })
+        )
+      );
+      const merged = [
+        ...(first?.data || []),
+        ...pages.flatMap((p) => p?.data || []),
+      ];
+      const onlyVisitors = merged.filter((d) => d?.is_visitor === "yes");
+      return { data: onlyVisitors };
+    },
   });
-  console.log(doctorsData);
   const { data: hospitalData } = useQuery({
     queryKey: ["hospitalData", token],
     queryFn: () => getHospitals({ token }),
