@@ -225,8 +225,8 @@ const HospitalReportDetails = () => {
                   "phone",
                   "doctorName",
                   "payment_method",
-                  "payment_status",
                   "status",
+                  "payment_status",
                   "cancellation_reason",
                   "tabi_commission",
                   "hospital_commission",
@@ -282,8 +282,18 @@ const HospitalReportDetails = () => {
                         {t(data.booking_status)}
                       </p>
                     </td>
-                    <td className="py-3 px-3 text-center">
-                      {data.payment_status || t("Na")}
+                    <td className="py-3 px-3 text-center whitespace-nowrap">
+                      <p
+                        className={`p-2 ${
+                          data.payment_status === "unpaid"
+                            ? "bg-red-400 text-white rounded-full"
+                            : data.payment_status === "paid"
+                            ? "bg-green-400 text-white rounded-full"
+                            : "bg-gray-400 text-white rounded-full"
+                        }`}
+                      >
+                        {t(data.payment_status) || t("Na")}
+                      </p>
                     </td>
                     <td className="py-3 px-3 text-center whitespace-nowrap">
                       {data.cancellation_reason || t("Na")}

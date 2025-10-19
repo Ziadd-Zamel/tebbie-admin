@@ -407,18 +407,35 @@ export const newHospital = async ({
 };
 export const getHospitals = async ({ token }) => {
   try {
-    const response = await fetch(`${API_URL}/dashboard/v1/hospitals`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    let allHospitals = [];
+    let currentPage = 1;
+    let hasMorePages = true;
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.data.data;
+    while (hasMorePages) {
+      const response = await fetch(
+        `${API_URL}/dashboard/v1/hospitals?page=${currentPage}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        allHospitals = [...allHospitals, ...data.data.data];
+
+        // Check if there are more pages
+        hasMorePages = data.data.meta.has_more_pages;
+        currentPage++;
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
     }
+
+    return allHospitals;
   } catch (error) {
     throw error;
   }
