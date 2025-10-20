@@ -8,6 +8,7 @@ import {
   getAllDoctors,
 } from "../utlis/https";
 import { toast } from "react-toastify";
+import { hasPermission } from "../utlis/permissionUtils";
 
 import { FaEye, FaEyeSlash, FaHome } from "react-icons/fa";
 
@@ -26,6 +27,9 @@ const AddHospital = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
+  // Check if user has permission to view doctors
+  const canViewDoctors = hasPermission("doctors-index");
+
   const togglePassword = (event) => {
     event.preventDefault();
     setShowPassword(!showPassword);
@@ -37,6 +41,7 @@ const AddHospital = () => {
   const { data: doctors, isLoading: doctorsIsLoading } = useQuery({
     queryKey: ["doctors"],
     queryFn: () => getAllDoctors({ token }),
+    enabled: canViewDoctors, // Only fetch if user has permission
   });
   const { data: specializationsData, isLoading: sppecializationsIsLoading } =
     useQuery({

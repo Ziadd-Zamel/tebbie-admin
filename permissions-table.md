@@ -73,6 +73,35 @@ This table shows all available permissions in the system with their IDs, names, 
 | 106 | getAllHomeVisitServices       | عرض كل خدمات الزيارة المنزلية  | Get All Home Visit Services    |
 | 107 | getGeneralStatistics          | عرض الإحصائيات العامة          | Get General Statistics         |
 | 108 | usersWithWallets              | عرض مستخدمين بالمحافظ          | Users with Wallets             |
+| 109 | doctors-index                 | عرض كل الأطباء                 | View All Doctors               |
+| 110 | home-visit-services           | عرض خدمات الزيارة المنزلية     | View Home Visit Services       |
+| 111 | home-visit-services-show      | عرض خدمة زيارة منزلية          | View Home Visit Service        |
+| 112 | home-visit-services-store     | إضافة خدمة زيارة منزلية        | Add Home Visit Service         |
+| 113 | home-visit-services-update    | تحديث خدمة زيارة منزلية        | Update Home Visit Service      |
+| 114 | doctor-commissions-index      | عرض عمولات الأطباء             | View Doctor Commissions        |
+| 115 | doctor-commissions-show       | عرض عمولة طبيب                 | View Doctor Commission         |
+| 116 | doctor-commissions-store      | إضافة عمولة طبيب               | Add Doctor Commission          |
+| 117 | doctor-commissions-update     | تحديث عمولة طبيب               | Update Doctor Commission       |
+| 118 | sliders-index                 | عرض كل السلايدرز               | View All Sliders               |
+| 119 | sliders-store                 | إضافة سلايدر                   | Add Slider                     |
+| 120 | sliders-show                  | عرض سلايدر                     | View Slider                    |
+| 121 | sliders-update                | تحديث سلايدر                   | Update Slider                  |
+| 122 | sliders-destroy               | حذف سلايدر                     | Delete Slider                  |
+| 123 | coupons-index                 | عرض كل الكوبونات               | View All Coupons               |
+| 124 | coupons-store                 | إضافة كوبون                    | Add Coupon                     |
+| 125 | coupons-show                  | عرض كوبون                      | View Coupon                    |
+| 126 | coupons-update                | تحديث كوبون                    | Update Coupon                  |
+| 127 | coupons-destroy               | حذف كوبون                      | Delete Coupon                  |
+| 128 | recharges-index               | عرض كل كروت الشحن              | View All Recharge Cards        |
+| 129 | recharges-store               | إضافة كارت شحن                 | Add Recharge Card              |
+| 130 | recharges-show                | عرض كارت شحن                   | View Recharge Card             |
+| 131 | recharges-update              | تحديث كارت شحن                 | Update Recharge Card           |
+| 132 | recharges-destroy             | حذف كارت شحن                   | Delete Recharge Card           |
+| 133 | employees-index               | عرض كل الموظفين                | View All Employees             |
+| 134 | employees-store               | إضافة موظف                     | Add Employee                   |
+| 135 | employees-show                | عرض موظف                       | View Employee                  |
+| 136 | employees-update              | تحديث موظف                     | Update Employee                |
+| 137 | employees-destroy             | حذف موظف                       | Delete Employee                |
 
 ## Permission Categories
 
@@ -151,6 +180,34 @@ This table shows all available permissions in the system with their IDs, names, 
 
 - getAllUsers, getAllHospitals, getAllDoctors, getAllHomeVisitServices
 - getGeneralStatistics, usersWithWallets
+
+### Doctor Management (Extended)
+
+- doctors-index, restoreDoctors, trashedDoctors
+
+### Home Visit Services Management
+
+- home-visit-services, home-visit-services-show, home-visit-services-store, home-visit-services-update
+
+### Doctor Commissions Management
+
+- doctor-commissions-index, doctor-commissions-show, doctor-commissions-store, doctor-commissions-update
+
+### Sliders Management
+
+- sliders-index, sliders-store, sliders-show, sliders-update, sliders-destroy
+
+### Coupons Management
+
+- coupons-index, coupons-store, coupons-show, coupons-update, coupons-destroy
+
+### Recharge Cards Management
+
+- recharges-index, recharges-store, recharges-show, recharges-update, recharges-destroy
+
+### Employee Management (Extended)
+
+- employees-index, employees-store, employees-show, employees-update, employees-destroy, restoreEmployee
 
 ## API Endpoint Mappings
 
@@ -297,9 +354,68 @@ This table shows all available permissions in the system with their IDs, names, 
 | getAllUsers             | `/dashboard/v1/get-all-users`               | GET    | Get all users               | ✅ Implemented |
 | getAllHospitals         | `/dashboard/v1/get-all-hospitals`           | GET    | Get all hospitals           | ✅ Implemented |
 | getAllDoctors           | `/dashboard/v1/get-all-doctors`             | GET    | Get all doctors             | ✅ Implemented |
+| doctors-index           | `/dashboard/v1/doctors`                     | GET    | View all doctors            | ✅ Implemented |
 | getAllHomeVisitServices | `/dashboard/v1/get-all-home-visit-services` | GET    | Get all home visit services | ✅ Implemented |
 | getGeneralStatistics    | `/dashboard/v1/get-general-statistics`      | GET    | Get general statistics      | ✅ Implemented |
 | usersWithWallets        | `/dashboard/v1/users-with-wallets`          | GET    | Users with wallets          | ✅ Implemented |
+
+### Home Visit Services Management
+
+| Permission                 | Endpoint                                              | Method | Description               | Status         |
+| -------------------------- | ----------------------------------------------------- | ------ | ------------------------- | -------------- |
+| home-visit-services        | `/dashboard/v1/admin/home-visit-services`             | GET    | Get home visit services   | ✅ Implemented |
+| home-visit-services-show   | `/dashboard/v1/admin/home-visit-services/{id}`        | GET    | Show home visit service   | ✅ Implemented |
+| home-visit-services-store  | `/dashboard/v1/admin/home-visit-services`             | POST   | Store home visit service  | ✅ Implemented |
+| home-visit-services-update | `/dashboard/v1/admin/home-visit-services/update/{id}` | POST   | Update home visit service | ✅ Implemented |
+
+### Doctor Commissions Management
+
+| Permission                | Endpoint                                             | Method | Description              | Status         |
+| ------------------------- | ---------------------------------------------------- | ------ | ------------------------ | -------------- |
+| doctor-commissions-index  | `/dashboard/v1/admin/doctor-commissions`             | GET    | Get doctor commissions   | ✅ Implemented |
+| doctor-commissions-show   | `/dashboard/v1/admin/doctor-commissions/{id}`        | GET    | Show doctor commission   | ✅ Implemented |
+| doctor-commissions-store  | `/dashboard/v1/admin/doctor-commissions/store`       | POST   | Store doctor commission  | ✅ Implemented |
+| doctor-commissions-update | `/dashboard/v1/admin/doctor-commissions/{id}/update` | POST   | Update doctor commission | ✅ Implemented |
+
+### Sliders Management
+
+| Permission      | Endpoint                     | Method    | Description     | Status         |
+| --------------- | ---------------------------- | --------- | --------------- | -------------- |
+| sliders-index   | `/dashboard/v1/sliders`      | GET       | Get all sliders | ✅ Implemented |
+| sliders-store   | `/dashboard/v1/sliders`      | POST      | Create slider   | ✅ Implemented |
+| sliders-show    | `/dashboard/v1/sliders/{id}` | GET       | Show slider     | ✅ Implemented |
+| sliders-update  | `/dashboard/v1/sliders/{id}` | PUT/PATCH | Update slider   | ✅ Implemented |
+| sliders-destroy | `/dashboard/v1/sliders/{id}` | DELETE    | Delete slider   | ✅ Implemented |
+
+### Coupons Management
+
+| Permission      | Endpoint                     | Method    | Description     | Status         |
+| --------------- | ---------------------------- | --------- | --------------- | -------------- |
+| coupons-index   | `/dashboard/v1/coupons`      | GET       | Get all coupons | ✅ Implemented |
+| coupons-store   | `/dashboard/v1/coupons`      | POST      | Create coupon   | ✅ Implemented |
+| coupons-show    | `/dashboard/v1/coupons/{id}` | GET       | Show coupon     | ✅ Implemented |
+| coupons-update  | `/dashboard/v1/coupons/{id}` | PUT/PATCH | Update coupon   | ✅ Implemented |
+| coupons-destroy | `/dashboard/v1/coupons/{id}` | DELETE    | Delete coupon   | ✅ Implemented |
+
+### Recharge Cards Management
+
+| Permission        | Endpoint                      | Method    | Description            | Status         |
+| ----------------- | ----------------------------- | --------- | ---------------------- | -------------- |
+| recharges-index   | `/dashboard/v1/recharge`      | GET       | Get all recharge cards | ✅ Implemented |
+| recharges-store   | `/dashboard/v1/recharge`      | POST      | Create recharge card   | ✅ Implemented |
+| recharges-show    | `/dashboard/v1/recharge/{id}` | GET       | Show recharge card     | ✅ Implemented |
+| recharges-update  | `/dashboard/v1/recharge/{id}` | PUT/PATCH | Update recharge card   | ✅ Implemented |
+| recharges-destroy | `/dashboard/v1/recharge/{id}` | DELETE    | Delete recharge card   | ✅ Implemented |
+
+### Employee Management (Extended)
+
+| Permission        | Endpoint                      | Method    | Description       | Status         |
+| ----------------- | ----------------------------- | --------- | ----------------- | -------------- |
+| employees-index   | `/dashboard/v1/employee`      | GET       | Get all employees | ✅ Implemented |
+| employees-store   | `/dashboard/v1/employee`      | POST      | Create employee   | ✅ Implemented |
+| employees-show    | `/dashboard/v1/employee/{id}` | GET       | Show employee     | ✅ Implemented |
+| employees-update  | `/dashboard/v1/employee/{id}` | PUT/PATCH | Update employee   | ✅ Implemented |
+| employees-destroy | `/dashboard/v1/employee/{id}` | DELETE    | Delete employee   | ✅ Implemented |
 
 ### Missing Permissions (Backend 403 Errors)
 
@@ -313,57 +429,57 @@ These endpoints are used in the application but don't have permission system int
 | `/admin/get-wallet`            | GET    | Get wallet                 | ✅ Now has permission |
 | `/admin/doctor-commissions`    | GET    | Get doctor commissions     | ✅ Now has permission |
 | `/admin/homevisit-commissions` | GET    | Get home visit commissions | ✅ Now has permission |
-| `/dashboard/v1/sliders`        | GET    | Get sliders                | ❌ No Permission      |
+| `/dashboard/v1/sliders`        | GET    | Get sliders                | ✅ Now has permission |
 | `/api/customer-services`       | GET    | Get customer services      | ❌ No Permission      |
-| `/dashboard/v1/coupons`        | GET    | Get coupons                | ❌ No Permission      |
-| `/dashboard/v1/recharge`       | GET    | Get recharge               | ❌ No Permission      |
+| `/dashboard/v1/coupons`        | GET    | Get coupons                | ✅ Now has permission |
+| `/dashboard/v1/recharge`       | GET    | Get recharge               | ✅ Now has permission |
 | `/dashboard/v1/refund-one`     | GET    | Get refund one             | ❌ No Permission      |
 | `/admin/hospital-services/all` | GET    | Get all hospital services  | ✅ Now has permission |
-| `/dashboard/v1/employee`       | GET    | Get employees              | ❌ No Permission      |
-| `/dashboard/v1/doctors`        | GET    | Get doctors                | ❌ No Permission      |
+| `/dashboard/v1/employee`       | GET    | Get employees              | ✅ Now has permission |
+| `/dashboard/v1/doctors`        | GET    | Get doctors                | ✅ Now has permission |
 
 ### Newly Added Permissions (From Backend Routes)
 
 These permissions have been recently added to the backend and need frontend implementation:
 
-| Permission Name                | Endpoint                                                | Method    | Description                  | Status             |
-| ------------------------------ | ------------------------------------------------------- | --------- | ---------------------------- | ------------------ |
-| `home-visit-services`          | `/dashboard/v1/admin/home-visit-services`               | GET       | Get home visit services      | ❌ Not implemented |
-| `home-visit-services-show`     | `/dashboard/v1/admin/home-visit-services/{id}`          | GET       | Show home visit service      | ❌ Not implemented |
-| `home-visit-services-store`    | `/dashboard/v1/admin/home-visit-services`               | POST      | Store home visit service     | ❌ Not implemented |
-| `home-visit-services-update`   | `/dashboard/v1/admin/home-visit-services/update/{id}`   | POST      | Update home visit service    | ❌ Not implemented |
-| `get-wallet`                   | `/dashboard/v1/admin/get-wallet`                        | GET       | Get wallet                   | ✅ Implemented     |
-| `get-wallet-hospital`          | `/dashboard/v1/admin/get-wallet-hospital`               | GET       | Get hospital wallet          | ✅ Implemented     |
-| `doctor-commissions-index`     | `/dashboard/v1/admin/doctor-commissions`                | GET       | Get doctor commissions       | ❌ Not implemented |
-| `doctor-commissions-show`      | `/dashboard/v1/admin/doctor-commissions/{id}`           | GET       | Show doctor commission       | ❌ Not implemented |
-| `doctor-commissions-store`     | `/dashboard/v1/admin/doctor-commissions/store`          | POST      | Store doctor commission      | ❌ Not implemented |
-| `doctor-commissions-update`    | `/dashboard/v1/admin/doctor-commissions/{id}/update`    | POST      | Update doctor commission     | ❌ Not implemented |
-| `homevisit-commissions-index`  | `/dashboard/v1/admin/homevisit-commissions`             | GET       | Get home visit commissions   | ✅ Implemented     |
-| `homevisit-commissions-show`   | `/dashboard/v1/admin/homevisit-commissions/{id}`        | GET       | Show home visit commission   | ✅ Implemented     |
-| `homevisit-commissions-store`  | `/dashboard/v1/admin/homevisit-commissions/store`       | POST      | Store home visit commission  | ✅ Implemented     |
-| `homevisit-commissions-update` | `/dashboard/v1/admin/homevisit-commissions/{id}/update` | POST      | Update home visit commission | ✅ Implemented     |
-| `hospital-services/all`        | `/dashboard/v1/admin/hospital-services/all`             | GET       | Get all hospital services    | ✅ Implemented     |
-| `sendNotification`             | `/dashboard/v1/send-notification`                       | POST      | Send notification            | ✅ Implemented     |
-| `sliders-index`                | `/dashboard/v1/sliders`                                 | GET       | Get all sliders              | ✅ Implemented     |
-| `sliders-store`                | `/dashboard/v1/sliders`                                 | POST      | Create slider                | ✅ Implemented     |
-| `sliders-show`                 | `/dashboard/v1/sliders/{id}`                            | GET       | Show slider                  | ✅ Implemented     |
-| `sliders-update`               | `/dashboard/v1/sliders/{id}`                            | PUT/PATCH | Update slider                | ✅ Implemented     |
-| `sliders-destroy`              | `/dashboard/v1/sliders/{id}`                            | DELETE    | Delete slider                | ✅ Implemented     |
-| `coupons-index`                | `/dashboard/v1/coupons`                                 | GET       | Get all coupons              | ✅ Implemented     |
-| `coupons-store`                | `/dashboard/v1/coupons`                                 | POST      | Create coupon                | ✅ Implemented     |
-| `coupons-show`                 | `/dashboard/v1/coupons/{id}`                            | GET       | Show coupon                  | ✅ Implemented     |
-| `coupons-update`               | `/dashboard/v1/coupons/{id}`                            | PUT/PATCH | Update coupon                | ✅ Implemented     |
-| `coupons-destroy`              | `/dashboard/v1/coupons/{id}`                            | DELETE    | Delete coupon                | ✅ Implemented     |
-| `recharges-index`              | `/dashboard/v1/recharge`                                | GET       | Get all recharge cards       | ✅ Implemented     |
-| `recharges-store`              | `/dashboard/v1/recharge`                                | POST      | Create recharge card         | ✅ Implemented     |
-| `recharges-show`               | `/dashboard/v1/recharge/{id}`                           | GET       | Show recharge card           | ✅ Implemented     |
-| `recharges-update`             | `/dashboard/v1/recharge/{id}`                           | PUT/PATCH | Update recharge card         | ✅ Implemented     |
-| `recharges-destroy`            | `/dashboard/v1/recharge/{id}`                           | DELETE    | Delete recharge card         | ✅ Implemented     |
-| `employees-index`              | `/dashboard/v1/employee`                                | GET       | Get all employees            | ✅ Implemented     |
-| `employees-store`              | `/dashboard/v1/employee`                                | POST      | Create employee              | ✅ Implemented     |
-| `employees-show`               | `/dashboard/v1/employee/{id}`                           | GET       | Show employee                | ✅ Implemented     |
-| `employees-update`             | `/dashboard/v1/employee/{id}`                           | PUT/PATCH | Update employee              | ✅ Implemented     |
-| `employees-destroy`            | `/dashboard/v1/employee/{id}`                           | DELETE    | Delete employee              | ✅ Implemented     |
+| Permission Name                | Endpoint                                                | Method    | Description                  | Status         |
+| ------------------------------ | ------------------------------------------------------- | --------- | ---------------------------- | -------------- |
+| `home-visit-services`          | `/dashboard/v1/admin/home-visit-services`               | GET       | Get home visit services      | ✅ Implemented |
+| `home-visit-services-show`     | `/dashboard/v1/admin/home-visit-services/{id}`          | GET       | Show home visit service      | ✅ Implemented |
+| `home-visit-services-store`    | `/dashboard/v1/admin/home-visit-services`               | POST      | Store home visit service     | ✅ Implemented |
+| `home-visit-services-update`   | `/dashboard/v1/admin/home-visit-services/update/{id}`   | POST      | Update home visit service    | ✅ Implemented |
+| `get-wallet`                   | `/dashboard/v1/admin/get-wallet`                        | GET       | Get wallet                   | ✅ Implemented |
+| `get-wallet-hospital`          | `/dashboard/v1/admin/get-wallet-hospital`               | GET       | Get hospital wallet          | ✅ Implemented |
+| `doctor-commissions-index`     | `/dashboard/v1/admin/doctor-commissions`                | GET       | Get doctor commissions       | ✅ Implemented |
+| `doctor-commissions-show`      | `/dashboard/v1/admin/doctor-commissions/{id}`           | GET       | Show doctor commission       | ✅ Implemented |
+| `doctor-commissions-store`     | `/dashboard/v1/admin/doctor-commissions/store`          | POST      | Store doctor commission      | ✅ Implemented |
+| `doctor-commissions-update`    | `/dashboard/v1/admin/doctor-commissions/{id}/update`    | POST      | Update doctor commission     | ✅ Implemented |
+| `homevisit-commissions-index`  | `/dashboard/v1/admin/homevisit-commissions`             | GET       | Get home visit commissions   | ✅ Implemented |
+| `homevisit-commissions-show`   | `/dashboard/v1/admin/homevisit-commissions/{id}`        | GET       | Show home visit commission   | ✅ Implemented |
+| `homevisit-commissions-store`  | `/dashboard/v1/admin/homevisit-commissions/store`       | POST      | Store home visit commission  | ✅ Implemented |
+| `homevisit-commissions-update` | `/dashboard/v1/admin/homevisit-commissions/{id}/update` | POST      | Update home visit commission | ✅ Implemented |
+| `hospital-services/all`        | `/dashboard/v1/admin/hospital-services/all`             | GET       | Get all hospital services    | ✅ Implemented |
+| `sendNotification`             | `/dashboard/v1/send-notification`                       | POST      | Send notification            | ✅ Implemented |
+| `sliders-index`                | `/dashboard/v1/sliders`                                 | GET       | Get all sliders              | ✅ Implemented |
+| `sliders-store`                | `/dashboard/v1/sliders`                                 | POST      | Create slider                | ✅ Implemented |
+| `sliders-show`                 | `/dashboard/v1/sliders/{id}`                            | GET       | Show slider                  | ✅ Implemented |
+| `sliders-update`               | `/dashboard/v1/sliders/{id}`                            | PUT/PATCH | Update slider                | ✅ Implemented |
+| `sliders-destroy`              | `/dashboard/v1/sliders/{id}`                            | DELETE    | Delete slider                | ✅ Implemented |
+| `coupons-index`                | `/dashboard/v1/coupons`                                 | GET       | Get all coupons              | ✅ Implemented |
+| `coupons-store`                | `/dashboard/v1/coupons`                                 | POST      | Create coupon                | ✅ Implemented |
+| `coupons-show`                 | `/dashboard/v1/coupons/{id}`                            | GET       | Show coupon                  | ✅ Implemented |
+| `coupons-update`               | `/dashboard/v1/coupons/{id}`                            | PUT/PATCH | Update coupon                | ✅ Implemented |
+| `coupons-destroy`              | `/dashboard/v1/coupons/{id}`                            | DELETE    | Delete coupon                | ✅ Implemented |
+| `recharges-index`              | `/dashboard/v1/recharge`                                | GET       | Get all recharge cards       | ✅ Implemented |
+| `recharges-store`              | `/dashboard/v1/recharge`                                | POST      | Create recharge card         | ✅ Implemented |
+| `recharges-show`               | `/dashboard/v1/recharge/{id}`                           | GET       | Show recharge card           | ✅ Implemented |
+| `recharges-update`             | `/dashboard/v1/recharge/{id}`                           | PUT/PATCH | Update recharge card         | ✅ Implemented |
+| `recharges-destroy`            | `/dashboard/v1/recharge/{id}`                           | DELETE    | Delete recharge card         | ✅ Implemented |
+| `employees-index`              | `/dashboard/v1/employee`                                | GET       | Get all employees            | ✅ Implemented |
+| `employees-store`              | `/dashboard/v1/employee`                                | POST      | Create employee              | ✅ Implemented |
+| `employees-show`               | `/dashboard/v1/employee/{id}`                           | GET       | Show employee                | ✅ Implemented |
+| `employees-update`             | `/dashboard/v1/employee/{id}`                           | PUT/PATCH | Update employee              | ✅ Implemented |
+| `employees-destroy`            | `/dashboard/v1/employee/{id}`                           | DELETE    | Delete employee              | ✅ Implemented |
 
 | `AllUsers` | `/dashboard/v1/all-users` | GET | Get all users | ❌ Not implemented |
 | `viewAnyDoctors` | `/dashboard/v1/all/doctors` | GET | View all doctors | ❌ Not implemented |

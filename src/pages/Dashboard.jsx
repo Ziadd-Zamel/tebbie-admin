@@ -26,21 +26,26 @@ const Dashboard = () => {
   const direction = i18n.language === "ar" ? "rtl" : "ltr";
 
   // Check if user has permissions
-
+  const canViewAllDoctors = hasPermission("doctors-index");
+  const canViewAllUsers = hasPermission("getAllUsers");
+  const canViewAllHospitals = hasPermission("getAllHospitals");
   const canViewHomeVisitServices = hasPermission("getAllHomeVisitServices");
 
   const { data: hospitalsData = [], isLoading: hospitalsIsLoading } = useQuery({
     queryKey: ["Hospitals-Data"],
     queryFn: getAllHospitals,
+    enabled: canViewAllHospitals, // Only fetch if user has permission
   });
 
   const { data: usersData, isLoading: usersIsLoading } = useQuery({
     queryKey: ["users-Data"],
     queryFn: () => getAllUsers(),
+    enabled: canViewAllUsers, // Only fetch if user has permission
   });
   const { data: DoctorsData, isLoading: DoctorsIsLoading } = useQuery({
     queryKey: ["Doctors-Data"],
     queryFn: () => getAllDoctors(),
+    enabled: canViewAllDoctors, // Only fetch if user has permission
   });
   const { data: HomeVisitData, isLoading: HomeVisitIsLoading } = useQuery({
     queryKey: ["HomeVisit-Data"],
@@ -53,15 +58,20 @@ const Dashboard = () => {
       ? "xl:grid-cols-6 xl:flex-row-reverse"
       : "xl:grid-cols-6";
   // If user doesn't have any required permissions, return null for all components
-  if (!canViewHomeVisitServices) {
+  if (
+    !canViewAllDoctors &&
+    !canViewAllUsers &&
+    !canViewAllHospitals &&
+    !canViewHomeVisitServices
+  ) {
     return null;
   }
 
   if (
-    hospitalsIsLoading ||
-    usersIsLoading ||
-    DoctorsIsLoading ||
-    HomeVisitIsLoading
+    (canViewAllHospitals && hospitalsIsLoading) ||
+    (canViewAllUsers && usersIsLoading) ||
+    (canViewAllDoctors && DoctorsIsLoading) ||
+    (canViewHomeVisitServices && HomeVisitIsLoading)
   )
     return <Loader />;
   return (

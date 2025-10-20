@@ -5,6 +5,7 @@ import { getHomeVisitServices } from "../utlis/https";
 import HomeVisitServicesTable from "../components/HomeVisitServicesTable";
 import Pagination from "../components/Pagination";
 import ErrorMessage from "./ErrorMessage";
+import { hasPermission } from "../utlis/permissionUtils";
 
 const HomeVisitServices = () => {
   const { t } = useTranslation();
@@ -12,6 +13,9 @@ const HomeVisitServices = () => {
   const [hospitalFilter, setHospitalFilter] = useState("");
   const token = localStorage.getItem("authToken");
   const statesPerPage = 10;
+
+  // Check if user has permission to view home visit services
+  const canViewHomeVisitServices = hasPermission("home-visit-services");
 
   // Fetch home visit services data with hospital filter
   const {
@@ -25,7 +29,7 @@ const HomeVisitServices = () => {
         token,
         hospital_id: hospitalFilter || undefined,
       }),
-    enabled: !!token,
+    enabled: !!token && canViewHomeVisitServices, // Only fetch if user has permission
   });
 
   // Pagination logic
@@ -48,6 +52,11 @@ const HomeVisitServices = () => {
     setHospitalFilter(newHospitalFilter);
     setCurrentPage(1); // Reset to first page when filter changes
   }, []);
+
+  // If user doesn't have permission, return null
+  if (!canViewHomeVisitServices) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto py-8">

@@ -10,6 +10,7 @@ import {
   getAllDoctors,
 } from "../utlis/https";
 import { useState, useCallback, useEffect } from "react";
+import { hasPermission } from "../utlis/permissionUtils";
 import Loader from "./Loader";
 import HospitalMap from "./HospitalMap";
 import { ErrorMessage } from "formik";
@@ -27,6 +28,9 @@ const UpdateHospital = () => {
   const { HospitalId } = useParams();
   const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  // Check if user has permission to view doctors
+  const canViewDoctors = hasPermission("doctors-index");
   const togglePassword = (event) => {
     event.preventDefault();
     setShowPassword(!showPassword);
@@ -48,6 +52,7 @@ const UpdateHospital = () => {
   const { data: doctors, isLoading: doctorsIsLoading } = useQuery({
     queryKey: ["doctors"],
     queryFn: () => getAllDoctors({ token }),
+    enabled: canViewDoctors, // Only fetch if user has permission
   });
   const { data: specializationsData, isLoading: sppecializationsIsLoading } =
     useQuery({
