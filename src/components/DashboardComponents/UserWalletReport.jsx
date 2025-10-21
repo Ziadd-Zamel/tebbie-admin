@@ -14,6 +14,7 @@ const UserWalletReport = () => {
   const [filters, setFilters] = useState({
     fromDate: "",
     toDate: "",
+    searchName: "",
   });
   const statesPerPage = 10;
 
@@ -32,11 +33,15 @@ const UserWalletReport = () => {
     enabled: !!token,
   });
 
-  // No frontend filtering needed - backend handles it
-  const filteredData = useMemo(
-    () => reviewData.users || [],
-    [reviewData?.users]
-  );
+  // Frontend filtering for search by name
+  const filteredData = useMemo(() => {
+    const users = reviewData.users || [];
+    if (!filters.searchName) return users;
+
+    return users.filter((user) =>
+      user.name?.toLowerCase().includes(filters.searchName.toLowerCase())
+    );
+  }, [reviewData?.users, filters.searchName]);
 
   const totalPages = Math.ceil(filteredData.length / statesPerPage) || 1;
 
@@ -62,6 +67,7 @@ const UserWalletReport = () => {
     setFilters({
       fromDate: "",
       toDate: "",
+      searchName: "",
     });
     setCurrentPage(1);
   }, []);
@@ -71,7 +77,7 @@ const UserWalletReport = () => {
   return (
     <div className="p-4 flex flex-col gap-4 font-sans bg-white rounded-[20px] shadow-sm">
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-full md:w-1/3">
+        <div className="w-full md:w-1/4">
           <label className="block mb-1 text-sm font-medium">
             {t("fromDate")}
           </label>
@@ -82,7 +88,7 @@ const UserWalletReport = () => {
             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="w-full md:w-1/3">
+        <div className="w-full md:w-1/4">
           <label className="block mb-1 text-sm font-medium">
             {t("toDate")}
           </label>
@@ -93,7 +99,19 @@ const UserWalletReport = () => {
             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        <div className="md:w-1/3 flex justify-end items-end">
+        <div className="w-full md:w-1/4">
+          <label className="block mb-1 text-sm font-medium">
+            {t("searchByName") || "Search by Name"}
+          </label>
+          <input
+            type="text"
+            value={filters.searchName}
+            onChange={(e) => handleFilterChange("searchName", e.target.value)}
+            placeholder={t("searchByName") || "Search by name..."}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div className="md:w-1/4 flex justify-end items-end">
           <button
             onClick={clearFilters}
             className="text-xl bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] p-2 text-white rounded-xl font-semibold w-full max-w-48"
@@ -108,6 +126,7 @@ const UserWalletReport = () => {
         currentStates={currentStates}
         isLoading={isLoading}
         reviewData={reviewData}
+        allFilteredData={filteredData}
       />
 
       <div className="flex justify-between items-end mt-4">

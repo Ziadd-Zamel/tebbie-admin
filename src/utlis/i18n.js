@@ -5,6 +5,7 @@ const resources = {
   en: {
     translation: {
       "search-placeholder": "Search here...",
+      searchByName: "Search by Name",
       dashboard: "Dashboard",
       employees: "Employees",
       profile: "Profile",
@@ -364,7 +365,6 @@ const resources = {
       click_to_update_balance: "Click to update balance",
       wallet_updated_successfully: "Wallet updated successfully",
       error_updating_wallet: "Error updating wallet",
-      updating: "Updating...",
       are_you_sure: "Are you sure?",
       cannotRestoreBookingAfterCancel:
         "You will not be able to restore this booking after cancellation",
@@ -460,6 +460,7 @@ const resources = {
       canceled: "تم الإلغاء!",
       bookingCanceledSuccessfully: "تم إلغاء الحجز بنجاح.",
       "search-placeholder": "ابحث هنا...",
+      searchByName: "البحث بالاسم",
       dashboard: "لوحة التحكم",
       trashedHospitals: "المستشفيات المحذوفة",
       areYouSureDeleteDoctor: "هل انت متأكد من حذف هذا الدكتور؟",
@@ -821,7 +822,6 @@ const resources = {
       click_to_update_balance: "انقر للتحديث",
       wallet_updated_successfully: "تم تحديث المحفظة بنجاح",
       error_updating_wallet: "خطأ في تحديث المحفظة",
-      updating: "جاري التحديث...",
       balance: "الرصيد",
       wallet_updated_at: "تاريخ آخر تحديث للمحفظة",
       userWalletReport: "تقرير الرصيد",

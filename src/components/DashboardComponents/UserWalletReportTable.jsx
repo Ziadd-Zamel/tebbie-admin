@@ -10,7 +10,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { decrementUserWallet } from "../../utlis/https";
 import { toast } from "react-toastify";
 
-const UserWalletReportTable = ({ currentStates, isLoading, reviewData }) => {
+const UserWalletReportTable = ({
+  currentStates,
+  isLoading,
+  reviewData,
+  allFilteredData,
+}) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem("authToken");
@@ -65,10 +70,10 @@ const UserWalletReportTable = ({ currentStates, isLoading, reviewData }) => {
   };
 
   const exportToExcel = () => {
-    if (!currentStates?.length) return;
+    if (!allFilteredData?.length) return;
 
     const worksheet = utils.json_to_sheet(
-      reviewData.map((data) => ({
+      allFilteredData.map((data) => ({
         [t("id")]: data?.id || t("Na"),
         [t("user_name")]: data?.name || t("Na"),
         [t("email")]: data?.email || t("Na"),
@@ -146,7 +151,7 @@ const UserWalletReportTable = ({ currentStates, isLoading, reviewData }) => {
         </div>
       )}
 
-      {!isLoading && currentStates?.length > 0 && (
+      {!isLoading && allFilteredData?.length > 0 && (
         <div className="flex justify-between ">
           <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
             <MdAccountBalanceWallet size={30} className="text-[#3CAB8B]" />
@@ -186,11 +191,6 @@ const UserWalletReportTable = ({ currentStates, isLoading, reviewData }) => {
               <tr
                 key={index}
                 className="border-b border-gray-200 hover:bg-gray-50"
-                onClick={() =>
-                  data.id
-                    ? navigate(`/user-wallet-report/${data.id}`)
-                    : undefined
-                }
               >
                 <td className="py-2 px-6 text-center">
                   {data?.name || t("Na")}
