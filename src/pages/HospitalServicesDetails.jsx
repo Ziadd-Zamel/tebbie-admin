@@ -87,20 +87,6 @@ const HospitalServicesDetails = () => {
     [filteredBookings, currentPage]
   );
 
-  const formatDateOnly = (value) => {
-    if (!value) return t("Na");
-    const str = String(value);
-    if (str.includes(" ")) return str.split(" ")[0];
-    const d = new Date(str);
-    if (!isNaN(d.getTime())) {
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const dd = String(d.getDate()).padStart(2, "0");
-      return `${yyyy}-${mm}-${dd}`;
-    }
-    return str;
-  };
-
   const renderBookingStatus = (status) => {
     const normalized = String(status || "").toLowerCase();
     const commonClasses =
@@ -229,8 +215,9 @@ const HospitalServicesDetails = () => {
               try {
                 const worksheet = utils.json_to_sheet(
                   rows.map((row) => ({
-                    [t("booking_created_at")]:
-                      row.booking_created_at || t("Na"),
+                    [t("slot_date")]: row.slot_date || t("Na"),
+                    [t("slot_from")]: row.slot_from || t("Na"),
+                    [t("slot_to")]: row.slot_to || t("Na"),
                     [t("booking_status")]: row.booking_status || t("Na"),
                     [t("payment_status")]: row.payment_status || t("Na"),
                     [t("total_price")]: row.total_price || t("Na"),
@@ -239,7 +226,10 @@ const HospitalServicesDetails = () => {
                       row.hospital_commission || t("Na"),
                     [t("service_name")]: row.service_name || t("Na"),
                     [t("main_service_name")]: row.main_service_name || t("Na"),
-                    [t("hospital_name")]: row.hospital_name || t("Na"),
+                    [t("name")]: row.name || t("Na"),
+                    [t("gender")]: row.gender || t("Na"),
+                    [t("age")]: row.age || t("Na"),
+                    [t("phone")]: row.phone || t("Na"),
                     [t("cancellation_reason")]:
                       row.cancellation_reason || t("Na"),
                   }))
@@ -284,7 +274,9 @@ const HospitalServicesDetails = () => {
                 <tr>
                   {[
                     "cancellation_reason",
-                    "booking_created_at",
+                    "slot_date",
+                    "slot_from",
+                    "slot_to",
                     "booking_status",
                     "payment_status",
                     "total_price",
@@ -292,7 +284,10 @@ const HospitalServicesDetails = () => {
                     "hospital_commission",
                     "service_name",
                     "main_service_name",
-                    "hospital_name",
+                    "phone",
+                    "gender",
+                    "age",
+                    "name",
                   ].map((key) => (
                     <th
                       key={key}
@@ -306,7 +301,7 @@ const HospitalServicesDetails = () => {
               <tbody className="text-gray-600 text-sm">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={10} className="py-8 text-center">
+                    <td colSpan={15} className="py-8 text-center">
                       <Loader />
                     </td>
                   </tr>
@@ -322,7 +317,13 @@ const HospitalServicesDetails = () => {
                         </div>
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {formatDateOnly(row.booking_created_at)}
+                        {row.slot_date}
+                      </td>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        {row.slot_from}
+                      </td>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        {row.slot_to}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {renderBookingStatus(row.booking_status)}
@@ -346,13 +347,26 @@ const HospitalServicesDetails = () => {
                         {row.main_service_name}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.hospital_name}
+                        {row.name}
+                      </td>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        {row.gender === "male"
+                          ? t("male")
+                          : row.gender === "female"
+                          ? t("female")
+                          : row.gender}
+                      </td>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        {row.age}
+                      </td>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        {row.phone}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={10} className="py-8 text-center text-gray-500">
+                    <td colSpan={15} className="py-8 text-center text-gray-500">
                       {t("noData")}
                     </td>
                   </tr>
