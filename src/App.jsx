@@ -21,6 +21,9 @@ import CommonQuestions from "./pages/CommonQuestions";
 import UpdateCommonQuestions from "./pages/UpdateCommonQuestions";
 import AddQuestion from "./pages/AddQuestion";
 import Cities from "./pages/Cities";
+import Regions from "./pages/Regions";
+import AddRegion from "./pages/AddRegion";
+import UpdateRegion from "./pages/UpdateRegion";
 import UpdateCity from "./pages/UpdateCity";
 import AddCity from "./pages/AddCity";
 import States from "./pages/States";
@@ -476,6 +479,14 @@ const router = createBrowserRouter([
                   </PermissionWrapper>
                 ),
               },
+            ],
+          },
+          {
+            path: "regions",
+            children: [
+              { index: true, element: <Regions /> },
+              { path: ":regionId", element: <UpdateRegion /> },
+              { path: "add-region", element: <AddRegion /> },
             ],
           },
           {

@@ -137,6 +137,7 @@ export const therestofSidebarLinks = [
     icon: <FaMapMarkerAlt size={22} />,
   },
   { path: "/cities", label: "cities", icon: <MdLocationCity size={22} /> },
+  { path: "/regions", label: "regions", icon: <MdLocationCity size={22} /> },
 ];
 
 const Sidebar = () => {

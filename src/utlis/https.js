@@ -1181,6 +1181,130 @@ export const getTrashedCity = async ({ token }) => {
   }
 };
 
+// regions (admin)
+export const getRegions = async ({ token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/regions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getRegion = async ({ token, id }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/regions/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.data;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const addRegion = async ({ name, city_id, token }) => {
+  try {
+    const response = await fetch(`${API_URL}/dashboard/v1/admin/regions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name, city_id }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while creating the region"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const updateRegion = async ({ id, name, city_id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/regions-update/${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, city_id }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while updating the region"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
+export const deleteRegion = async ({ id, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/dashboard/v1/admin/regions/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while deleting the region"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 //sliders
 export const getSliders = async ({ token }) => {
   try {
