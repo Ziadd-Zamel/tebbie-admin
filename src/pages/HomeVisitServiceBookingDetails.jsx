@@ -12,7 +12,7 @@ import { FaHome } from "react-icons/fa";
 
 const HomeVisitServiceBookingDetails = () => {
   const token = localStorage.getItem("authToken");
-  const { hospitalId, serviceId } = useParams();
+  const { hospitalId } = useParams();
   const { t, i18n } = useTranslation();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,19 +23,13 @@ const HomeVisitServiceBookingDetails = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: [
-      "home-visit-service-booking-details",
-      token,
-      hospitalId,
-      serviceId,
-    ],
+    queryKey: ["home-visit-service-booking-details", token, hospitalId],
     queryFn: () =>
       getHomeVisitServiceBookingDetails({
         token,
         hospital_id: hospitalId,
-        service_id: serviceId,
       }),
-    enabled: !!token && !!hospitalId && !!serviceId,
+    enabled: !!token && !!hospitalId,
     keepPreviousData: true,
   });
 

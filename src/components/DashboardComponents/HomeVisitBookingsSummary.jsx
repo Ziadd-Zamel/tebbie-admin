@@ -99,7 +99,9 @@ const HomeVisitBookingsSummary = () => {
                   key={row.hospital_id}
                   className="cursor-pointer hover:bg-gray-50"
                   onClick={() =>
-                    navigate(`/home-visit-bookings-details/${row.hospital_id}`)
+                    navigate(
+                      `/home-visit-service-booking-details/${row.hospital_id}`
+                    )
                   }
                 >
                   <td className="px-4 py-3 text-sm text-gray-800 text-right">

@@ -70,7 +70,7 @@ const Navbar = () => {
     }
     if (pathname.startsWith("/home-visit-service-booking-details/")) {
       return pageTranslations[language][
-        "/home-visit-service-booking-details/:hospitalId/:serviceId"
+        "/home-visit-service-booking-details/:hospitalId"
       ];
     }
     if (pathname.startsWith("/home-visit-bookings-details/")) {
