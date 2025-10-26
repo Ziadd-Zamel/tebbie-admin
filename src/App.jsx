@@ -183,7 +183,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "home-visit-service-booking-details/:hospitalId/:serviceId",
+            path: "home-visit-service-booking-details/:hospitalId",
             element: (
               <PermissionWrapper
                 permissionName="HomeVisitReport"

@@ -7,7 +7,7 @@ import Loader from "../../pages/Loader";
 const ReviewsReportTable = ({ currentStates, isLoading }) => {
   const [expanded, setExpanded] = useState(null);
   const { t } = useTranslation();
-
+  console.log(currentStates);
   const toggleExpand = (id) => {
     setExpanded(expanded === id ? null : id);
   };
@@ -160,6 +160,13 @@ const ReviewsReportTable = ({ currentStates, isLoading }) => {
                                     <h2 className="mt-2 text-gray-700 text-2xl font-semibold my-2">
                                       {t("user_name")} : {Review.user_name}
                                     </h2>
+
+                                    {review.reviewable_name && (
+                                      <h3 className="text-lg font-semibold text-gray-600 my-2">
+                                        {getTypeLabel(review.reviewable_type)} :{" "}
+                                        {review.reviewable_name}
+                                      </h3>
+                                    )}
 
                                     <div className="flex items-center justify-between my-2">
                                       <div className="flex items-center gap-2">

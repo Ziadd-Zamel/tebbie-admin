@@ -74,7 +74,7 @@ export const pageTranslations = {
     "/terms": "Terms & Conditions",
     "/home-visit-report/:serviceId": "Home visit report",
     "/home-visit-bookings-details/:hospitalId": "Home Visit Bookings Details",
-    "/home-visit-service-booking-details/:hospitalId/:serviceId":
+    "/home-visit-service-booking-details/:hospitalId":
       "Service Booking Details",
     "/whatsapp": "whatsapp",
     "/tebbie-communication": "Tebbie Commission",
@@ -159,8 +159,7 @@ export const pageTranslations = {
     "/home-visit-report/:serviceId": "تقرير الزيارات المنزلية",
     "/home-visit-bookings-details/:hospitalId":
       "تفاصيل حجوزات الزيارات المنزلية",
-    "/home-visit-service-booking-details/:hospitalId/:serviceId":
-      "تفاصيل حجوزات الخدمة",
+    "/home-visit-service-booking-details/:hospitalId": "تفاصيل حجوزات الخدمة",
     "/whatsapp": "واتساب",
     "/tebbie-communication": "عمولة طبي",
     "/tebbie-wallet": "محفظة طبي",
