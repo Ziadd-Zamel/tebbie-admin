@@ -1,18 +1,24 @@
 /* eslint-disable react/prop-types */
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ErrorMessage from "./ErrorMessage";
 import Loader from "./Loader";
 import Pagination from "../components/Pagination";
-import { getHospitalServiceReportById } from "../utlis/https";
+import {
+  getHospitalServiceReportById,
+  cancelHospitalServiceBooking,
+} from "../utlis/https";
 import { utils, writeFile } from "xlsx";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const HospitalServicesDetails = () => {
   const token = localStorage.getItem("authToken");
   const { hospitalId } = useParams();
   const { t, i18n } = useTranslation();
+  const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
   const statesPerPage = 10;
@@ -142,6 +148,54 @@ const HospitalServicesDetails = () => {
         {t(normalized) || t("unknown")}
       </span>
     );
+  };
+
+  const { mutate: CancelBooking } = useMutation({
+    mutationFn: async (id) => {
+      return cancelHospitalServiceBooking({ bookingId: id, token });
+    },
+    onSuccess: () => {
+      toast.success(t("booking_deleted") || "Booking cancelled successfully");
+      queryClient.invalidateQueries([
+        "hospital-services-details",
+        token,
+        hospitalId,
+      ]);
+    },
+    onError: () => {
+      toast.error(t("error_occurred") || "An error occurred");
+    },
+  });
+
+  const handleCancelBooking = (id) => {
+    CancelBooking(id);
+  };
+
+  const handleCancelBookingConfirm = (bookingId) => {
+    Swal.fire({
+      title: t("are_you_sure") || "Are you sure?",
+      text:
+        t("cannotRestoreBookingAfterCancel") ||
+        "You won't be able to restore this booking after canceling!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: t("cancel_booking") || "Cancel Booking",
+      cancelButtonText: t("close") || "Close",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleCancelBooking(bookingId);
+        Swal.fire({
+          title: t("canceled") || "Cancelled!",
+          text:
+            t("bookingCanceledSuccessfully") ||
+            "Booking cancelled successfully.",
+          icon: "success",
+          confirmButtonColor: "#3CAB8B",
+        });
+      }
+    });
   };
 
   if (error) return <ErrorMessage message={error.message} />;
@@ -312,9 +366,21 @@ const HospitalServicesDetails = () => {
                       className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                     >
                       <td className="py-3 px-3 text-center">
-                        <div className="max-w-[240px] truncate">
-                          {row?.cancellation_reason}
-                        </div>
+                        {String(row?.booking_status || "").toLowerCase() ===
+                        "pending" ? (
+                          <button
+                            onClick={() =>
+                              handleCancelBookingConfirm(row.booking_id)
+                            }
+                            className="px-4 py-2 flex items-center gap-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 transition-colors text-sm"
+                          >
+                            {t("cancel")}
+                          </button>
+                        ) : (
+                          <div className="max-w-[240px] truncate">
+                            {row?.cancellation_reason || "-"}
+                          </div>
+                        )}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {row.slot_date}

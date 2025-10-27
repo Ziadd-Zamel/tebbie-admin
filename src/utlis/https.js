@@ -3694,6 +3694,36 @@ export const getHospitalServiceReportById = async ({
     throw new Error(`Error in getHospitalServiceReportById: ${error.message}`);
   }
 };
+
+// cancel hospital service booking
+export const cancelHospitalServiceBooking = async ({ bookingId, token }) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/v1/admin/hospital-service-bookings/${bookingId}/cancel`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.msg || "An error occurred while canceling the booking"
+      );
+    }
+
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+};
+
 /**
  * Fetches hospitals that have home visit bookings summary.
  * Returns an array of objects: { hospital_id, hospital_name, total_bookings }
