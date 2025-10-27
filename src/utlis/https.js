@@ -3699,7 +3699,7 @@ export const getHospitalServiceReportById = async ({
 export const cancelHospitalServiceBooking = async ({ bookingId, token }) => {
   try {
     const response = await fetch(
-      `${API_URL}/v1/admin/hospital-service-bookings/${bookingId}/cancel`,
+      `${API_URL}/dashboard/v1/hospital-service-bookings/${bookingId}/cancel`,
       {
         method: "POST",
         headers: {
