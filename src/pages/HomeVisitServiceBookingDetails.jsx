@@ -158,9 +158,7 @@ const HomeVisitServiceBookingDetails = () => {
         <div className="flex flex-col sm:flex-row justify-between items-center my-4 gap-4">
           <h1 className="font-bold md:text-xl text-lg lg:text-2xl flex items-center gap-2 text-gray-800">
             <FaHome size={30} className="text-[#3CAB8B]" />
-            {serviceName && hospitalName
-              ? `${serviceName} - ${hospitalName}`
-              : t("service_booking_details")}
+            {hospitalName || t("service_booking_details")}
           </h1>
           {bookingsList.length > 0 && (
             <button
@@ -179,6 +177,9 @@ const HomeVisitServiceBookingDetails = () => {
             <table dir="rtl" className="min-w-[1200px] w-full bg-white text-sm">
               <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
                 <tr>
+                  <th className="py-3 px-4 text-center transition-colors whitespace-nowrap border-b border-gray-200">
+                    {t("service_name")}
+                  </th>
                   <th className="py-3 px-4 text-center transition-colors whitespace-nowrap border-b border-gray-200">
                     {t("patient_name")}
                   </th>
@@ -214,7 +215,7 @@ const HomeVisitServiceBookingDetails = () => {
               <tbody className="text-gray-600 text-sm">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={10} className="py-8 text-center">
+                    <td colSpan={11} className="py-8 text-center">
                       <Loader />
                     </td>
                   </tr>
@@ -224,8 +225,19 @@ const HomeVisitServiceBookingDetails = () => {
                       key={booking.booking_id || index}
                       className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                     >
-                      <td className="py-3 px-4 text-center">
-                        <div className="max-w-[150px] truncate">
+                      <td className="py-3 px-4 text-center align-top">
+                        <div
+                          className="max-w-[150px] break-words whitespace-normal"
+                          title={booking.service_name}
+                        >
+                          {booking.service_name || t("Na")}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-center align-top">
+                        <div
+                          className="max-w-[150px] break-words whitespace-normal"
+                          title={booking.patient_name}
+                        >
                           {booking.patient_name || t("Na")}
                         </div>
                       </td>
@@ -247,9 +259,9 @@ const HomeVisitServiceBookingDetails = () => {
                       <td className="py-3 px-4 text-center">
                         {renderPaymentStatus(booking.payment_status)}
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="py-3 px-4 text-center align-top">
                         <div
-                          className="max-w-[200px] truncate"
+                          className="max-w-[200px] break-words whitespace-normal"
                           title={booking.notes}
                         >
                           {booking.notes || t("Na")}
@@ -267,7 +279,7 @@ const HomeVisitServiceBookingDetails = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={10} className="py-8 text-center text-gray-500">
+                    <td colSpan={11} className="py-8 text-center text-gray-500">
                       {t("noData")}
                     </td>
                   </tr>
