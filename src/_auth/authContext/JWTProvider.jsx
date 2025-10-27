@@ -40,9 +40,9 @@ export const AuthProvider = ({ children }) => {
           "permissions",
           JSON.stringify(data.data.role.permissions)
         );
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 500);
       } else {
         throw new Error(data.message || "خطأ في تسجيل الدخول");
       }
