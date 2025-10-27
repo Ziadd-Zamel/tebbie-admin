@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
         error.status = response.status;
         throw error;
       }
+
       if (data.data) {
         localStorage.setItem("authToken", data.data.token);
         localStorage.setItem("role", data.data.role);
@@ -40,9 +41,21 @@ export const AuthProvider = ({ children }) => {
           "permissions",
           JSON.stringify(data.data.role.permissions)
         );
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 500);
+
+        // ✅ Detect mobile/Safari
+        const ua = navigator.userAgent;
+        const isMobile =
+          /iPhone|iPad|iPod|Android/i.test(ua) || /Mobile/i.test(ua);
+        const isSafari =
+          /^((?!chrome|android).)*safari/i.test(ua) && !/CriOS/i.test(ua);
+
+        if (!isMobile && !isSafari) {
+          // 💻 Desktop browsers (Chrome/Edge/Firefox) → full reload
+          window.location.reload();
+        } else {
+          // 📱 Mobile / Safari → just go to home (no reload)
+          window.location.href = "/";
+        }
       } else {
         throw new Error(data.message || "خطأ في تسجيل الدخول");
       }
@@ -51,6 +64,7 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
+
   const CustomerServicelogin = async (email, password, fcmToken) => {
     try {
       const response = await fetch(CustomerService_login, {
