@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mainLogo } from "../assets";
 import { FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,23 +18,31 @@ const Login = () => {
   const from = location.state?.from?.pathname || "/";
   const [showPassword, setShowPassword] = useState(false);
 
-  // Function to get FCM token
+  // ✅ Safari LocalStorage Fix (persist login)
+  useEffect(() => {
+    try {
+      localStorage.setItem("test", "ok");
+      const check = localStorage.getItem("test");
+      if (!check) {
+        console.warn(
+          "⚠️ localStorage not accessible on this browser (Safari private mode?)"
+        );
+      }
+    } catch (err) {
+      console.warn("⚠️ localStorage blocked:", err);
+    }
+  }, []);
+
+  // ✅ Function to get FCM token safely (with timeout to avoid Safari freeze)
   const getFCMToken = async () => {
     try {
-      // Request notification permission
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
-        // Retrieve FCM token
-        const token = await getToken(messaging, {
-          vapidKey: import.meta.env.VITE_VAPID_KEY,
-        });
-
-        if (token) {
-          
-          return token;
-        } else {
-          return null;
-        }
+        const token = await Promise.race([
+          getToken(messaging, { vapidKey: import.meta.env.VITE_VAPID_KEY }),
+          new Promise((_, reject) => setTimeout(() => reject("timeout"), 5000)),
+        ]);
+        return token || null;
       } else {
         return null;
       }
@@ -54,90 +62,54 @@ const Login = () => {
       .min(3, "Minimum 3 symbols")
       .max(50, "Maximum 50 symbols")
       .required("Password is required"),
-    remember: Yup.boolean(),
   });
 
   const initialValues = {
-    email: "",
+    email: localStorage.getItem("email") || "",
     password: "",
-    remember: false,
+    remember: localStorage.getItem("remember") === "true",
   };
 
-  const formikCustomer = useFormik({
-    initialValues,
-    validationSchema: loginSchema,
-    onSubmit: async (values, { setStatus, setSubmitting }) => {
-      setLoading(true);
+  const handleLogin = async (values, authFunction, navigateTo) => {
+    setLoading(true);
+    try {
+      const fcmToken = await getFCMToken();
+      await authFunction(values.email, values.password, fcmToken);
+
+      // ✅ Safari-safe localStorage write
       try {
-        if (!CustomerServicelogin) {
-          
-          throw new Error("JWTProvider is required for this form.");
-        }
-        const fcmToken = await getFCMToken();
-        await CustomerServicelogin(
-          values.email,
-          values.password,
-          fcmToken
-        );
         if (values.remember) {
           localStorage.setItem("email", values.email);
+          localStorage.setItem("remember", "true");
         } else {
           localStorage.removeItem("email");
+          localStorage.removeItem("remember");
         }
-        navigate("/chat");
-      } catch (error) {
-        if (error.message === "Failed to fetch") {
-          setStatus("فشل الاتصال بالخادم. تحقق من الشبكة أو حاول لاحقًا.");
-        } else if (error.status === 500) {
-          setStatus("حدث خطأ في الخادم. حاول مرة أخرى لاحقًا.");
-        } else if (error.status === 401) {
-          setStatus("كلمة المرور أو البريد الإلكتروني غير صحيحين.");
-        } else {
-          setStatus(
-            error.message || "كلمة المرور أو البريد الإلكتروني غير صحيحين."
-          );
-        }
-        setSubmitting(false);
+      } catch (err) {
+        console.warn("localStorage write blocked:", err);
       }
+
+      navigate(navigateTo, { replace: true });
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed: " + (error?.message || "Unknown error"));
+    } finally {
       setLoading(false);
-    },
-  });
+    }
+  };
 
   const formikAdmin = useFormik({
     initialValues,
     validationSchema: loginSchema,
-    onSubmit: async (values, { setStatus, setSubmitting }) => {
-      setLoading(true);
-      try {
-        if (!login) {
-          throw new Error("JWTProvider is required for this form.");
-        }
-        const fcmToken = await getFCMToken();
-
-        await login(values.email, values.password ,fcmToken);
-        if (values.remember) {
-          localStorage.setItem("email", values.email);
-        } else {
-          localStorage.removeItem("email");
-        }
-        navigate(from, { replace: true });
-      } catch (error) {
-        if (error.message === "Failed to fetch") {
-          setStatus("فشل الاتصال بالخادم. تحقق من الشبكة أو حاول لاحقًا.");
-        } else if (error.status === 500) {
-          setStatus("حدث خطأ في الخادم. حاول مرة أخرى لاحقًا.");
-        } else if (error.status === 401) {
-          setStatus("كلمة المرور أو البريد الإلكتروني غير صحيحين.");
-        } else {
-          setStatus(
-            error.message || "كلمة المرور أو البريد الإلكتروني غير صحيحين."
-          );
-        }
-        setSubmitting(false);
-      }
-      setLoading(false);
-    },
+    onSubmit: (values) => handleLogin(values, login, from),
   });
+
+  const formikCustomer = useFormik({
+    initialValues,
+    validationSchema: loginSchema,
+    onSubmit: (values) => handleLogin(values, CustomerServicelogin, "/chat"),
+  });
+
   const togglePassword = (event) => {
     event.preventDefault();
     setShowPassword(!showPassword);
@@ -145,17 +117,14 @@ const Login = () => {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
-    localStorage.setItem("role",newValue)
+    localStorage.setItem("role", newValue);
     setShowPassword(false);
   };
 
   const renderForm = (formik) => (
     <form className="w-full" onSubmit={formik.handleSubmit}>
-      <div className=" mb-2">
-        <label
-          htmlFor="email"
-          className="block text-lg almarai-thin  mb-2 text-right"
-        >
+      <div className="mb-2">
+        <label htmlFor="email" className="block text-lg mb-2 text-right">
           البريد الالكتروني
         </label>
         <input
@@ -165,19 +134,15 @@ const Login = () => {
           name="email"
           autoComplete="off"
           {...formik.getFieldProps("email")}
-          className="mt-1 block w-full px-5  py-2 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
+          className="mt-1 block w-full px-5 py-2 text-md border border-gray-300 text-black text-lg rounded-[8px]"
         />
-        {formik.touched.email && formik.errors.email ? (
+        {formik.touched.email && formik.errors.email && (
           <div className="text-red-500 text-sm mt-2">{formik.errors.email}</div>
-        ) : null}
+        )}
       </div>
 
-      {/* Password Input */}
-      <div className=" mb-2 relative">
-        <label
-          htmlFor="password"
-          className="block text-lg almarai-thin  mb-2 text-right"
-        >
+      <div className="mb-2 relative">
+        <label htmlFor="password" className="block text-lg mb-2 text-right">
           كلمة المرور
         </label>
         <input
@@ -186,30 +151,30 @@ const Login = () => {
           type={showPassword ? "text" : "password"}
           autoComplete="off"
           {...formik.getFieldProps("password")}
-          className="mt-1 block w-full px-5  py-2 text-md border border-gray-300 text-black text-lg shadow-sm focus:outline-none rounded-[8px]"
+          className="mt-1 block w-full px-5 py-2 text-md border border-gray-300 text-black text-lg rounded-[8px]"
         />
         <button
           type="button"
           onClick={togglePassword}
-          className="absolute top-1/2 left-4 transform translate-y-1/2 text-gray-500"
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-500"
         >
           {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22} />}
         </button>
-    
       </div>
-          {formik.touched.password && formik.errors.password ? (
-          <div className="text-red-500 text-sm mt-2">
-            {formik.errors.password}
-          </div>
-        ) : null}
+
+      {formik.touched.password && formik.errors.password && (
+        <div className="text-red-500 text-sm mt-2">
+          {formik.errors.password}
+        </div>
+      )}
       {formik.status && (
         <div className="text-red-500 text-sm mt-4">{formik.status}</div>
       )}
-      {/* Submit Button */}
+
       <div className="flex justify-center md:justify-end mt-4">
         {loading ? (
           <button
-            className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg hover:bg-transparent my-6 flex items-center justify-center"
+            className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg flex items-center justify-center"
             disabled
           >
             <FaSpinner className="animate-spin" />
@@ -217,7 +182,7 @@ const Login = () => {
         ) : (
           <button
             type="submit"
-            className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg hover:bg-transparent xl:my-6 2xl:my-6 my-4"
+            className="bg-gradient-to-bl from-[#33A9C7] to-[#3AAB95] text-white w-full h-14 text-lg font-bold rounded-tr-lg rounded-bl-lg"
           >
             تسجيل دخول
           </button>
@@ -230,13 +195,13 @@ const Login = () => {
     <div className="w-full">
       <div
         dir="rtl"
-        className="min-h-screen flex flex-col justify-center items-center custom-radial-gradient p-4"
+        className="min-h-screen flex flex-col justify-center items-center p-4 custom-radial-gradient"
       >
-        <div className="w-full max-w-md h-full flex flex-col justify-center items-center">
-          <div className="my-6 flex w-full justify-center items-center">
+        <div className="w-full max-w-md flex flex-col justify-center items-center">
+          <div className="my-6 flex justify-center items-center">
             <img className="h-auto xl:w-40 w-36" src={mainLogo} alt="Logo" />
           </div>
-          <h1 className="xl:text-3xl text-2xl almarai-medium xl:mb-10 mb-6 text-center md:text-right">
+          <h1 className="xl:text-3xl text-2xl mb-6 text-center">
             اهلًا بعودتك
           </h1>
           <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
