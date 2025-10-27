@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }) => {
           JSON.stringify(data.data.role.permissions)
         );
 
-        // ✅ Detect mobile/Safari
         const ua = navigator.userAgent;
         const isMobile =
           /iPhone|iPad|iPod|Android/i.test(ua) || /Mobile/i.test(ua);
@@ -50,11 +49,7 @@ export const AuthProvider = ({ children }) => {
           /^((?!chrome|android).)*safari/i.test(ua) && !/CriOS/i.test(ua);
 
         if (!isMobile && !isSafari) {
-          // 💻 Desktop browsers (Chrome/Edge/Firefox) → full reload
           window.location.reload();
-        } else {
-          // 📱 Mobile / Safari → just go to home (no reload)
-          window.location.href = "/";
         }
       } else {
         throw new Error(data.message || "خطأ في تسجيل الدخول");
