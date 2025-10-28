@@ -331,8 +331,8 @@ const HospitalServicesDetails = () => {
                   {[
                     "cancellation_reason",
                     "slot_date",
-                    "slot_from",
                     "slot_to",
+                    "slot_from",
                     "booking_status",
                     "payment_status",
                     "total_price",
@@ -385,10 +385,10 @@ const HospitalServicesDetails = () => {
                         )}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.slot_date}
+                        {row.slot_to}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.slot_to}
+                        {row.slot_date}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {row.slot_from}
