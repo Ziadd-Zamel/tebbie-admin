@@ -3539,12 +3539,12 @@ export const getUsersReport = async ({
     if (to_date) {
       params.push(`to_date=${to_date}`);
     }
-    if (page) {
-      params.push(`page=${page}`);
-    }
-    if (page) {
-      params.push(`per_page=${10}`);
-    }
+    // if (page) {
+    //   params.push(`page=${page}`);
+    // }
+    // if (page) {
+    //   params.push(`per_page=${10}`);
+    // }
     if (params.length > 0) {
       url += `?${params.join("&")}`;
     }

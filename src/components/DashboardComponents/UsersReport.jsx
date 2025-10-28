@@ -8,6 +8,8 @@ import Pagination from "../Pagination";
 import OneSelectDropdown from "../OneSelectDropdown";
 import { FaUsers } from "react-icons/fa";
 import UserReportTable from "./usersReportTable";
+import { utils, writeFile } from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -38,6 +40,7 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     toDate: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
+  const statesPerPage = 10;
 
   const [rawSearchTerm, setRawSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(rawSearchTerm, 300);
@@ -59,7 +62,6 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
       filters.selectedHospital,
       filters.fromDate,
       filters.toDate,
-      currentPage,
     ],
     queryFn: () =>
       getUsersReport({
@@ -69,7 +71,6 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
         hospital_id: filters.selectedHospital,
         from_date: filters.fromDate,
         to_date: filters.toDate,
-        page: currentPage,
       }),
     enabled: !!token,
   });
@@ -94,24 +95,31 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     [hospitalsData]
   );
 
-  const filteredData =
-    !reviewData?.data || !Array.isArray(reviewData.data)
-      ? []
-      : reviewData.data.filter((review) => {
-          const matchesSearch =
-            !filters.searchTerm ||
-            review.user_name
-              ?.toLowerCase()
-              .includes(filters.searchTerm.toLowerCase());
+  const filteredData = useMemo(() => {
+    const rows = reviewData;
+    if (!Array.isArray(rows)) return [];
+    return rows.filter((review) => {
+      const matchesSearch =
+        !filters.searchTerm ||
+        review.user_name
+          ?.toLowerCase()
+          .includes(filters.searchTerm.toLowerCase());
+      const matchesUser =
+        !filters.selectedUser || review.user_id === filters.selectedUser;
+      return matchesSearch && matchesUser;
+    });
+  }, [reviewData, filters.searchTerm, filters.selectedUser]);
 
-          const matchesUser =
-            !filters.selectedUser || review.user_id === filters.selectedUser;
-
-          return matchesSearch && matchesUser;
-        });
-
-  const totalPages = reviewData?.last_page || 1;
-  const totalRecords = reviewData?.total || 0;
+  const totalRecords = filteredData.length;
+  const totalPages = Math.max(1, Math.ceil(totalRecords / statesPerPage));
+  const currentStates = useMemo(
+    () =>
+      filteredData.slice(
+        (currentPage - 1) * statesPerPage,
+        currentPage * statesPerPage
+      ),
+    [filteredData, currentPage]
+  );
 
   const handlePageChange = useCallback((newPage) => {
     setCurrentPage(newPage);
@@ -135,6 +143,23 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
     setCurrentPage(1);
   }, []);
 
+  const exportToExcel = () => {
+    if (!filteredData.length) return;
+    const worksheet = utils.json_to_sheet(
+      filteredData.map((data) => ({
+        [t("user_name")]: data?.user_name || t("Na"),
+        [t("total_bookings")]:
+          data?.total_bookings ?? data?.total_count ?? t("Na"),
+      }))
+    );
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Users Report");
+    writeFile(
+      workbook,
+      `Users_Report_${new Date().toISOString().split("T")[0]}.xlsx`
+    );
+  };
+
   if (error) return <ErrorMessage message={error.message} />;
 
   return (
@@ -143,6 +168,18 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
         <FaUsers size={30} className="text-[#3CAB8B]" />
         {t("usersReport")}
       </p>
+      {filteredData.length > 0 && (
+        <div className="flex justify-end mb-2">
+          <button
+            onClick={exportToExcel}
+            className="px-6 h-10 w-full md:w-auto shrink-0 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base"
+            aria-label={t("Excel-Export")}
+            type="button"
+          >
+            {t("Excel-Export")} <FaFileExcel aria-hidden="true" />
+          </button>
+        </div>
+      )}
       <input
         type="text"
         placeholder={t("search")}
@@ -220,7 +257,7 @@ const UsersReport = ({ hospitalsData, usersData, doctorsData }) => {
       </div>
       <UserReportTable
         translation="users"
-        currentStates={filteredData}
+        currentStates={currentStates}
         isLoading={isLoading}
       />
       <div className="flex justify-between items-end mt-4 w-full">

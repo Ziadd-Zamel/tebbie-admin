@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
 import { FaHome } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { utils, writeFile } from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 
 const HomeVisitBookingsSummary = () => {
   const token = localStorage.getItem("authToken");
@@ -52,14 +54,43 @@ const HomeVisitBookingsSummary = () => {
     setCurrentPage(newPage);
   }, []);
 
+  const exportToExcel = () => {
+    if (!filteredData.length) return;
+    const worksheet = utils.json_to_sheet(
+      filteredData.map((row) => ({
+        [t("hospital_name")]: row?.hospital_name || t("Na"),
+        [t("total_bookings")]:
+          row?.total_bookings ?? row?.total_count ?? t("Na"),
+      }))
+    );
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Home Visit Summary");
+    writeFile(
+      workbook,
+      `Home_Visit_Summary_${new Date().toISOString().split("T")[0]}.xlsx`
+    );
+  };
+
   if (error) return <ErrorMessage message={error.message} />;
 
   return (
     <div className="p-4 flex flex-col gap-4 font-sans">
-      <p className="font-bold text-xl md:text-2xl mb-5 flex gap-2 items-center">
-        <FaHome size={30} className="text-[#3CAB8B]" />
-        {t("homeVisitReport")}
-      </p>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <p className="font-bold text-xl md:text-2xl flex gap-2 items-center">
+          <FaHome size={30} className="text-[#3CAB8B]" />
+          {t("homeVisitReport")}
+        </p>
+        {filteredData.length > 0 && (
+          <button
+            onClick={exportToExcel}
+            className="px-6 h-10 flex items-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-sm"
+            aria-label={t("Excel-Export")}
+            type="button"
+          >
+            {t("Excel-Export")} <FaFileExcel aria-hidden="true" />
+          </button>
+        )}
+      </div>
       <input
         type="text"
         placeholder={t("search")}

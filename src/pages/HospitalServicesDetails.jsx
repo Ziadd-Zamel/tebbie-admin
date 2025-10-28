@@ -280,10 +280,12 @@ const HospitalServicesDetails = () => {
                       row.hospital_commission || t("Na"),
                     [t("service_name")]: row.service_name || t("Na"),
                     [t("main_service_name")]: row.main_service_name || t("Na"),
-                    [t("name")]: row.name || t("Na"),
+                    [t("phone")]: row.phone || t("Na"),
+
                     [t("gender")]: row.gender || t("Na"),
                     [t("age")]: row.age || t("Na"),
-                    [t("phone")]: row.phone || t("Na"),
+                    [t("name")]: row.name || t("Na"),
+
                     [t("cancellation_reason")]:
                       row.cancellation_reason || t("Na"),
                   }))
@@ -386,10 +388,10 @@ const HospitalServicesDetails = () => {
                         {row.slot_date}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.slot_from}
+                        {row.slot_to}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.slot_to}
+                        {row.slot_from}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {renderBookingStatus(row.booking_status)}
@@ -413,7 +415,7 @@ const HospitalServicesDetails = () => {
                         {row.main_service_name}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.name}
+                        {row.phone}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {row.gender === "male"
@@ -426,7 +428,7 @@ const HospitalServicesDetails = () => {
                         {row.age}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.phone}
+                        {row.name}
                       </td>
                     </tr>
                   ))

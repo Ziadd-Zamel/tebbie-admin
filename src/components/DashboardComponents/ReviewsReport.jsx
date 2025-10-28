@@ -5,6 +5,8 @@ import ErrorMessage from "../../pages/ErrorMessage";
 import { getReviewsReport } from "../../utlis/https";
 import { useTranslation } from "react-i18next";
 import Pagination from "../Pagination";
+import { utils, writeFile } from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 import { MdRateReview } from "react-icons/md";
 import OneSelectDropdown from "../OneSelectDropdown";
 import ReviewsReportTable from "./ReviewsReportTable";
@@ -194,6 +196,23 @@ const ReviewsReport = ({
     setCurrentPage(1);
   }, []);
 
+  const exportToExcel = () => {
+    if (!filteredData.length) return;
+    const worksheet = utils.json_to_sheet(
+      filteredData.map((r) => ({
+        [t("user_name")]: r?.user_name || t("Na"),
+        [t("total_reviews")]: r?.total_reviews ?? t("Na"),
+        [t("avg_rating")]: r?.avg_rating ?? t("Na"),
+      }))
+    );
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Reviews Report");
+    writeFile(
+      workbook,
+      `Reviews_Report_${new Date().toISOString().split("T")[0]}.xlsx`
+    );
+  };
+
   if (error) return <ErrorMessage message={error.message} />;
 
   return (
@@ -239,6 +258,16 @@ const ReviewsReport = ({
             searchPlaceholder={t("search")}
             fallbackMessage={t("noOptionsFound")}
           />
+        )}
+        {filteredData.length > 0 && (
+          <button
+            onClick={exportToExcel}
+            className="px-6 h-10 w-full xl:w-auto shrink-0 flex items-center justify-center gap-2 bg-gradient-to-br from-[#33A9C7] to-[#3CAB8B] text-white rounded-lg hover:from-[#2A8AA7] hover:to-[#2F8B6B] focus:outline-none focus:ring-2 focus:ring-[#3CAB8B] transition-colors text-base"
+            aria-label={t("Excel-Export")}
+            type="button"
+          >
+            {t("Excel-Export")} <FaFileExcel aria-hidden="true" />
+          </button>
         )}
       </div>
 
