@@ -6,15 +6,21 @@ import { utils, writeFile } from "xlsx";
 import { MdOutlinePayment } from "react-icons/md";
 import { FaFileExcel } from "react-icons/fa6";
 
-const PaymentReportTable = ({ currentStates, isLoading, reviewData }) => {
+const PaymentReportTable = ({
+  currentStates,
+  isLoading,
+  reviewData,
+  filteredData,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const exportToExcel = () => {
-    if (!currentStates?.length) return;
+    const dataToExport = filteredData || reviewData?.data || [];
+    if (!dataToExport?.length) return;
 
     const worksheet = utils.json_to_sheet(
-      reviewData.data.map((data) => ({
+      dataToExport.map((data) => ({
         [t("payment_method")]: data?.payment_method || t("Na"),
         [t("user_name")]: data?.user_name || t("Na"),
         [t("phone")]: data?.user_phone || t("Na"),

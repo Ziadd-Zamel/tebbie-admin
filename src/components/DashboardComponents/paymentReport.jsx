@@ -126,6 +126,7 @@ const PaymentReporte = () => {
         currentStates={currentStates}
         isLoading={isLoading}
         reviewData={reviewData}
+        filteredData={filteredData}
       />
 
       <div className="flex justify-between items-end mt-4">
