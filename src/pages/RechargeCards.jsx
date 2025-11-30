@@ -96,6 +96,10 @@ const RechargeCards = () => {
           [t("expireDate")]: row.expire_date || "",
           [t("price")]: row.price ?? "",
           [t("batchNumber")]: row.batch_number ?? "",
+          [t("usedAt")]: row.used_at
+            ? new Date(row.used_at).toLocaleString()
+            : "",
+          [t("usedBy")]: row.used_by || "",
         }))
       );
       const workbook = utils.book_new();
@@ -236,19 +240,25 @@ const RechargeCards = () => {
               <th className="py-3 px-6 text-left whitespace-nowrap">
                 {t("batchNumber")}
               </th>
+              <th className="py-3 px-6 text-left whitespace-nowrap">
+                {t("usedAt")}
+              </th>
+              <th className="py-3 px-6 text-left whitespace-nowrap">
+                {t("usedBy")}
+              </th>
             </tr>
           </thead>
           <tbody className="text-gray-600 md:text-lg text-md font-light">
             {isLoading ? (
               <tr>
-                <td colSpan="5" className="text-center py-4">
+                <td colSpan="7" className="text-center py-4">
                   <Loader />
                 </td>
               </tr>
             ) : list.length === 0 ? (
               <tr>
                 <td
-                  colSpan="5"
+                  colSpan="7"
                   className="text-center py-4 text-gray-500 text-lg"
                 >
                   {t("noCardsFound")}
@@ -280,9 +290,17 @@ const RechargeCards = () => {
                     {card.expire_date}
                   </td>
                   <td className="py-3 px-6 text-left">{card.price}</td>
-                  {card.batch_number && (
-                    <td className="py-3 px-6 text-left">{card.batch_number}</td>
-                  )}
+                  <td className="py-3 px-6 text-left whitespace-nowrap">
+                    {card.batch_number || t("Na")}
+                  </td>
+                  <td className="py-3 px-6 text-left whitespace-nowrap">
+                    {card.used_at
+                      ? new Date(card.used_at).toLocaleString()
+                      : t("Na")}
+                  </td>
+                  <td className="py-3 px-6 text-left">
+                    {card.used_by || t("Na")}
+                  </td>
                 </tr>
               ))
             )}

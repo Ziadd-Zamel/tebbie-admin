@@ -391,6 +391,8 @@ const resources = {
     },
     whatsapp: "Whatsapp",
     batchNumber: "batch-number",
+    usedAt: "Used At",
+    usedBy: "Used By",
     balance: "Balance",
     wallet_updated_at: "Last Wallet Update",
     userWalletReport: "User Wallet Report",
@@ -835,6 +837,8 @@ const resources = {
       hospital_commission: "عمولة المستشفى",
       whatsapp: "واتساب",
       batchNumber: "رقم الدفعة",
+      usedAt: "تاريخ الاستخدام",
+      usedBy: "مستخدم بواسطة",
       notes: "ملاحظات",
 
       homeVisitReport: "تقرير الزيارات المنزلية",
