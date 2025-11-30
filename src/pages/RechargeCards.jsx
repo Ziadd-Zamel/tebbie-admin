@@ -39,6 +39,8 @@ const RechargeCards = () => {
   const [expireDate, setExpireDate] = useState("");
   const [price, setPrice] = useState("");
   const [batchNumber, setBatchNumber] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const debouncedBatchNumber = useDebounce(batchNumber, 500);
@@ -71,6 +73,44 @@ const RechargeCards = () => {
       }),
   });
 
+  // Client-side date filtering function
+  const filterByDateRange = (cards) => {
+    if (!dateFrom && !dateTo) return cards;
+
+    return cards.filter((card) => {
+      if (!card.created_at) return false;
+
+      const cardDate = new Date(card.created_at);
+      cardDate.setHours(0, 0, 0, 0); // Reset time to start of day
+
+      if (dateFrom && dateTo) {
+        // Filter between dateFrom and dateTo
+        const fromDate = new Date(dateFrom);
+        fromDate.setHours(0, 0, 0, 0);
+        const toDate = new Date(dateTo);
+        toDate.setHours(23, 59, 59, 999); // End of day
+
+        return cardDate >= fromDate && cardDate <= toDate;
+      } else if (dateFrom) {
+        // Filter from dateFrom to now
+        const fromDate = new Date(dateFrom);
+        fromDate.setHours(0, 0, 0, 0);
+        const now = new Date();
+        now.setHours(23, 59, 59, 999);
+
+        return cardDate >= fromDate && cardDate <= now;
+      } else if (dateTo) {
+        // Filter from beginning to dateTo
+        const toDate = new Date(dateTo);
+        toDate.setHours(23, 59, 59, 999);
+
+        return cardDate <= toDate;
+      }
+
+      return true;
+    });
+  };
+
   const handleExport = () => {
     if (!hasPermission("exportRechargeCard")) {
       toast.error(
@@ -81,16 +121,17 @@ const RechargeCards = () => {
       return;
     }
 
-    // Export ALL rows currently loaded client-side (not just the page slice)
+    // Export ALL filtered rows (client-side filtered)
     const allRows = Array.isArray(cardData?.data) ? cardData.data : [];
-    if (!allRows.length) {
+    const filteredRows = filterByDateRange(allRows);
+    if (!filteredRows.length) {
       toast.error(t("noCardsFound"));
       return;
     }
 
     try {
       const worksheet = utils.json_to_sheet(
-        allRows.map((row) => ({
+        filteredRows.map((row) => ({
           [t("cardNumber")]: row.card_number,
           [t("validatity")]: row.is_valid === 1 ? t("valid") : t("invalid"),
           [t("expireDate")]: row.expire_date || "",
@@ -139,15 +180,29 @@ const RechargeCards = () => {
     setCurrentPage(1);
   };
 
+  const handleDateFromChange = (e) => {
+    setDateFrom(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleDateToChange = (e) => {
+    setDateTo(e.target.value);
+    setCurrentPage(1);
+  };
+
   if (error) {
     return <ErrorMessage />;
   }
 
-  const list = Array.isArray(cardData?.data) ? cardData.data : [];
-  const totalItems = list.length;
+  const allCards = Array.isArray(cardData?.data) ? cardData.data : [];
+  const filteredList = filterByDateRange(allCards);
+  const totalItems = filteredList.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = list.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = filteredList.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
   return (
     <section dir={direction} className="container mx-auto lg:p-6 p-4 w-full">
       <div className="flex justify-end md:flex-row flex-col gap-2 items-center">
@@ -170,7 +225,7 @@ const RechargeCards = () => {
           </button>
         )}
       </div>
-      <div className="my-4 flex flex-col gap-4 md:flex-row md:items-center">
+      <div className="my-4 flex flex-col gap-4 md:flex-row md:items-center flex-wrap">
         <div className="flex-1">
           <input
             type="text"
@@ -224,6 +279,38 @@ const RechargeCards = () => {
           />
         </div>
       </div>
+      <div className="my-4 flex flex-col gap-4 md:flex-row md:items-center">
+        <div className="flex-1">
+          <label
+            htmlFor="dateFrom"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {t("date_from")}
+          </label>
+          <input
+            type="date"
+            id="dateFrom"
+            value={dateFrom}
+            onChange={handleDateFromChange}
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
+        <div className="flex-1">
+          <label
+            htmlFor="dateTo"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            {t("date_to")}
+          </label>
+          <input
+            type="date"
+            id="dateTo"
+            value={dateTo}
+            onChange={handleDateToChange}
+            className="w-full p-2 border border-gray-300 rounded-lg py-3 px-4 bg-white h-[50px] focus:outline-none focus:border-primary"
+          />
+        </div>
+      </div>
       <div className="overflow-x-auto md:w-full w-[90vw] h-[70vh] overflow-auto">
         <table className="bg-white border border-gray-200 rounded-lg w-full border-spacing-0">
           <thead>
@@ -255,7 +342,7 @@ const RechargeCards = () => {
                   <Loader />
                 </td>
               </tr>
-            ) : list.length === 0 ? (
+            ) : filteredList.length === 0 ? (
               <tr>
                 <td
                   colSpan="7"
