@@ -385,10 +385,10 @@ const HospitalServicesDetails = () => {
                         )}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.slot_to}
+                        {row.slot_date}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
-                        {row.slot_date}
+                        {row.slot_to}
                       </td>
                       <td className="py-3 px-3 text-center whitespace-nowrap">
                         {row.slot_from}
